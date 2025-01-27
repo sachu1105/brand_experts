@@ -8,6 +8,7 @@ import {
   ShoppingCart,
 } from "lucide-react";
 import { motion } from "framer-motion";
+import GradientButton from "../../components/GradientButton";
 
 const HeroSection = () => {
   return (
@@ -31,11 +32,8 @@ const HeroSection = () => {
           <p className="text-lg text-gray-600 mb-6">
             Your Vision, Crafted to Perfection
           </p>
-          <button className="bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] text-white py-2 px-6 rounded-lg text-lg mb-4 flex items-center justify-center">
-            Get Started
-            <MoveRight className="ml-2" />
-          </button>
-          <p className="text-sm text-gray-500 mb-6">
+          <GradientButton text="Get Started" Icon={MoveRight} />
+          <p className="text-md text-gray-500 mb-6">
             Emphasizes customization and quality in delivering user-designed
             products.
           </p>
@@ -60,7 +58,7 @@ const HeroSection = () => {
               <p className="text-sm mt-2">Order your product</p>
             </div>
           </div>
-          <button className="font-bold py-2 rounded-lg text-lg flex items-center justify-center">
+          <button className="font-bold py-2 rounded-lg text-lg flex items-center justify-center cursor-pointer">
             Start New Design
             <motion.div
               className="ml-2"
@@ -92,7 +90,7 @@ const HeroSection = () => {
           </picture>
 
           {/* Sliding Content */}
-          <div className="absolute top-16 left-12 w-[80%] h-[100%] overflow-hidden transform skew-y-[-8deg]">
+          <div className="absolute top-8 left-13 w-[80%] h-[100%] overflow-hidden transform skew-y-[-7deg]">
             <div className="sliding-content flex">
               <img
                 src="https://www.picmaker.com/assets/images/postermaker/poster_maker_ogimage.png"
@@ -117,7 +115,7 @@ const HeroSection = () => {
       {/* CSS for sliding effect */}
       <style jsx>{`
         .sliding-content {
-          animation: slide 12s linear infinite;
+          animation: slide 10s linear infinite;
           display: flex;
         }
 

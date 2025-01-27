@@ -1,6 +1,7 @@
 import footerLogoPng from "../assets/images/be_footer_logo (1).png";
 import footerLogoWebp from "../assets/images/be_footer_logo (1).webp";
 import { motion } from "framer-motion"
+import GradientButton from "./GradientButton";
 
 const Footer = () => {
   return (
@@ -88,6 +89,7 @@ const Footer = () => {
                 </ul>
               </div>
             </div>
+            <GradientButton text="Contact Us" Icon={null} />
           </div>
           <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
           <div className="sm:flex sm:items-center sm:justify-between">
