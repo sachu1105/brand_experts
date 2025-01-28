@@ -1,6 +1,5 @@
-import React from 'react';
 import { LayoutTemplate, Paintbrush, Building2, FileStack, Headphones, Maximize } from 'lucide-react';
-
+import { motion } from 'framer-motion';
 const ModernFeaturesGrid = () => {
   const features = [
     {
@@ -36,7 +35,14 @@ const ModernFeaturesGrid = () => {
   ];
 
   return (
-    <section className="bg-gray-50 py-16">
+    <motion.div
+    className="bg-[#fdf5f5]"
+    initial={{ opacity: 0, y: 50 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.8 }}
+    viewport={{ once: true, amount: 0.3 }} // Animates when 30% of the section is visible
+  >
+    <section className=" py-16">
       <div className="max-w-7xl mx-auto px-4">
         <h2 className="text-4xl font-bold text-center mb-12 text-gray-900">
           Features
@@ -83,6 +89,7 @@ const ModernFeaturesGrid = () => {
         </div>
       </div>
     </section>
+  </motion.div>
   );
 };
 
