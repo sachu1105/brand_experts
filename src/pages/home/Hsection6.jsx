@@ -57,8 +57,8 @@ const Hsection6 = () => {
     transition={{ duration: 0.8 }}
     viewport={{ once: true, amount: 0.3 }} // Animates when 30% of the section is visible
   >
-    <section>
-    <div className="hsection3  py-8">
+    <section className="overflow-hidden">
+    <div className="hsection3 py-8 overflow-hidden">
       {" "}
       <h2 className="text-2xl font-bold text-center mb-6">
       Event sign printing

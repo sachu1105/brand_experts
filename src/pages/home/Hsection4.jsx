@@ -1,100 +1,141 @@
-import bannerPostPng from "../../assets/images/banner-post.png";
-import bannerPostWebp from "../../assets/images/banner-post(1).webp";
-import {
-  CircleArrowRight,
-  Images,
-  MoveRight,
-  Newspaper,
-  ShoppingCart,
-} from "lucide-react";
 import { motion } from "framer-motion";
-import GradientButton from "../../components/GradientButton";
+const DesignProcess = () => {
+  const steps = [
+    {
+      number: "01",
+      title: "Pick Templates or Upload Designs",
+      description: "Head over to our templates to select a theme that makes your vision. Modify or upload an image to make your own sign online.",
+      icon: () => (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+            strokeWidth={2} 
+            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" 
+          />
+        </svg>
+      )
+    },
+    {
+      number: "02",
+      title: "Customize Your Design",
+      description: "Our online design tool comes with original templates to create a unique design for your signs. Select a print medium, size, style, and more.",
+      icon: () => (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+            strokeWidth={2} 
+            d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" 
+          />
+        </svg>
+      )
+    },
+    {
+      number: "03",
+      title: "Click to Order Your Product",
+      description: "Place your order once done with the design. Click and add any notes regarding the order. Proceed to checkout, and we will get your signs printed right away.",
+      icon: () => (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path 
+            strokeLinecap="round" 
+            strokeLinejoin="round" 
+            strokeWidth={2} 
+            d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" 
+          />
+        </svg>
+      )
+    }
+  ];
 
-const Hsection4 = () => {
+  const StepIcon = ({ icon: Icon }) => (
+    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+      <div className="w-12 h-12 rounded-full bg-red-100 flex items-center justify-center text-red-600">
+        <Icon />
+      </div>
+    </div>
+  );
+
+  const StepNumber = ({ number }) => (
+    <div className="relative">
+      <div className="w-24 h-24 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center transform transition-transform hover:scale-110">
+        <div className="w-20 h-20 rounded-full bg-white flex items-center justify-center">
+          <span className="text-3xl font-bold text-red-600">{number}</span>
+        </div>
+      </div>
+    </div>
+  );
+
+  const StepContent = ({ title, description, isReversed }) => (
+    <div className={`flex-1 ${isReversed ? 'text-right' : 'text-left'}`}>
+      <h3 className="text-2xl font-bold text-gray-900 mb-4">
+        {title}
+      </h3>
+      <p className={`text-lg text-gray-600 leading-relaxed max-w-xl ${isReversed ? 'ml-auto' : ''}`}>
+        {description}
+      </p>
+    </div>
+  );
+
   return (
     <motion.div
-      className="min-h-screen flex items-center justify-center "
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      viewport={{ once: true, amount: 0.3 }} // Animates when 30% of the section is visible
-    >
-      <section className="flex flex-col-reverse lg:flex-row items-center justify-between px-8 py-12 lg:py-20 max-w-7xl mx-auto">
-        {/* Left Content */}
-        <div className="lg:w-1/2 text-center lg:text-left">
-          <h1 className="text-4xl lg:text-6xl font-bold mb-4">
-            Create, Enhance, and <br />
-            Showcase Your{" "}
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#BF1A1C] to-[#590C0D]">
-              Brand!
-            </span>
-          </h1>
-          <p className="text-lg text-gray-600 mb-6">
-            Your Vision, Crafted to Perfection
+    className=""
+    initial={{ opacity: 0, y: 50 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.8 }}
+    viewport={{ once: true, amount: 0.3 }} // Animates when 30% of the section is visible
+  >
+    <section>
+    <div className="bg-gradient-to-br from-blue-50 via-white to-blue-50 py-24 overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <header className="text-center mb-16">
+          <h2 className="text-4xl font-bold  ">
+            3-Step Design & Order Process
+          </h2>
+          <p className="mt-4 text-xl text-gray-600 max-w-2xl mx-auto">
+            We have made the sign design and ordering process as easy as possible.
+            Follow these simple steps to design your very own sign.
           </p>
-          <GradientButton text="Get Started" Icon={MoveRight} />
-          <p className="text-md text-gray-500 mb-6">
-            Emphasizes customization and quality in delivering user-designed
-            products.
-          </p>
-          {/* Icons Row */}
-          <div className="flex justify-center lg:justify-start gap-6 mb-6">
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 border-2 border-[#BF1A1C] rounded-full flex items-center justify-center">
-                <Newspaper size={32} className="text-[#BF1A1C]" />
+        </header>
+        
+
+        <div className="relative">
+          {steps.map((step, index) => {
+            const isReversed = index % 2 !== 0;
+            return (
+              <div 
+                key={step.number}
+                className={`flex items-center gap-8 mb-16 ${
+                  isReversed ? 'md:flex-row-reverse' : 'md:flex-row'
+                } flex-col`}
+              >
+                
+                <div className="relative flex-shrink-0">
+                  <StepNumber number={step.number} />
+                  <StepIcon icon={step.icon} />
+                </div>
+                    
+                <StepContent 
+                  title={step.title}
+                  description={step.description}
+                  isReversed={isReversed}
+                />
+
+                {index < steps.length - 1 && (
+                  <div 
+                    className="hidden md:block absolute left-1/2 transform -translate-x-1/2 h-[50px] w-0.5 bg-gradient-to-b from-red-800 to-transparent"
+                    style={{ top: '100%' }}
+                  />
+                )}
               </div>
-              <p className="text-sm mt-2">Pick templates</p>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 border-2 border-[#BF1A1C] rounded-full flex items-center justify-center">
-                <Images size={32} className="text-[#BF1A1C]" />
-              </div>
-              <p className="text-sm mt-2">customize your signs</p>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 border-2 border-[#BF1A1C] rounded-full flex items-center justify-center">
-                <ShoppingCart size={32} className="text-[#BF1A1C]" />
-              </div>
-              <p className="text-sm mt-2">Order your product</p>
-            </div>
-          </div>
-          <button className="font-bold py-2 rounded-lg text-lg flex items-center justify-center cursor-pointer">
-            Start New Design
-            <motion.div
-              className="ml-2"
-              animate={{
-                x: [0, 10, 0], // Moves left to right (x-axis)
-              }}
-              transition={{
-                duration: 1.5, // Total animation duration
-                repeat: Infinity, // Makes it loop infinitely
-                repeatType: "loop", // Smooth looping
-                ease: "easeInOut", // Easing function
-              }}
-            >
-              <CircleArrowRight className="text-[#BF1A1C] w-8 h-8" />
-            </motion.div>
-          </button>
+            );
+          })}
         </div>
-
-        {/* Right Billboard with Sliding Images */}
-        <div className="lg:w-1/2 relative">
-          <picture>
-            <source srcSet={bannerPostWebp} type="image/webp" />
-            <source srcSet={bannerPostPng} type="image/png" />
-            <img
-              src={bannerPostPng} 
-              className="" 
-              alt="hero section banner Logo"
-            />
-          </picture>
-
-        </div>
-      </section>
-
-
+      </div>
+    </div>
+    </section>
     </motion.div>
   );
 };
 
-export default Hsection4;
+export default DesignProcess;

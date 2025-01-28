@@ -57,8 +57,8 @@ const Hsection3 = () => {
     transition={{ duration: 0.8 }}
     viewport={{ once: true, amount: 0.3 }} // Animates when 30% of the section is visible
   >
-    <section>
-    <div className="hsection3 bg-gray-100 py-8">
+    <section className="overflow-hidden">
+    <div className="hsection3 bg-gray-100 py-8 overflow-hidden">
       {" "}
       <h2 className="text-2xl font-bold text-center mb-6">
         What’s new and trendy
