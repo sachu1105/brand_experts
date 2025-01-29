@@ -86,7 +86,7 @@ const DesignProcess = () => {
     viewport={{ once: true, amount: 0.3 }} // Animates when 30% of the section is visible
   >
     <section>
-    <div className="bg-gradient-to-br from-blue-50 via-white to-blue-50 py-24 overflow-hidden">
+    <div className=" py-24 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <header className="text-center mb-16">
           <h2 className="text-4xl font-bold  ">

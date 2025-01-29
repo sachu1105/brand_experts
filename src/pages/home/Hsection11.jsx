@@ -56,7 +56,7 @@ const WhyChooseUs = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {features.map((feature, index) => (
-            <div key={index} className="bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
+            <div key={index} className="border border-gray-200 bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300">
               <div className="flex flex-col items-center text-center">
                 <div className="mb-4">
                   {feature.icon}

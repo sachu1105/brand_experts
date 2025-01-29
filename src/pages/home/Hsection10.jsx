@@ -51,7 +51,7 @@ export default function TestimonialSlider() {
     <section>
     <div className="bg-[#fdf5f5] p-10 text-center">
       <h2 className="text-3xl font-bold">what our client say about</h2>
-      <h3 className="text-red-600 text-4xl font-extrabold mb-6">Brand Experts</h3>
+      <h3 className="bg-clip-text text-transparent bg-gradient-to-r from-[#BF1A1C] to-[#a01618] text-4xl font-extrabold mb-6">Brand Experts</h3>
       <div className="relative flex justify-center items-center">
         <button className="absolute left-0 p-3 bg-red-600 text-white rounded-full" onClick={prevTestimonial}>
           <FaArrowLeft />

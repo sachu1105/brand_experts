@@ -13,7 +13,7 @@ const Hsection2 = () => {
   >
     <section className="min-h-[50vh] flex flex-col lg:flex-row items-center justify-between px-8 py-8 lg:py-12 max-w-7xl mx-auto gap-8 overflow-hidden">
       {/* Product Card */}
-      <div className="max-w-xl bg-white rounded-lg shadow-lg border border-gray-200 ">
+      <div className="max-w-xl bg-white rounded-lg shadow-lg border-2 border-gray-200 ">
         <div className="flex flex-col sm:flex-row">
           {/* Left side - Image */}
           <div className="sm:w-1/3 p-4">
