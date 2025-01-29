@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"; // Import Link from react-router-dom
 import { Search, ShoppingCart, User, Menu, X } from 'lucide-react';
 import { useState } from 'react';
 import logo from '../assets/images/br_logo.png';
@@ -17,12 +18,12 @@ const Navbar = () => {
       <nav className="bg-white shadow-lg">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
           {/* Logo Section */}
-          <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-            <img src={logo} alt="Brand Experts Logo" className="h-8" loading="lazy" />
-            <span className="text-xl font-semibold text-gray-900 dark:text-white">
-              Brand Experts
-            </span>
-          </a>
+          <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
+              <img src={logo} alt="Brand Experts Logo" className="h-8" loading="lazy" />
+              <span className="text-xl font-semibold text-gray-900 dark:text-white">
+                Brand Experts
+              </span>
+          </Link>
 
           {/* Mobile Menu Button */}
           <div className="flex items-center lg:hidden">
@@ -42,15 +43,15 @@ const Navbar = () => {
           >
             {/* Navigation Links */}
             <ul className="flex flex-col lg:flex-row lg:space-x-6 mt-4 lg:mt-0">
-              <li className="text-gray-900 font-semibold hover:text-gray-700 hover:underline cursor-pointer">
-                Home
-              </li>
+            <li className="text-gray-900 font-semibold hover:text-gray-700 hover:underline cursor-pointer">
+                  <Link to="/">Home</Link>
+                </li>
               <li className="text-gray-900 font-semibold hover:text-gray-700 hover:underline cursor-pointer">
                 All Products
               </li>
               <li className="text-gray-900 font-semibold hover:text-gray-700 hover:underline cursor-pointer">
-                Templates
-              </li>
+                  <Link to="/templates">Templates</Link>
+                </li>
               <li className="text-gray-900 font-semibold hover:text-gray-700 hover:underline cursor-pointer">
                 Corporate Offer
               </li>
