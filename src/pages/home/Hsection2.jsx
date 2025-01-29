@@ -86,14 +86,17 @@ const Hsection2 = () => {
       </div>
 
       {/* Right Content */}
-      <div className="lg:w-1/2 text-center lg:text-left">
+      <div className="w-full lg:w-1/2 text-center lg:text-left">
         <h1 className="text-3xl lg:text-5xl font-bold mb-4">
           Craft Your Style, Ship Your Smile!
         </h1>
         <p className="text-lg text-gray-600 mb-6">
           Create a custom sign on state-of-the-art acrylic materials perfect for branding or personal use in indoor and outdoor settings.
         </p>
+        <div className="w-full flex justify-center lg:justify-start">
+
         <GradientButton text="Design Now" Icon={MoveRight} />
+        </div>
       </div>
     </section>
   </motion.div>

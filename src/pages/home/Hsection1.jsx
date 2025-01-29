@@ -13,72 +13,70 @@ import GradientButton from "../../components/GradientButton";
 const HeroSection = () => {
   return (
     <motion.div
-      className="min-h-screen flex items-center justify-center bg-[#fdf5f5]"
+      className="min-h-screen flex items-center justify-center bg-[#fdf5f5] px-4 sm:px-8"
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
       viewport={{ once: true, amount: 0.3 }} // Animates when 30% of the section is visible
     >
-      <section className="flex flex-col-reverse lg:flex-row items-center justify-between px-8 py-12 lg:py-20 max-w-7xl mx-auto">
+      <section className="flex flex-col-reverse lg:flex-row items-center justify-between py-8 lg:py-20 max-w-7xl mx-auto w-full">
         {/* Left Content */}
-        <div className="lg:w-1/2 text-center lg:text-left">
-          <h1 className="text-4xl lg:text-6xl font-bold mb-4">
-            Create, Enhance, and <br />
+        <div className="lg:w-1/2 w-full flex flex-col items-center lg:items-start space-y-6">
+          <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-center lg:text-left">
+            Create, Enhance, and <br className="hidden sm:block" />
             Showcase Your{" "}
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#BF1A1C] to-[#590C0D]">
               Brand!
             </span>
           </h1>
-          <p className="text-lg text-gray-600 mb-6">
+          
+          <p className="text-lg text-gray-600 text-center lg:text-left">
             Your Vision, Crafted to Perfection
           </p>
-          <GradientButton text="Get Started" Icon={MoveRight} />
-          <p className="text-md text-gray-500 mb-6">
-            Emphasizes customization and quality in delivering user-designed
-            products.
-          </p>
-          {/* Icons Row */}
-          <div className="flex justify-center lg:justify-start gap-6 mb-6">
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 border-2 border-[#BF1A1C] rounded-full flex items-center justify-center">
-                <Newspaper size={32} className="text-[#BF1A1C]" />
-              </div>
-              <p className="text-sm mt-2">Pick templates</p>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 border-2 border-[#BF1A1C] rounded-full flex items-center justify-center">
-                <Images size={32} className="text-[#BF1A1C]" />
-              </div>
-              <p className="text-sm mt-2">customize your signs</p>
-            </div>
-            <div className="flex flex-col items-center">
-              <div className="w-16 h-16 border-2 border-[#BF1A1C] rounded-full flex items-center justify-center">
-                <ShoppingCart size={32} className="text-[#BF1A1C]" />
-              </div>
-              <p className="text-sm mt-2">Order your product</p>
-            </div>
+          
+          <div className="w-full flex justify-center lg:justify-start">
+            <GradientButton text="Get Started" Icon={MoveRight} />
           </div>
-          <button className="font-bold py-2 rounded-lg text-lg flex items-center justify-center cursor-pointer">
+          
+          <p className="text-md text-gray-500 text-center lg:text-left max-w-md">
+            Emphasizes customization and quality in delivering user-designed products.
+          </p>
+          
+          {/* Icons Row */}
+          <div className="flex flex-wrap justify-center lg:justify-start gap-4 sm:gap-6 w-full">
+            {[
+              { icon: Newspaper, text: "Pick templates" },
+              { icon: Images, text: "Customize your signs" },
+              { icon: ShoppingCart, text: "Order your product" },
+            ].map((item, index) => (
+              <div key={index} className="flex flex-col items-center">
+                <div className="w-14 h-14 sm:w-16 sm:h-16 border-2 border-[#BF1A1C] rounded-full flex items-center justify-center">
+                  <item.icon size={28} className="text-[#BF1A1C]" />
+                </div>
+                <p className="text-xs sm:text-sm mt-2 text-center">{item.text}</p>
+              </div>
+            ))}
+          </div>
+          
+          <button className="font-bold py-2 rounded-lg text-lg flex items-center justify-center cursor-pointer w-full sm:w-auto">
             Start New Design
             <motion.div
               className="ml-2"
-              animate={{
-                x: [0, 10, 0], // Moves left to right (x-axis)
-              }}
+              animate={{ x: [0, 10, 0] }}
               transition={{
-                duration: 1.5, // Total animation duration
-                repeat: Infinity, // Makes it loop infinitely
-                repeatType: "loop", // Smooth looping
-                ease: "easeInOut", // Easing function
+                duration: 1.5,
+                repeat: Infinity,
+                repeatType: "loop",
+                ease: "easeInOut",
               }}
             >
-              <CircleArrowRight className="text-[#BF1A1C] w-8 h-8" />
+              <CircleArrowRight className="text-[#BF1A1C] w-6 h-6 sm:w-8 sm:h-8" />
             </motion.div>
           </button>
         </div>
 
         {/* Right Billboard with Sliding Images */}
-        <div className="lg:w-1/2 relative">
+        <div className="lg:w-1/2 relative hidden lg:block">
           <picture>
             <source srcSet={bannerPostWebp} type="image/webp" />
             <source srcSet={bannerPostPng} type="image/png" />
@@ -90,7 +88,7 @@ const HeroSection = () => {
           </picture>
 
           {/* Sliding Content */}
-          <div className="absolute top-8 left-13 w-[80%] h-[100%] overflow-hidden transform skew-y-[-7deg]">
+          <div className="absolute top-8 left-6 w-[85%] h-[100%] overflow-hidden transform skew-y-[-7deg]">
             <div className="sliding-content flex">
               <img
                 src="https://www.picmaker.com/assets/images/postermaker/poster_maker_ogimage.png"

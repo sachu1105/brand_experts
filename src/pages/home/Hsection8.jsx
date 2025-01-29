@@ -5,18 +5,26 @@ import {MoveRight} from "lucide-react"
 function Hsection8() {
   return (
     <motion.div
-      className="flex items-center justify-center bg-black"
+      className="flex flex-col md:flex-row items-center justify-center bg-black px-4 py-8 md:py-10 gap-8 md:gap-16"
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
       viewport={{ once: true, amount: 0.3 }} // Animates when 30% of the section is visible
     >
-      <section className="text-center py-10 ">
-        <h2 className="text-3xl font-bold mb-6 text-white">Get Started With <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#BF1A1C] to-[#a01618]">Brand Experts</span></h2>
+      <section className="text-center md:text-left">
+        <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 text-white">
+          Get Started With <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#BF1A1C] to-[#a01618]">Brand Experts</span>
+        </h2>
+        <div className="w-full flex justify-center lg:justify-center">
         <GradientButton text="Sign Up" Icon={MoveRight}/>
-      </section>
-      <img src={BrLogo} alt="Brand Experts Logo" className="ml-96 w-68 h-44" /> {/* Adjusted size */}
+          </div>
 
+      </section>
+      <img 
+        src={BrLogo} 
+        alt="Brand Experts Logo" 
+        className="w-48 h-32 md:w-56 md:h-36 lg:w-68 lg:h-44 object-contain" 
+      />
     </motion.div>
   )
 }
