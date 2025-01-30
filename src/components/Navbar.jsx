@@ -43,16 +43,16 @@ const Navbar = () => {
           >
             {/* Navigation Links */}
             <ul className="flex flex-col lg:flex-row lg:space-x-6 mt-4 lg:mt-0">
-            <li className="text-gray-900 font-semibold hover:text-gray-700 hover:underline cursor-pointer">
+            <li className="text-gray-800 font-semibold hover:text-red-600 hover:underline cursor-pointer">
                   <Link to="/">Home</Link>
                 </li>
-              <li className="text-gray-900 font-semibold hover:text-gray-700 hover:underline cursor-pointer">
+              <li className="text-gray-800 font-semibold hover:text-red-600 hover:underline cursor-pointer">
                 All Products
               </li>
-              <li className="text-gray-900 font-semibold hover:text-gray-700 hover:underline cursor-pointer">
+              <li className="text-gray-800 font-semibold hover:text-red-600 hover:underline cursor-pointer">
                   <Link to="/templates">Templates</Link>
                 </li>
-              <li className="text-gray-900 font-semibold hover:text-gray-700 hover:underline cursor-pointer">
+              <li className="text-gray-800 font-semibold hover:text-red-600 hover:underline cursor-pointer">
                 Corporate Offer
               </li>
             </ul>

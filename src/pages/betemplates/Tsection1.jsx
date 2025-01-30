@@ -1,20 +1,25 @@
 import React, { useState } from 'react';
 import Sidebar from '../../components/Sidebar'; // Import Sidebar component
+import { motion } from 'framer-motion';
+import { Briefcase, Paintbrush, Book, Calendar, Gift, Info, Shield, Leaf, Home, PenTool, Menu, SidebarOpen } from 'lucide-react';
 
 const DesignEditor = () => {
   const [activeCategory, setActiveCategory] = useState(null);
+  const [selectedNavItem, setSelectedNavItem] = useState('Banners & displays');
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
+  const [isNavDropdownOpen, setIsNavDropdownOpen] = useState(false);
   
   const categories = [
-    { id: 'business', name: 'Business', icon: '💼' },
-    { id: 'decoration', name: 'Decoration', icon: '🎨' },
-    { id: 'education', name: 'Education', icon: '📚' },
-    { id: 'events', name: 'Events', icon: '🎉' },
-    { id: 'holiday', name: 'Holiday', icon: '🎄' },
-    { id: 'informative', name: 'Informative', icon: 'ℹ️' },
-    { id: 'public-safety', name: 'Public safety & politics', icon: '🚨' },
-    { id: 'nature', name: 'Nature', icon: '🌿' },
-    { id: 'real-estate', name: 'Real estate', icon: '🏠' },
-    { id: 'stationary', name: 'Stationary', icon: '📝' }
+    { id: 'business', name: 'Business', icon: <Briefcase className="w-4 h-4" /> },
+    { id: 'decoration', name: 'Decoration', icon: <Paintbrush className="w-4 h-4" /> },
+    { id: 'education', name: 'Education', icon: <Book className="w-4 h-4" /> },
+    { id: 'events', name: 'Events', icon: <Calendar className="w-4 h-4" /> },
+    { id: 'holiday', name: 'Holiday', icon: <Gift className="w-4 h-4" /> },
+    { id: 'informative', name: 'Informative', icon: <Info className="w-4 h-4" /> },
+    { id: 'public-safety', name: 'Public safety & politics', icon: <Shield className="w-4 h-4" /> },
+    { id: 'nature', name: 'Nature', icon: <Leaf className="w-4 h-4" /> },
+    { id: 'real-estate', name: 'Real estate', icon: <Home className="w-4 h-4" /> },
+    { id: 'stationary', name: 'Stationary', icon: <PenTool className="w-4 h-4" /> }
   ];
 
   const categoryCards = [
@@ -34,29 +39,73 @@ const DesignEditor = () => {
     { id: 'birthday', title: 'Birthday', image: 'https://hips.hearstapps.com/hmg-prod/images/mid-adult-woman-lighting-the-candles-for-her-royalty-free-image-1735851427.pjpeg?crop=0.670xw:1.00xh;0.277xw,0&resize=1200:*' },
     
   ];
+
+  const toggleSidebar = () => {
+    setIsSidebarCollapsed(!isSidebarCollapsed);
+  };
+
+  const toggleNavDropdown = () => {
+    setIsNavDropdownOpen(!isNavDropdownOpen);
+  };
+
   return (
-    <div className="flex h-screen ">
+    <motion.div
+    className=""
+    initial={{ opacity: 0, y: 50 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    transition={{ duration: 0.8 }}
+    viewport={{ once: true, amount: 0.3 }} // Animates when 30% of the section is visible
+    >
+    <div className="flex flex-col md:flex-row h-screen">
       {/* Sidebar */}
       <Sidebar 
         categories={categories} 
         activeCategory={activeCategory} 
         setActiveCategory={setActiveCategory} 
+        isCollapsed={isSidebarCollapsed}
+        toggleSidebar={toggleSidebar}
       />
 
       {/* Main Content */}
       <div className="flex-1 overflow-auto">
         {/* Top Navigation */}
-        <div className="border-b border-gray-200">
-          <div className="flex space-x-4 px-4 py-2">
+        <div className="border-b border-gray-200 flex justify-between items-center px-4 py-2">
+          <button onClick={toggleSidebar} className="md:hidden">
+            <SidebarOpen className="w-6 h-6 text-gray-700" />
+          </button>
+          <div className="hidden md:flex flex-wrap space-x-4">
             {['Banners & displays', 'Rigid signs', 'Decals & magnets', 'Trade Shows & Events', 
               'Office Signs', 'Outdoor Signs', 'Photo & Décor', 'Wedding & parties'].map((item) => (
               <button
                 key={item}
-                className="px-3 py-2 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-md"
+                className={`px-3 py-2 text-sm ${selectedNavItem === item ? 'text-red-600 border border-red-800' : 'text-gray-700 hover:text-white hover:bg-red-800'} rounded-md`}
+                onClick={() => setSelectedNavItem(item)}
               >
                 {item}
               </button>
             ))}
+          </div>
+          <div className="md:hidden relative">
+            <button onClick={toggleNavDropdown} className="px-3 py-2 text-sm text-gray-700 hover:text-white hover:bg-red-800 rounded-md">
+              Menu
+            </button>
+            {isNavDropdownOpen && (
+              <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
+                {['Banners & displays', 'Rigid signs', 'Decals & magnets', 'Trade Shows & Events', 
+                  'Office Signs', 'Outdoor Signs', 'Photo & Décor', 'Wedding & parties'].map((item) => (
+                  <button
+                    key={item}
+                    className={`block w-full text-left px-4 py-2 text-sm ${selectedNavItem === item ? 'text-red-600' : 'text-gray-700 hover:bg-gray-100'}`}
+                    onClick={() => {
+                      setSelectedNavItem(item);
+                      setIsNavDropdownOpen(false);
+                    }}
+                  >
+                    {item}
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
@@ -70,7 +119,7 @@ const DesignEditor = () => {
         {/* Category Grid */}
         <div className="p-4">
           <h2 className="text-xl font-semibold mb-4">Browse by category</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {categoryCards.map((card) => (
               <div key={card.id} className="relative group cursor-pointer">
                 <img
@@ -88,7 +137,7 @@ const DesignEditor = () => {
 
         <div className="p-4">
           <h2 className="text-xl font-semibold mb-4">Business</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
             {categoryCards2.map((card) => (
               <div key={card.id} className="relative group cursor-pointer">
                 <img
@@ -105,6 +154,7 @@ const DesignEditor = () => {
         </div>
       </div>
     </div>
+    </motion.div>
   );
 };
 
