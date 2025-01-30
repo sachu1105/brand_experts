@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Sidebar from '../../components/Sidebar'; // Import Sidebar component
 import { motion } from 'framer-motion';
-import { Briefcase, Paintbrush, Book, Calendar, Gift, Info, Shield, Leaf, Home, PenTool, SidebarOpen } from 'lucide-react';
+import { Briefcase, Paintbrush, Book, Calendar, Gift, Info, Shield, Leaf, Home, PenTool, SidebarOpen, ChevronLeft, ChevronRight } from 'lucide-react'; // Add these imports
 
 const DesignEditor = () => {
   const [activeCategory, setActiveCategory] = useState(null);
@@ -48,6 +48,12 @@ const DesignEditor = () => {
     setIsNavDropdownOpen(!isNavDropdownOpen);
   };
 
+  const scrollContainer = (containerId, direction) => {
+    const container = document.getElementById(containerId);
+    const scrollAmount = direction === 'left' ? -300 : 300;
+    container.scrollBy({ left: scrollAmount, behavior: 'smooth' });
+  };
+
   return (
     <motion.div
     className=""
@@ -91,8 +97,7 @@ const DesignEditor = () => {
             </button>
             {isNavDropdownOpen && (
               <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50">
-                {['Banners & displays', 'Rigid signs', 'Decals & magnets', 'Trade Shows & Events', 
-                  'Office Signs', 'Outdoor Signs', 'Photo & Décor', 'Wedding & parties'].map((item) => (
+                {['Banners & displays', 'Rigid signs', 'Decals & magnets', 'Trade Shows & Events','Office Signs', 'Outdoor Signs', 'Photo & Décor', 'Wedding & parties'].map((item) => (
                   <button
                     key={item}
                     className={`block w-full text-left px-4 py-2 text-sm ${selectedNavItem === item ? 'text-red-600' : 'text-gray-700 hover:bg-gray-100'}`}
@@ -117,59 +122,120 @@ const DesignEditor = () => {
         </div>
 
         {/* Category Grid */}
-        <div className="p-4">
-          <h2 className="text-xl font-semibold mb-4">Browse by category</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {categoryCards.map((card) => (
-              <div key={card.id} className="relative group cursor-pointer">
-                <img
-                  src={card.image}
-                  alt={card.title}
-                  className="w-full h-48 object-cover rounded-lg"
-                />
-                <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/60 to-transparent rounded-b-lg">
-                  <h3 className="text-white text-sm font-medium">{card.title}</h3>
+        <div className="p-4 relative">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold">Browse by category</h2>
+            <div className="flex gap-2">
+              <button onClick={() => scrollContainer('category-scroll', 'left')} 
+                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button onClick={() => scrollContainer('category-scroll', 'right')} 
+                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+          <div id="category-scroll" className="flex overflow-x-auto hide-scrollbar gap-4 pb-4">
+            {categoryCards.map((card, index) => (
+              <div key={card.id} 
+                className={`flex-none cursor-pointer transform transition-transform hover:scale-105
+                  ${index % 3 === 0 ? 'w-80' : 'w-64'}`}>
+                <div className="relative h-48 rounded-lg overflow-hidden">
+                  <img
+                    src={card.image}
+                    alt={card.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent 
+                    flex items-end p-4 opacity-100 transition-opacity group-hover:opacity-100">
+                    <h3 className="text-white text-lg font-medium">{card.title}</h3>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="p-4">
-          <h2 className="text-xl font-semibold mb-4">Business</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {categoryCards2.map((card) => (
-              <div key={card.id} className="relative group cursor-pointer">
-                <img
-                  src={card.image}
-                  alt={card.title}
-                  className="w-full h-48 object-cover rounded-lg"
-                />
-                <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/60 to-transparent rounded-b-lg">
-                  <h3 className="text-white text-sm font-medium">{card.title}</h3>
+        <div className="p-4 relative">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold">Business</h2>
+            <div className="flex gap-2">
+              <button onClick={() => scrollContainer('business-scroll', 'left')} 
+                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button onClick={() => scrollContainer('business-scroll', 'right')} 
+                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+          <div id="business-scroll" className="flex overflow-x-auto hide-scrollbar gap-4 pb-4">
+            {categoryCards2.map((card, index) => (
+              <div key={card.id} 
+                className={`flex-none cursor-pointer transform transition-transform hover:scale-105
+                  ${index % 2 === 0 ? 'w-96' : 'w-72'}`}>
+                <div className="relative h-48 rounded-lg overflow-hidden">
+                  <img
+                    src={card.image}
+                    alt={card.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent 
+                    flex items-end p-4 opacity-100 transition-opacity group-hover:opacity-100">
+                    <h3 className="text-white text-lg font-medium">{card.title}</h3>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        <div className="p-4">
-          <h2 className="text-xl font-semibold mb-4">Events</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
-            {categoryCards2.map((card) => (
-              <div key={card.id} className="relative group cursor-pointer">
-                <img
-                  src={card.image}
-                  alt={card.title}
-                  className="w-full h-48 object-cover rounded-lg"
-                />
-                <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/60 to-transparent rounded-b-lg">
-                  <h3 className="text-white text-sm font-medium">{card.title}</h3>
+        <div className="p-4 relative">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-xl font-semibold">Events</h2>
+            <div className="flex gap-2">
+              <button onClick={() => scrollContainer('events-scroll', 'left')} 
+                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button onClick={() => scrollContainer('events-scroll', 'right')} 
+                className="p-2 rounded-full bg-gray-100 hover:bg-gray-200">
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+          <div id="events-scroll" className="flex overflow-x-auto hide-scrollbar gap-4 pb-4">
+            {categoryCards2.map((card, index) => (
+              <div key={card.id} 
+                className={`flex-none cursor-pointer transform transition-transform hover:scale-105
+                  ${index % 2 === 0 ? 'w-96' : 'w-72'}`}>
+                <div className="relative h-48 rounded-lg overflow-hidden">
+                  <img
+                    src={card.image}
+                    alt={card.title}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent 
+                    flex items-end p-4 opacity-100 transition-opacity group-hover:opacity-100">
+                    <h3 className="text-white text-lg font-medium">{card.title}</h3>
+                  </div>
                 </div>
               </div>
             ))}
           </div>
         </div>
+
+        <style jsx>{`
+          .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+          }
+          .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+          }
+        `}</style>
 
       </div>
     </div>

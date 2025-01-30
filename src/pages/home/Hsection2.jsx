@@ -48,6 +48,7 @@ const Hsection2 = () => {
       ],
       baseSizeIndex: 0
     },
+    
     // ... other templates with sizes in inches
   ];
 
