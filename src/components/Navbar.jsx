@@ -7,6 +7,11 @@ import { motion } from "framer-motion"
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+
+  const toggleUserDropdown = () => {
+    setIsUserDropdownOpen(!isUserDropdownOpen);
+  };
 
   return (
     <div>
@@ -72,10 +77,37 @@ const Navbar = () => {
               {/* Add space between Search Bar and Action Buttons */}
               <div className="flex items-center space-x-6 mt-4 lg:mt-0 lg:ml-8">
                 <button className="border border-red-700 px-4 py-2 rounded-md text-red-700 hover:bg-red-700 hover:text-white">
-                  Dashboard
+                  Design Tools
                 </button>
-                <ShoppingCart className="h-6 w-6 text-gray-900 cursor-pointer hover:text-gray-700" />
-                <User className="h-6 w-6 text-gray-900 cursor-pointer hover:text-gray-700" />
+
+                <Link to="/cart">
+                  <ShoppingCart className="h-6 w-6 text-gray-900 cursor-pointer hover:text-gray-700" />
+                </Link>
+                
+                {/* Modified User icon section with dropdown */}
+                <div className="relative">
+                  <button onClick={toggleUserDropdown}>
+                    <User className="h-6 w-6 text-gray-900 cursor-pointer hover:text-gray-700" />
+                  </button>
+                  
+                  {/* Dropdown Menu */}
+                  {isUserDropdownOpen && (
+                    <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-10">
+                      <Link
+                        to="/signup"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        Sign Up
+                      </Link>
+                      <Link
+                        to="/signin"
+                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                      >
+                        Sign in
+                      </Link>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           </div>
