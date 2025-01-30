@@ -1,7 +1,7 @@
 import { ChevronDown, ChevronUp, Plus, X } from 'lucide-react';
 import { useState } from 'react';
 
-const Sidebar = ({ categories, activeCategory, setActiveCategory, isCollapsed, toggleSidebar }) => {
+const Sidebar = ({ categories, activeCategory, setActiveCategory, isCollapsed, toggleSidebar, onCategorySelect }) => {
   const [openCategory, setOpenCategory] = useState(null);
 
   const toggleCategory = (categoryId) => {
@@ -52,13 +52,19 @@ const Sidebar = ({ categories, activeCategory, setActiveCategory, isCollapsed, t
                 <div className="pl-6 mt-2 space-y-1">
                   {/* Add subcategories or options here */}
                   <button
-                    onClick={() => setActiveCategory(`${category.id}-option1`)}
+                    onClick={() => {
+                      setActiveCategory(`${category.id}-option1`);
+                      onCategorySelect(category.id);
+                    }}
                     className="block w-full text-left px-2 py-1 text-sm text-gray-700 rounded-md hover:bg-gray-100"
                   >
                     Option 1
                   </button>
                   <button
-                    onClick={() => setActiveCategory(`${category.id}-option2`)}
+                    onClick={() => {
+                      setActiveCategory(`${category.id}-option2`);
+                      onCategorySelect(category.id);
+                    }}
                     className="block w-full text-left px-2 py-1 text-sm text-gray-700 rounded-md hover:bg-gray-100"
                   >
                     Option 2

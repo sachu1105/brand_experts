@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Sidebar from '../../components/Sidebar'; // Import Sidebar component
 import { motion } from 'framer-motion';
-import { Briefcase, Paintbrush, Book, Calendar, Gift, Info, Shield, Leaf, Home, PenTool, Menu, SidebarOpen } from 'lucide-react';
+import { Briefcase, Paintbrush, Book, Calendar, Gift, Info, Shield, Leaf, Home, PenTool, SidebarOpen } from 'lucide-react';
 
 const DesignEditor = () => {
   const [activeCategory, setActiveCategory] = useState(null);
@@ -152,6 +152,25 @@ const DesignEditor = () => {
             ))}
           </div>
         </div>
+
+        <div className="p-4">
+          <h2 className="text-xl font-semibold mb-4">Events</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            {categoryCards2.map((card) => (
+              <div key={card.id} className="relative group cursor-pointer">
+                <img
+                  src={card.image}
+                  alt={card.title}
+                  className="w-full h-48 object-cover rounded-lg"
+                />
+                <div className="absolute bottom-0 left-0 right-0 p-2 bg-gradient-to-t from-black/60 to-transparent rounded-b-lg">
+                  <h3 className="text-white text-sm font-medium">{card.title}</h3>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
     </div>
     </motion.div>
