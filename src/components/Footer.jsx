@@ -34,7 +34,7 @@ const Footer = () => {
                     About us
                   </h2>
                   <p className="  text-sm">
-                    Branch Experts is an online sign printing company featuring
+                    Brand Experts is an online sign printing company featuring
                     an intuitive design tool and high-grade signs that can help
                     you accomplish all your unique communication needs. Our
                     platform enables you to personalise your key meetings such
