@@ -91,7 +91,7 @@ const HeroSection = () => {
 
         {/* Right Billboard with Sliding Images */}
         <div className="lg:w-1/2 relative hidden lg:block">
-          <picture >
+          <picture className="" >
             <source srcSet={bannerPostWebp} type="image/webp" />
             <source srcSet={bannerPostPng} type="image/png" />
             <img
@@ -101,7 +101,7 @@ const HeroSection = () => {
             />
           </picture>
 
-          <picture className="absolute bottom-0 right-0">
+          <picture className="absolute bottom-0 right-0 h-12">
             <source srcSet={grassWebp} type="image/webp" />
             <source srcSet={grassPng} type="image/png" />
             <img src={grassPng} className="" alt="hero section banner Logo" />

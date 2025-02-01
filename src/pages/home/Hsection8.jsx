@@ -2,6 +2,7 @@ import { motion } from "framer-motion"
 import GradientButton from "../../components/GradientButton";
 import BrLogo from "../../assets/images/be_footer_logo (1).webp" // Uncomment and use the logo
 import {MoveRight} from "lucide-react"
+import getStartedImage from "../../assets/images/getstrated.png"
 function Hsection8() {
   return (
     <motion.div
@@ -11,6 +12,11 @@ function Hsection8() {
       transition={{ duration: 0.8 }}
       viewport={{ once: true, amount: 0.3 }} // Animates when 30% of the section is visible
     >
+        <img 
+        src={getStartedImage} 
+        alt="Brand Experts Logo" 
+        className="w-48 h-32 md:w-56 md:h-36 lg:w-68 lg:h-44 object-contain" 
+      />
       <section className="text-center md:text-left">
         <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 text-white">
           Get Started With <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#BF1A1C] to-[#a01618]">Brand Experts</span>

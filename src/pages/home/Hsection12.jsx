@@ -56,7 +56,7 @@ const FAQ = () => {
           {faqData.map((item, index) => (
             <div key={index} className="border-b border-gray-200">
               <button
-                className="w-full flex justify-between items-center py-4 text-left"
+                className="w-full flex justify-between items-center py-4 text-left cursor-pointer"
                 onClick={() => toggleQuestion(index)}
               >
                 <span className="text-lg font-medium">{item.question}</span>

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
 import { motion } from "framer-motion";
-
+// import GradientButton from "../../components/GradientButton";
 const testimonials = [
   {
     name: "Sarah Johnson",
