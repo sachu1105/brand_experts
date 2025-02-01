@@ -42,10 +42,10 @@ const Navbar = () => {
   return (
     <div className="w-full">
       {/* Top Banner */}
-      <div className="relative w-full bg-gradient-to-r from-red-600 to-red-500 text-white">
+      <div className="relative w-full bg-gradient-to-r from-red-600 to-pink-600 text-white">
         <div className="flex justify-center items-center py-2 px-4">
           <button
-            className="absolute left-4 hover:bg-white/10 p-1 rounded-full transition-colors"
+            className="absolute left-4 hover:bg-white/10 p-1 rounded-full transition-colors cursor-pointer"
             onClick={() => setCurrentBanner((prev) => (prev > 0 ? prev - 1 : bannerMessages.length - 1))}
             aria-label="Previous announcement"
           >
@@ -58,7 +58,7 @@ const Navbar = () => {
           </div>
 
           <button
-            className="absolute right-4 hover:bg-white/10 p-1 rounded-full transition-colors"
+            className="absolute right-4 hover:bg-white/10 p-1 rounded-full transition-colors cursor-pointer"
             onClick={() => setCurrentBanner((prev) => (prev + 1) % bannerMessages.length)}
             aria-label="Next announcement"
           >
@@ -133,7 +133,7 @@ const Navbar = () => {
 
             {/* Right Section - Desktop */}
             <div className="hidden md:flex items-center space-x-6">
-              <button className="px-4 py-2 border border-red-500 text-red-600 rounded-full hover:bg-red-600 hover:text-white transition-all duration-300 ease-in-out hover:shadow-md font-medium">
+              <button className="px-4 py-2 border border-red-500 text-red-600 rounded-full hover:bg-red-600 hover:text-white transition-all duration-300 ease-in-out hover:shadow-md font-medium cursor-pointer">
                 Design Tool
               </button>
 
@@ -147,7 +147,7 @@ const Navbar = () => {
               <div className="relative" ref={userDropdownRef}>
                 <button
                   onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
-                  className="flex items-center space-x-1 group"
+                  className="flex items-center space-x-1 group cursor-pointer"
                 >
                   <User className="h-6 w-6 text-gray-700 group-hover:text-gray-900" />
                   <span className="text-sm group-hover:text-gray-900">My Account</span>
