@@ -25,9 +25,9 @@ const Navbar = () => {
           {/* Logo Section */}
           <Link to="/" className="flex items-center space-x-3 rtl:space-x-reverse">
               <img src={logo} alt="Brand Experts Logo" className="h-8" loading="lazy" />
-              <span className="text-xl font-semibold text-gray-900 dark:text-white">
+              {/* <span className="text-xl font-semibold text-gray-900 dark:text-white">
                 Brand Experts
-              </span>
+              </span> */}
           </Link>
 
           {/* Mobile Menu Button */}

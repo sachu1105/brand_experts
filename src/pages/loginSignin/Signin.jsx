@@ -158,7 +158,7 @@ export default function SignInForm() {
           </div>
 
           <p className="mt-8 text-center text-sm text-gray-600">
-            Don't have an account?{" "}
+            Don t have an account?{" "}
             <a href="#" className="font-medium text-red-600 hover:text-red-500">
               Sign up
             </a>

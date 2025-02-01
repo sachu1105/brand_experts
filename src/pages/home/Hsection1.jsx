@@ -1,5 +1,10 @@
 import bannerPostPng from "../../assets/images/banner-post.png";
 import bannerPostWebp from "../../assets/images/banner-post(1).webp";
+import grassPng from "../../assets/images/grass.png";
+import grassWebp from "../../assets/images/grass.webp";
+import arrowPng from "../../assets/images/arrow.png"
+import React from "react";
+
 import {
   CircleArrowRight,
   Images,
@@ -29,35 +34,44 @@ const HeroSection = () => {
               Brand!
             </span>
           </h1>
-          
           <p className="text-lg text-gray-600 text-center lg:text-left">
             Your Vision, Crafted to Perfection
           </p>
-          
           <div className="w-full flex justify-center lg:justify-start">
             <GradientButton text="Get Started" Icon={MoveRight} />
           </div>
-          
           <p className="text-md text-gray-500 text-center lg:text-left max-w-md">
-            Emphasizes customization and quality in delivering user-designed products.
+            Emphasizes customization and quality in delivering user-designed
+            products.
           </p>
-          
-          {/* Icons Row */}
-          <div className="flex flex-wrap justify-center lg:justify-start gap-4 sm:gap-6 w-full">
+          {/* Icons Row with Arrows */}
+          <div className="flex flex-wrap justify-center lg:justify-start gap-4 sm:gap-6 w-full items-center">
             {[
               { icon: Newspaper, text: "Pick templates" },
               { icon: Images, text: "Customize your signs" },
               { icon: ShoppingCart, text: "Order your product" },
-            ].map((item, index) => (
-              <div key={index} className="flex flex-col items-center">
-                <div className="w-14 h-14 sm:w-16 sm:h-16 border-2 border-[#BF1A1C] rounded-full flex items-center justify-center">
-                  <item.icon size={28} className="text-[#BF1A1C]" />
+            ].map((item, index, array) => (
+              <React.Fragment key={index}>
+                <div className="flex flex-col items-center">
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 border-2 border-[#BF1A1C] rounded-full flex items-center justify-center">
+                    <item.icon size={28} className="text-[#BF1A1C]" />
+                  </div>
+                  <p className="text-xs sm:text-sm mt-2 text-center">
+                    {item.text}
+                  </p>
                 </div>
-                <p className="text-xs sm:text-sm mt-2 text-center">{item.text}</p>
-              </div>
+
+                {/* Add arrow image between icons, but not after the last icon */}
+                {index < array.length - 1 && (
+                  <img
+                    src={arrowPng} // Replace with your actual arrow image path
+                    alt="Arrow"
+                    className="w-8 sm:w-12"
+                  />
+                )}
+              </React.Fragment>
             ))}
-          </div>
-          
+          </div>{" "}
           <button className="font-bold py-2 rounded-lg text-lg flex items-center justify-center cursor-pointer w-full sm:w-auto">
             Start New Design
             <motion.div
@@ -77,14 +91,20 @@ const HeroSection = () => {
 
         {/* Right Billboard with Sliding Images */}
         <div className="lg:w-1/2 relative hidden lg:block">
-          <picture>
+          <picture >
             <source srcSet={bannerPostWebp} type="image/webp" />
             <source srcSet={bannerPostPng} type="image/png" />
             <img
-              src={bannerPostPng} 
-              className="" 
+              src={bannerPostPng}
+              className=""
               alt="hero section banner Logo"
             />
+          </picture>
+
+          <picture className="absolute bottom-0 right-0">
+            <source srcSet={grassWebp} type="image/webp" />
+            <source srcSet={grassPng} type="image/png" />
+            <img src={grassPng} className="" alt="hero section banner Logo" />
           </picture>
 
           {/* Sliding Content */}
