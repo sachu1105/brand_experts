@@ -15,7 +15,7 @@ function Hsection8() {
         <img 
         src={getStartedImage} 
         alt="Brand Experts Logo" 
-        className="w-48 h-32 md:w-56 md:h-36 lg:w-68 lg:h-44 object-contain" 
+        className="w-48 h-32 md:w-56 md:h-36 lg:w-68 lg:h-44 object-contain hidden md:block" 
       />
       <section className="text-center md:text-left">
         <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 md:mb-6 text-white">

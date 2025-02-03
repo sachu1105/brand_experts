@@ -1,266 +1,350 @@
 import { useState, useEffect, useRef } from "react"
 import { Link } from "react-router-dom"
-import { Search, ShoppingCart, User, ChevronDown, Tag, Menu, X } from "lucide-react";
-import logo from "../assets/images/br_logo.png";
-
+import { Search, ShoppingCart, User, ChevronDown, Menu, X, Tag, ChevronRight } from "lucide-react"
+import logo from "../assets/images/br_logo.png"
+import { motion, AnimatePresence } from "framer-motion"
 
 const Navbar = () => {
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false)
   const [currentBanner, setCurrentBanner] = useState(0)
+  const [isProductsDropdownOpen, setIsProductsDropdownOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [isSearchVisible, setIsSearchVisible] = useState(false)
+  const [isProductsDropdownHovered, setIsProductsDropdownHovered] = useState(false)
   const userDropdownRef = useRef(null)
+  const productsDropdownRef = useRef(null)
 
-  const bannerMessages = ["FREE SHIPPING ON ORDERS OVER $85", "SPECIAL OFFER: 20% OFF ALL TEMPLATES"]
+  const bannerMessages = [
+    "Buy more, save more! Flat 5% off on all products 10,000+",
+    "FREE SHIPPING ON ORDERS OVER $85",
+    "SPECIAL OFFER: 20% OFF ALL TEMPLATES",
+  ]
+  // Auto rotate banner messages
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentBanner((prev) => (prev + 1) % bannerMessages.length)
+    }, 5000) // Change message every 5 seconds
 
-  const bannerSubtext =
-    'Eligible for ground shipping within the contiguous US. Excludes products over 36" and freight shipping.'
+    return () => clearInterval(timer)
+  }, [])
 
-  const menuItems = [
-    { title: "All Products", path: "/all-products", hasDropdown: true },
-    { title: "Rigid Signs", path: "/rigid-signs" },
+  const menuCategories = [
+    {
+      title: "Rigid signs",
+      items: [
+        "Rigid signs offer unmatched durability and a professional finish, making them a cost-effective solution for branding, advertising, and decoration.",
+      ],
+    },
     { title: "Banners & Displays", path: "/banners-displays" },
-    { title: "Decals & Magnets", path: "/decals-magnets" },
-    { title: "Trade Shows & Events", path: "/trade-shows" },
-    { title: "Office Signs", path: "/office-signs" },
-    { title: "Outdoor Signs", path: "/outdoor-signs" },
-    { title: "Photo & Decor", path: "/photo-decor" },
-    { title: "Wedding & Parties", path: "/wedding-parties" },
+    { title: "Decals & magnets", path: "/decals-magnets" },
+    { title: "Trade shows & events", path: "/trade-shows" },
+    { title: "Office signs", path: "/office-signs" },
+    { title: "Outdoor signs", path: "/outdoor-signs" },
+    { title: "Photo & decor", path: "/photo-decor" },
+    { title: "Wedding & parties", path: "/wedding-parties" },
   ]
 
-  // Close dropdowns when clicking outside
+
+  const menuItems = [
+    { title: "Home", path: "/" },
+    { title: "All products", hasDropdown: true },
+  ]
+
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (userDropdownRef.current && !userDropdownRef.current.contains(event.target)) {
         setIsUserDropdownOpen(false)
+      }
+      if (productsDropdownRef.current && !productsDropdownRef.current.contains(event.target)) {
+        setIsProductsDropdownOpen(false)
       }
     }
     document.addEventListener("mousedown", handleClickOutside)
     return () => document.removeEventListener("mousedown", handleClickOutside)
   }, [])
 
-  return (
-    <div className="w-full">
-      {/* Top Banner */}
-      <div className="relative w-full bg-gradient-to-r from-red-600 to-pink-600 text-white">
-        <div className="flex justify-center items-center py-2 px-4">
-          <button
-            className="absolute left-4 hover:bg-white/10 p-1 rounded-full transition-colors cursor-pointer"
-            onClick={() => setCurrentBanner((prev) => (prev > 0 ? prev - 1 : bannerMessages.length - 1))}
-            aria-label="Previous announcement"
+  const ProductsDropdown = () => (
+    <div
+      className="absolute left-0 w-64 bg-white shadow-lg z-50 border border-gray-200 rounded-lg mt-1"
+      ref={productsDropdownRef}
+    >
+      <div className="py-2">
+        {menuCategories.map((category) => (
+          <Link
+            key={category.title}
+            to={category.path || "#"}
+            className="flex items-center justify-between px-4 py-2 text-gray-700 hover:text-red-600 hover:bg-gray-50"
           >
-            <ChevronDown className="h-5 w-5 transform rotate-90" />
-          </button>
+            {category.title}
+            <ChevronRight className="h-4 w-4" />
+          </Link>
+        ))}
+      </div>
+    </div>
+  )
 
-          <div className="text-center">
-            <div className="font-bold text-sm">{bannerMessages[currentBanner]}</div>
-            <div className="text-xs mt-0.5 px-8 md:px-0">{bannerSubtext}</div>
+  const MobileMenu = () => (
+    <motion.div
+      initial={{ opacity: 0, height: 0 }}
+      animate={{ opacity: 1, height: "auto" }}
+      exit={{ opacity: 0, height: 0 }}
+      transition={{ duration: 0.3 }}
+      className="md:hidden fixed inset-x-0 top-[144px] bg-white border-b border-gray-200 shadow-lg overflow-y-auto max-h-[calc(100vh-144px)]"
+    >
+      <div className="p-4">
+        {/* Search Bar */}
+        <div className="mb-4">
+          <input
+            type="text"
+            placeholder="Search products..."
+            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
+          />
+        </div>
+
+        {/* Important Links Section */}
+        <div className="mb-4 p-3 bg-gray-50 rounded-lg">
+          <div className="flex items-center mb-2 text-red-600">
+            <Tag size={16} className="mr-2" />
+            <Link to="/special-deals" className="font-medium" onClick={() => setIsMobileMenuOpen(false)}>
+              Special deals
+            </Link>
           </div>
+          <div className="grid grid-cols-2 gap-3">
+            <Link
+              to="/products"
+              className="text-gray-700 hover:text-red-600 py-2"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Products
+            </Link>
+            <Link
+              to="/templates"
+              className="text-gray-700 hover:text-red-600 py-2"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Templates
+            </Link>
+            <Link
+              to="/corporate-offers"
+              className="text-gray-700 hover:text-red-600 py-2"
+              onClick={() => setIsMobileMenuOpen(false)}
+            >
+              Corporate Offers
+            </Link>
+          </div>
+        </div>
 
-          <button
-            className="absolute right-4 hover:bg-white/10 p-1 rounded-full transition-colors cursor-pointer"
-            onClick={() => setCurrentBanner((prev) => (prev + 1) % bannerMessages.length)}
-            aria-label="Next announcement"
+        {/* Main Menu Items */}
+        <div className="space-y-4">
+          {menuItems.map((item) => (
+            <div key={item.path}>
+              <Link
+                to={item.path}
+                className="block py-2 text-gray-700 hover:text-red-600"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {item.title}
+              </Link>
+            </div>
+          ))}
+        </div>
+
+        {/* Auth Section */}
+        <div className="mt-6 pt-4 border-t border-gray-200 space-y-2">
+          <Link
+            to="/signin"
+            className="block py-2 text-gray-700 hover:text-red-600"
+            onClick={() => setIsMobileMenuOpen(false)}
           >
-            <ChevronDown className="h-5 w-5 transform -rotate-90" />
-          </button>
+            Sign In
+          </Link>
+          <Link
+            to="/signup"
+            className="block py-2 text-gray-700 hover:text-red-600"
+            onClick={() => setIsMobileMenuOpen(false)}
+          >
+            Sign Up
+          </Link>
         </div>
       </div>
+    </motion.div>
+  )
 
-      {/* Special Offers Navigation */}
-      <div className="hidden md:flex justify-end space-x-6 px-6 py-2 text-sm bg-gray-50">
-        <div className="flex items-center">
-          <Tag className="mr-2 h-5 w-5 text-red-500" />
+  const TopBanner = () => (
+    <div className="relative w-full bg-gradient-to-r from-red-600 to-pink-600 text-white overflow-hidden">
+      <div className="flex justify-center items-center py-2 px-4">
+        <button
+          className="hidden sm:block absolute left-4 hover:bg-white/10 p-1 rounded-full transition-colors"
+          onClick={() => setCurrentBanner((prev) => (prev > 0 ? prev - 1 : bannerMessages.length - 1))}
+        >
+          <ChevronDown className="h-5 w-5 transform rotate-90" />
+        </button>
+        
+        <div className="text-sm font-medium truncate">{bannerMessages[currentBanner]}</div>
+      
+        <button
+          className="hidden sm:block absolute right-4 hover:bg-white/10 p-1 rounded-full transition-colors"
+          onClick={() => setCurrentBanner((prev) => (prev + 1) % bannerMessages.length)}
+        >
+          <ChevronDown className="h-5 w-5 transform -rotate-90" />
+        </button>
+      </div>
+    </div>
+  )
+
+  const DesktopControls = () => (
+    <div className="hidden md:flex items-center space-x-6">
+      <button className="px-4 py-2 border border-red-300 text-red-600 rounded-lg hover:bg-red-100 hover:border-red-500 transition-all duration-200 cursor-pointer hover:shadow-md">
+        Design tool
+      </button>
+
+      <Link to="/cart" className="relative hover:text-red-600 transition-colors duration-200">
+        <ShoppingCart className="h-6 w-6 text-gray-700 hover:text-red-600" />
+        <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+          0
+        </span>
+      </Link>
+
+      <div className="relative" ref={userDropdownRef}>
+        <button
+          onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
+          className="flex items-center space-x-2 hover:text-red-600 transition-colors duration-200"
+        >
+          <User className="h-6 w-6 text-gray-700" />
+          <ChevronDown className="h-4 w-4 text-gray-700" />
+        </button>
+
+        <AnimatePresence>
+          {isUserDropdownOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 border border-gray-100"
+            >
+              <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-600">
+                My Profile
+              </Link>
+              <Link to="/orders" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-600">
+                My Orders
+              </Link>
+              <div className="border-t border-gray-100 my-1"></div>
+              <Link to="/signin" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-600">
+                Sign In
+              </Link>
+              <Link to="/signup" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-600">
+                Sign Up
+              </Link>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  )
+
+  const MobileControls = () => (
+    <div className="md:hidden flex items-center space-x-4">
+      <Link to="/cart" className="relative">
+        <ShoppingCart className="h-6 w-6 text-gray-700" />
+        <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+          0
+        </span>
+      </Link>
+
+      <button className="text-sm px-3 py-1 border border-red-300 text-red-600 rounded-lg">Design</button>
+
+      <button onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} className="text-gray-700 hover:text-red-600">
+        {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+      </button>
+    </div>
+  )
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="w-full"
+    >
+      <nav className="sticky top-0 z-50 w-full bg-white shadow-md">
+        <TopBanner />
+
+        {/* Top Navigation */}
+        <div className="hidden sm:flex justify-end space-x-6 px-6 py-2 text-sm bg-gray-100">
+          <Tag size={16} className="mr-1 text-red-600" />
           <Link to="/special-deals" className="text-red-600 hover:text-red-700">
             Special deals
           </Link>
+          <Link to="/products" className="text-gray-700 hover:text-gray-900">
+            Products
+          </Link>
+          <Link to="/templates" className="text-gray-700 hover:text-gray-900">
+            Templates
+          </Link>
+          <Link to="/corporate-offers" className="text-gray-700 hover:text-gray-900">
+            Corporate Offers
+          </Link>
         </div>
-        <Link to="/products" className="text-gray-700 hover:text-gray-900">
-          Products
-        </Link>
-        <Link to="/templates" className="text-gray-600 hover:text-gray-900">
-          Templates
-        </Link>
-        <Link to="/corporate-offers" className="text-gray-700 hover:text-gray-900">
-          Corporate Offers
-        </Link>
-      </div>
 
-      {/* Main Navbar */}
-      <nav className="bg-white border-b border-gray-300 shadow-sm">
-        <div className="max-w-screen-2xl mx-auto">
-          {/* Upper Navbar */}
-          <div className="flex items-center justify-between px-4 py-2 md:px-8 md:py-2">
-            {/* Mobile Menu Button */}
-            <button
-              className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-500"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              aria-label="Toggle menu"
-            >
-              {isMobileMenuOpen ? <X className="h-6 w-6 text-gray-700" /> : <Menu className="h-6 w-6 text-gray-700" />}
-            </button>
-
-            {/* Logo */}
-            <Link to="/" className="flex-shrink-0">
-              <img
-                src={logo}
-                alt="Brand Experts Logo"
-                className="w-32 h-16 md:w-40 md:h-20 object-contain"
-                loading="lazy"
-              />
-            </Link>
-
-            {/* Desktop Search Bar */}
-            <div className="hidden md:flex flex-grow max-w-2xl mx-12">
-              <div className="relative w-full">
-                <input
-                  type="text"
-                  placeholder="Search for products or templates"
-                  className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300 ease-in-out hover:shadow-md"
-                />
-                <Search className="h-5 w-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
-              </div>
-            </div>
-
-            {/* Mobile Search Toggle */}
-            <button
-              className="md:hidden p-2 hover:bg-gray-100 rounded-lg transition-colors"
-              onClick={() => setIsSearchVisible(!isSearchVisible)}
-              aria-label="Toggle search"
-            >
-              <Search className="h-6 w-6 text-gray-700" />
-            </button>
-
-            {/* Right Section - Desktop */}
-            <div className="hidden md:flex items-center space-x-6">
-              <button className="px-4 py-2 border border-red-500 text-red-600 rounded-full hover:bg-red-600 hover:text-white transition-all duration-300 ease-in-out hover:shadow-md font-medium cursor-pointer">
-                Design Tool
-              </button>
-
-              <Link to="/cart" className="relative group">
-                <ShoppingCart className="h-6 w-6 text-gray-700 group-hover:text-gray-900" />
-                <span className="absolute -top-2 -right-2 bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  0
-                </span>
+        {/* Main Navigation */}
+        <div className="border-b border-gray-200">
+          <div className="max-w-screen-2xl mx-auto px-4 py-2">
+            <div className="flex items-center justify-between">
+              {/* Logo */}
+              <Link to="/" className="flex-shrink-0">
+                <img src={logo || "/placeholder.svg"} alt="Brand Logo" className="h-6 sm:h-8" />
               </Link>
 
-              <div className="relative" ref={userDropdownRef}>
-                <button
-                  onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
-                  className="flex items-center space-x-1 group cursor-pointer"
-                >
-                  <User className="h-6 w-6 text-gray-700 group-hover:text-gray-900" />
-                  <span className="text-sm group-hover:text-gray-900">My Account</span>
-                  <ChevronDown className="h-4 w-4" />
-                </button>
-
-                {isUserDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-10">
-                    <Link
-                      to="/signup"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-                    >
-                      Sign Up
-                    </Link>
-                    <Link
-                      to="/signin"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors"
-                    >
-                      Sign in
-                    </Link>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Mobile Search Bar */}
-          {isSearchVisible && (
-            <div className="p-4 border-t md:hidden">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder="Search for products or templates"
-                  className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500"
-                />
-                <Search className="h-5 w-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
-              </div>
-            </div>
-          )}
-
-          {/* Mobile Menu */}
-          {isMobileMenuOpen && (
-            <div className="md:hidden border-t">
-              {/* Mobile Special Offers */}
-              <div className="bg-gray-50 p-4 space-y-2">
-                <Link to="/special-deals" className="flex items-center text-red-600 py-2 hover:text-red-700">
-                  <Tag className="mr-2 h-5 w-5" />
-                  Special deals
-                </Link>
-                <Link to="/products" className="block py-2 text-gray-700 hover:text-gray-900">
-                  Products
-                </Link>
-                <Link to="/templates" className="block py-2 text-blue-600 hover:text-blue-700">
-                  Templates
-                </Link>
-                <Link to="/corporate-offers" className="block py-2 text-gray-700 hover:text-gray-900">
-                  Corporate Offers
-                </Link>
-              </div>
-
-              {/* Mobile Navigation Links */}
-              <div className="p-4 space-y-2">
+              {/* Menu Items - Desktop */}
+              <div className="hidden md:flex items-center space-x-8">
                 {menuItems.map((item) => (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    className="flex items-center justify-between py-2 text-gray-700 hover:text-red-600 transition-colors"
-                  >
-                    {item.title}
-                    {item.hasDropdown && <ChevronDown className="h-4 w-4" />}
-                  </Link>
+                  <div key={item.path} className="relative">
+                    <button
+                      onClick={() => {
+                        if (item.hasDropdown) {
+                          setIsProductsDropdownOpen(!isProductsDropdownOpen)
+                        }
+                      }}
+                      className={`text-gray-700 hover:text-red-600 flex items-center transition-colors duration-200`}
+                    >
+                      {item.title}
+                      {item.hasDropdown && (
+                        <ChevronDown
+                          className={`ml-1 h-4 w-4 transition-transform duration-200 ${
+                            isProductsDropdownOpen ? "rotate-180" : ""
+                          }`}
+                        />
+                      )}
+                    </button>
+                    {item.hasDropdown && isProductsDropdownOpen && <ProductsDropdown />}
+                  </div>
                 ))}
               </div>
 
-              {/* Mobile Actions */}
-              <div className="border-t p-4 space-y-4">
-                <button className="w-full px-4 py-2 border border-red-500 text-red-600 rounded-full hover:bg-red-600 hover:text-white transition-colors">
-                  Design Tool
-                </button>
-                <Link to="/cart" className="flex items-center justify-between py-2 text-gray-700 hover:text-gray-900">
-                  Cart
-                  <span className="bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                    0
-                  </span>
-                </Link>
-                <div className="space-y-2">
-                  <Link to="/signin" className="block py-2 text-gray-700 hover:text-gray-900">
-                    Sign In
-                  </Link>
-                  <Link to="/signup" className="block py-2 text-gray-700 hover:text-gray-900">
-                    Sign Up
-                  </Link>
+              {/* Search Bar - Desktop */}
+              <div className="hidden lg:flex flex-1 max-w-xl px-8">
+                <div className="relative w-full">
+                  <input
+                    type="text"
+                    placeholder="Search for products or templates"
+                    className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-200"
+                  />
+                  <Search className="h-5 w-5 text-gray-400 absolute left-3 top-1/2 transform -translate-y-1/2" />
                 </div>
               </div>
-            </div>
-          )}
 
-          {/* Desktop Lower Navbar */}
-          <div className="hidden md:flex items-center justify-between px-6 py-3 overflow-x-auto whitespace-nowrap bg-gray-50">
-            {menuItems.map((item) => (
-              <Link
-                key={item.path}
-                to={item.path}
-                className="font-medium text-gray-700 hover:text-red-600 transition-all duration-300 ease-in-out flex items-center space-x-1 px-3 py-1 rounded-md hover:bg-white"
-              >
-                <span>{item.title}</span>
-                {item.hasDropdown && <ChevronDown className="h-4 w-4" />}
-              </Link>
-            ))}
+              {/* Desktop Controls */}
+              <DesktopControls />
+
+              {/* Mobile Controls */}
+              <MobileControls />
+            </div>
           </div>
         </div>
+
+        {/* Mobile Menu */}
+        <AnimatePresence>{isMobileMenuOpen && <MobileMenu />}</AnimatePresence>
       </nav>
-    </div>
+    </motion.div>
   )
 }
 

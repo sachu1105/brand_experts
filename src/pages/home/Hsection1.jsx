@@ -27,7 +27,7 @@ const HeroSection = () => {
       <section className="flex flex-col-reverse lg:flex-row items-center justify-between py-8 lg:py-20 max-w-7xl mx-auto w-full">
         {/* Left Content */}
         <div className="lg:w-1/2 w-full flex flex-col items-center lg:items-start space-y-6">
-          <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-center lg:text-left">
+          <h1 className="text-5xl sm:text-4xl lg:text-6xl font-bold text-center lg:text-left">
             Create, Enhance, and <br className="hidden sm:block" />
             Showcase Your{" "}
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#BF1A1C] to-[#590C0D]">
@@ -66,13 +66,13 @@ const HeroSection = () => {
                   <img
                     src={arrowPng} // Replace with your actual arrow image path
                     alt="Arrow"
-                    className="w-8 sm:w-12"
+                    className="w-8 sm:w-12 hidden sm:block" // Hide arrow on small screens
                   />
                 )}
               </React.Fragment>
             ))}
           </div>{" "}
-          <button className="font-bold py-2 rounded-lg text-lg flex items-center justify-center cursor-pointer w-full sm:w-auto">
+          <button className="font-bold py-2 rounded-lg text-lg flex items-center justify-center cursor-pointer w-full sm:w-auto hover:bg-gray-200 sm:hover:bg-transparent">
             Start New Design
             <motion.div
               className="ml-2"
@@ -143,6 +143,12 @@ const HeroSection = () => {
           }
           100% {
             transform: translateX(-100%);
+          }
+        }
+
+        @media (max-width: 640px) {
+          button:hover {
+            background-color: transparent;
           }
         }
       `}</style>

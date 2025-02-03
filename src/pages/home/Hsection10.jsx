@@ -53,7 +53,7 @@ export default function TestimonialSlider() {
       <h2 className="text-3xl font-bold">what our client say about</h2>
       <h3 className="bg-clip-text text-transparent bg-gradient-to-r from-[#BF1A1C] to-[#a01618] text-4xl font-extrabold mb-6">Brand Experts</h3>
       <div className="relative flex justify-center items-center">
-        <button className="absolute left-0 p-3 bg-red-600 text-white rounded-full" onClick={prevTestimonial}>
+        <button className="absolute left-0 p-3 bg-red-600 text-white rounded-full cursor-pointer" onClick={prevTestimonial}>
           <FaArrowLeft />
         </button>
         <div className="bg-white shadow-lg p-6 rounded-xl max-w-md text-left flex flex-col items-center">
@@ -72,12 +72,12 @@ export default function TestimonialSlider() {
           </div>
           <p className="text-sm text-gray-400 mt-2">{testimonials[currentIndex].date}</p>
         </div>
-        <button className="absolute right-0 p-3 bg-red-600 text-white rounded-full" onClick={nextTestimonial}>
+        <button className="absolute right-0 p-3 bg-red-600 text-white rounded-full cursor-pointer" onClick={nextTestimonial}>
           <FaArrowRight />
         </button>
       </div>
       <p className="mt-6">Join thousands of satisfied customers. Create your custom sign today!</p>
-      <button className="mt-4 bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] text-white px-6 py-3 rounded-lg text-lg font-bold">
+      <button className="mt-4 bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] text-white px-6 py-3 rounded-lg text-lg font-bold hover:from-[#590C0D] hover:to-[#BF1A1C] cursor-pointer">
         Start Designing →
       </button>
     </div>

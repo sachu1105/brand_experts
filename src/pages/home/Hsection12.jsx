@@ -39,19 +39,19 @@ const FAQ = () => {
 
   return (
     <motion.div
-      className="flex items-start justify-between overflow-hidden bg-[#fdf5f5] px-12 py-8"
+      className="flex flex-col md:flex-row items-start justify-between overflow-hidden bg-[#fdf5f5] px-4 py-8 md:px-12"
       initial={{ opacity: 0, y: 50 }}
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
       viewport={{ once: true, amount: 0.3 }} // Animates when 30% of the section is visible
     >
       {/* Left Section: Heading */}
-      <div className="w-1/3">
-        <h2 className="text-4xl font-bold text-left">Frequently Asked Questions</h2>
+      <div className="w-full md:w-1/3 mb-8 md:mb-0">
+        <h2 className="text-2xl md:text-4xl font-bold text-left">Frequently Asked Questions ?</h2>
       </div>
 
       {/* Right Section: FAQ */}
-      <div className="w-2/3">
+      <div className="w-full md:w-2/3">
         <div className="space-y-4">
           {faqData.map((item, index) => (
             <div key={index} className="border-b border-gray-200">

@@ -18,7 +18,7 @@ export default function Csection1() {
         <div className="space-y-2 text-lg">
           <p className="text-gray-600">
             Please{" "}
-            <Link to="/sign-in" className="text-blue-500 hover:underline">
+            <Link to="/signin" className="text-blue-500 hover:underline">
               Sign In
             </Link>{" "}
             to your account to view your cart items.
