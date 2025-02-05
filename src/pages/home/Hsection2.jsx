@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import GradientButton from "../../components/GradientButton";
 import { MoveRight, X } from "lucide-react";
 import { motion } from "framer-motion";
+import sectionTwoImg from "../../assets/images/seccondsection2.png";
 
 const Hsection2 = () => {
   const [isTemplateModalOpen, setTemplateModalOpen] = useState(false);
@@ -9,6 +10,8 @@ const Hsection2 = () => {
   const [quantity, setQuantity] = useState(1);
   const [selectedSizeIndex, setSelectedSizeIndex] = useState(0);
   const [selectedUnit, setSelectedUnit] = useState('inches');
+  const [customWidth, setCustomWidth] = useState('12');
+  const [customHeight, setCustomHeight] = useState('12');
   const [price, setPrice] = useState(0);
 
   const templates = [
@@ -18,7 +21,7 @@ const Hsection2 = () => {
       image: 'https://kotart.in/cdn/shop/products/Kotart-Modern-Abstract-Art-Paintings-for-Living-Room-Bedroom-Wall-Decor-Paintings-for-Home-Decor-2.jpg?v=1697554365&width=1946',
       basePrice: 99.99,
       sizes: [
-        { width: 12, height: 12 },  // All sizes stored in inches
+        { width: 12, height: 12 },
         { width: 18, height: 18 },
         { width: 24, height: 24 }
       ],
@@ -26,67 +29,31 @@ const Hsection2 = () => {
     },
     {
       id: 2,
-      title: 'Acrylic signs',
-      image: 'https://s1-ecp.signs.com/sms/Acrylic-Room-Name-16070.jpg',
-      basePrice: 69.99,
+      title: 'Canvas Prints',
+      image: 'https://m.media-amazon.com/images/I/81LFRsQs-wL.jpg',
+      basePrice: 99.99,
       sizes: [
-        { width: 12, height: 12 },  // All sizes stored in inches
+        { width: 12, height: 12 },
         { width: 18, height: 18 },
         { width: 24, height: 24 }
       ],
       baseSizeIndex: 0
     },
-    {
-      id: 3,
-      title: 'Aluminum signs',
-      image: 'https://5.imimg.com/data5/SELLER/Default/2022/9/AR/TW/MD/69601734/aluminium-signs.PNG',
-      basePrice: 83.99,
-      sizes: [
-        { width: 12, height: 12 },  // All sizes stored in inches
-        { width: 18, height: 18 },
-        { width: 24, height: 24 }
-      ],
-      baseSizeIndex: 0
-    },
-    
-    // ... other templates with sizes in inches
+    // ... other templates remain the same
   ];
 
-  // Unit conversion functions
-  const getSizeLabel = (widthInches, heightInches, unit) => {
-    switch(unit) {
-      case 'cm':
-        return `${Math.round(widthInches * 2.54)}cm × ${Math.round(heightInches * 2.54)}cm`;
-      case 'feet':
-        return `${(widthInches/12).toFixed(1)}ft × ${(heightInches/12).toFixed(1)}ft`;
-      default: // inches
-        return `${widthInches}" × ${heightInches}"`;
-    }
-  };
-
-  const convertToInches = (value, unit) => {
-    switch(unit) {
-      case 'cm': return value / 2.54;
-      case 'feet': return value * 12;
-      default: return value;
-    }
-  };
-
-  // Price calculation
+  // Price calculation remains the same
   useEffect(() => {
     if (selectedTemplate) {
       const baseSize = selectedTemplate.sizes[selectedTemplate.baseSizeIndex];
       const selectedSize = selectedTemplate.sizes[selectedSizeIndex];
-      
       const baseArea = baseSize.width * baseSize.height;
       const selectedArea = selectedSize.width * selectedSize.height;
       const sizeMultiplier = selectedArea / baseArea;
-      
       setPrice(selectedTemplate.basePrice * quantity * sizeMultiplier);
     }
   }, [selectedTemplate, quantity, selectedSizeIndex]);
 
-  // Set initial template
   useEffect(() => {
     if (!selectedTemplate) {
       setSelectedTemplate(templates[0]);
@@ -101,13 +68,10 @@ const Hsection2 = () => {
 
   const Modal = ({ children, isOpen, onClose }) => {
     if (!isOpen) return null;
-
+    
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center">
-        <div 
-          className="absolute inset-0 bg-black bg-opacity-50"
-          onClick={onClose}
-        />
+        <div className="absolute inset-0 bg-black bg-opacity-50" onClick={onClose} />
         <div className="relative bg-white rounded-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto m-4">
           {children}
         </div>
@@ -126,85 +90,116 @@ const Hsection2 = () => {
     >
       <section className="min-h-[50vh] flex flex-col lg:flex-row items-center justify-between px-8 py-8 lg:py-12 max-w-7xl mx-auto gap-8 overflow-hidden">
         {/* Product Card */}
-        <div className="max-w-xl bg-white rounded-lg shadow-lg border-2 border-gray-200">
-          <div className="flex flex-col sm:flex-row">
-            {/* Image Section */}
-            <div className="sm:w-1/3 p-4">
-              <div className="aspect-square relative overflow-hidden rounded-lg">
+        <div className="w-full lg:w-1/2 bg-white rounded-lg p-6 shadow-2xl border-1 border-gray-300">
+          <div className="flex justify-between items-center mb-6">
+            <h2 className="text-2xl font-bold">{selectedTemplate.title}</h2>
+            <button
+              onClick={() => setTemplateModalOpen(true)}
+              className="text-red-500 hover:text-red-600 font-medium"
+            >
+              Change &gt;
+            </button>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Left side - Image */}
+            <div>
+              <div className="aspect-square relative rounded-lg overflow-hidden">
                 <img
                   src={selectedTemplate.image}
                   alt={selectedTemplate.title}
-                  className="object-cover w-full h-full hover:scale-105 transition-transform duration-300"
+                  className="w-full h-full object-cover"
                 />
-                <button
-                  onClick={() => setTemplateModalOpen(true)}
-                  className="absolute top-2 right-2 bg-white text-red-500 px-3 py-1 rounded-md text-sm font-medium hover:bg-red-50"
-                >
-                  Change
-                </button>
+              </div>
+              {/* Price moved here */}
+              <div className="mt-4">
+                <label className="text-gray-600">Price total:</label>
+                <div className="text-2xl font-bold">${price.toFixed(2)}</div>
               </div>
             </div>
 
-            {/* Controls Section */}
-            <div className="sm:w-2/3 p-4">
-              <div className="flex justify-between items-start mb-2">
-                <h2 className="text-xl font-semibold">{selectedTemplate.title}</h2>
-                <span className="text-lg font-bold text-red-600">${price.toFixed(2)}</span>
+            {/* Right side - Form */}
+            <div className="space-y-4">
+              {/* Standard Size */}
+              <div>
+                <div className="flex justify-between items-center mb-2">
+                  <label className="font-semibold">Standard Size:</label>
+                  <div className="flex gap-4">
+                    <label className="flex items-center">
+                      <input
+                        type="radio"
+                        checked={selectedUnit === 'inches'}
+                        onChange={() => setSelectedUnit('inches')}
+                        className="mr-2"
+                      />
+                      Inch
+                    </label>
+                    <label className="flex items-center">
+                      <input
+                        type="radio"
+                        checked={selectedUnit === 'feet'}
+                        onChange={() => setSelectedUnit('feet')}
+                        className="mr-2"
+                      />
+                      Feet
+                    </label>
+                  </div>
+                </div>
+                <select
+                  className="w-full p-3 border border-red-400 rounded-md focus:outline-none focus:ring-1 focus:ring-red-500"
+                  value={selectedSizeIndex}
+                  onChange={(e) => setSelectedSizeIndex(parseInt(e.target.value))}
+                >
+                  {selectedTemplate.sizes.map((size, index) => (
+                    <option key={index} value={index}>
+                      {size.width}×{size.height} {selectedUnit}
+                    </option>
+                  ))}
+                </select>
               </div>
 
-              <p className="text-sm text-gray-600 mb-4">
-                Custom {selectedTemplate.title.toLowerCase()} for indoor/outdoor use
-              </p>
-
-              <div className="space-y-4">
-                {/* Unit Selection */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Measurement Unit
-                  </label>
-                  <select
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    value={selectedUnit}
-                    onChange={(e) => setSelectedUnit(e.target.value)}
-                  >
-                    <option value="inches">Inches</option>
-                    <option value="cm">Centimeters</option>
-                    <option value="feet">Feet</option>
-                  </select>
-                </div>
-
-                {/* Size Selection */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Select Size
-                  </label>
-                  <select
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                    value={selectedSizeIndex}
-                    onChange={(e) => setSelectedSizeIndex(parseInt(e.target.value))}
-                  >
-                    {selectedTemplate.sizes.map((size, index) => (
-                      <option key={index} value={index}>
-                        {getSizeLabel(size.width, size.height, selectedUnit)}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Quantity Input */}
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Quantity
-                  </label>
-                  <input
-                    type="number"
-                    min="1"
-                    value={quantity}
-                    onChange={(e) => setQuantity(Math.max(1, parseInt(e.target.value) || 1))}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500"
-                  />
+              {/* Custom Size */}
+              <div>
+                <label className="font-semibold block mb-2">Custom size</label>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm text-gray-600">Width</label>
+                    <input
+                      type="number"
+                      value={customWidth}
+                      onChange={(e) => setCustomWidth(e.target.value)}
+                      className="w-full p-3 border border-red-400 rounded-md focus:outline-none focus:ring-1 focus:ring-red-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm text-gray-600">Height</label>
+                    <input
+                      type="number"
+                      value={customHeight}
+                      onChange={(e) => setCustomHeight(e.target.value)}
+                      className="w-full p-3 border border-red-400 rounded-md focus:outline-none focus:ring-1 focus:ring-red-500"
+                    />
+                  </div>
                 </div>
               </div>
+
+              {/* Quantity */}
+              <div>
+                <label className="font-medium block mb-2">Quantity</label>
+                <select
+                  value={quantity}
+                  onChange={(e) => setQuantity(parseInt(e.target.value))}
+                  className="w-1/2 p-3 border border-red-400 rounded-md focus:outline-none focus:ring-1 focus:ring-red-500"
+                >
+                  {[1, 2, 3, 4, 5].map((num) => (
+                    <option key={num} value={num}>
+                      {num}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Price section removed from here */}
             </div>
           </div>
         </div>
@@ -212,14 +207,17 @@ const Hsection2 = () => {
         {/* Right Content */}
         <div className="w-full lg:w-1/2 text-center lg:text-left">
           <h1 className="text-3xl lg:text-5xl font-bold mb-4">
-            Craft Your Vision with Precision
+          Craft Your Style, Ship Your Smile!
           </h1>
-          <p className="text-lg text-gray-600 mb-6">
+          <p className="text-lg text-gray-600 mb-4">
             Create stunning custom signage in your preferred measurements. 
             Perfect for both personal and professional applications.
           </p>
           <div className="w-full flex justify-center lg:justify-start">
             <GradientButton text="Start Designing" Icon={MoveRight} />
+          </div>
+          <div className="flex justify-center lg:justify-end">
+            <img src={sectionTwoImg} className="w-72 h-50" alt="craft vision" />
           </div>
         </div>
 

@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { FaArrowLeft, FaArrowRight } from "react-icons/fa";
-import { motion } from "framer-motion";
-// import GradientButton from "../../components/GradientButton";
+import { ChevronLeft, ChevronRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+
 const testimonials = [
   {
     name: "Sarah Johnson",
@@ -9,7 +9,7 @@ const testimonials = [
     text: "Brand Experts made designing and ordering signs so easy! The quality of the vinyl lettering I ordered exceeded my expectations, and the delivery was super fast.",
     date: "Jan 3, 2025",
     rating: 5,
-    image: "https://randomuser.me/api/portraits/women/44.jpg",
+    image: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
   },
   {
     name: "John D",
@@ -17,7 +17,7 @@ const testimonials = [
     text: "Absolutely loved the acrylic display I ordered for my home office! The design tool was so intuitive, and the final product looked even better than I imagined. Highly recommend Brand Experts!",
     date: "Dec 29, 2024",
     rating: 5,
-    image: "https://randomuser.me/api/portraits/men/45.jpg",
+    image: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
   },
   {
     name: "David",
@@ -25,63 +25,152 @@ const testimonials = [
     text: "The car decals I ordered for my business turned out perfect! Vibrant colors, durable material, and quick delivery. I'll definitely use Brand Experts again.",
     date: "Sep 6, 2024",
     rating: 5,
-    image: "https://randomuser.me/api/portraits/men/46.jpg",
+    image: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
   },
+  {
+    name: "Karen",
+    position: "HR, EduCert Solutions",
+    text: "The car decals I ordered for my business turned out perfect! Vibrant colors, durable material, and quick delivery. I'll definitely use Brand Experts again.",
+    date: "Sep 6, 2024",
+    rating:4 ,
+    image: "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+  }
 ];
 
-export default function TestimonialSlider() {
-  const [currentIndex, setCurrentIndex] = useState(0);
+const TestimonialSlider = () => {
+  const [startIndex, setStartIndex] = useState(0);
 
-  const prevTestimonial = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? testimonials.length - 1 : prevIndex - 1));
+  const slideLeft = () => {
+    setStartIndex((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
   };
 
-  const nextTestimonial = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === testimonials.length - 1 ? 0 : prevIndex + 1));
+  const slideRight = () => {
+    setStartIndex((prev) => (prev === testimonials.length - 1 ? 0 : prev + 1));
+  };
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+        delayChildren: 0.3
+      }
+    }
+  };
+
+  const headerVariants = {
+    hidden: { y: -50, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+      transition: { duration: 0.6, ease: "easeOut" }
+    }
+  };
+
+  const cardVariants = {
+    hidden: { scale: 0.8, opacity: 0 },
+    visible: {
+      scale: 1,
+      opacity: 1,
+      transition: { duration: 0.5 }
+    }
   };
 
   return (
     <motion.div
-      className="flex items-center justify-center overflow-hidden bg-[#fdf5f5]"
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      viewport={{ once: true, amount: 0.3 }} // Animates when 30% of the section is visible
+      initial="hidden"
+      whileInView="visible"
+      viewport={{ once: true, amount: 0.3 }}
+      variants={containerVariants}
+      className="w-full bg-[#fdf5f5] py-16"
     >
-    <section>
-    <div className="bg-[#fdf5f5] p-10 text-center">
-      <h2 className="text-3xl font-bold">what our client say about</h2>
-      <h3 className="bg-clip-text text-transparent bg-gradient-to-r from-[#BF1A1C] to-[#a01618] text-4xl font-extrabold mb-6">Brand Experts</h3>
-      <div className="relative flex justify-center items-center">
-        <button className="absolute left-0 p-3 bg-red-600 text-white rounded-full cursor-pointer" onClick={prevTestimonial}>
-          <FaArrowLeft />
-        </button>
-        <div className="bg-white shadow-lg p-6 rounded-xl max-w-md text-left flex flex-col items-center">
-          <img
-            src={testimonials[currentIndex].image}
-            alt={testimonials[currentIndex].name}
-            className="w-16 h-16 rounded-full border-2 border-red-600 mb-3"
-          />
-          <h4 className="font-bold text-lg">{testimonials[currentIndex].name}</h4>
-          <p className="text-sm text-gray-500">{testimonials[currentIndex].position}</p>
-          <p className="mt-3 text-center">"{testimonials[currentIndex].text}"</p>
-          <div className="flex mt-3 text-yellow-500">
-            {Array.from({ length: testimonials[currentIndex].rating }, (_, i) => (
-              <span key={i}>⭐</span>
-            ))}
+      <div className="max-w-7xl mx-auto px-4">
+        <motion.div 
+          className="text-center mb-8"
+          variants={headerVariants}
+        >
+          <h2 className="text-3xl font-bold">what our client say about</h2>
+          <h3 className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-[#BF1A1C] to-[#a01618]">
+            Brand Experts
+          </h3>
+        </motion.div>
+
+        <div className="relative">
+          <div className="flex justify-end gap-2 mb-6 px-4">
+            <button
+              onClick={slideLeft}
+              className="w-10 h-10 border-2 border-red-600 text-red-600 rounded-md flex items-center justify-center hover:bg-red-700 hover:text-white transition-colors cursor-pointer"
+            >
+              <ChevronLeft size={24} />
+            </button>
+            <button
+              onClick={slideRight}
+              className="w-10 h-10 border-2 border-red-600 text-red-600 rounded-md flex items-center justify-center hover:bg-red-700 hover:text-white transition-colors cursor-pointer"
+            >
+              <ChevronRight size={24} />
+            </button>
           </div>
-          <p className="text-sm text-gray-400 mt-2">{testimonials[currentIndex].date}</p>
+
+          <motion.div className="overflow-hidden">
+            <motion.div 
+              className="flex gap-6"
+              style={{
+                transform: `translateX(-${startIndex * 33.33}%)`,
+              }}
+              transition={{ type: "spring", stiffness: 150, damping: 20 }}
+            >
+              {[...testimonials, ...testimonials].map((testimonial, index) => (
+                <motion.div
+                  key={index}
+                  variants={cardVariants}
+                  className="min-w-[300px] flex-1 bg-white rounded-lg p-6 shadow-md"
+                  whileHover={{ scale: 1.02, transition: { duration: 0.2 } }}
+                >
+                  <div className="flex items-center gap-4 mb-4">
+                    <img
+                      src={testimonial.image}
+                      alt={testimonial.name}
+                      className="w-16 h-16 rounded-full object-cover border-2 border-red-600"
+                    />
+                    <div>
+                      <h4 className="font-bold">{testimonial.name}</h4>
+                      <p className="text-gray-600 text-sm">{testimonial.position}</p>
+                    </div>
+                  </div>
+                  
+                  <p className="text-gray-700 mb-4 text-sm">"{testimonial.text}"</p>
+                  
+                  <div className="flex items-center justify-between">
+                    <div className="flex gap-1">
+                      {[...Array(testimonial.rating)].map((_, i) => (
+                        <span key={i} className="text-yellow-400 text-sm">⭐</span>
+                      ))}
+                    </div>
+                    <p className="text-gray-400 text-sm">{testimonial.date}</p>
+                  </div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.div>
         </div>
-        <button className="absolute right-0 p-3 bg-red-600 text-white rounded-full cursor-pointer" onClick={nextTestimonial}>
-          <FaArrowRight />
-        </button>
+
+        <motion.div 
+          className="text-center mt-12"
+          variants={headerVariants}
+        >
+          <p className="text-lg mb-4">Join thousands of satisfied customers. Create your custom sign today!</p>
+          <motion.button 
+            className="bg-gradient-to-b from-[#BF1A1C] to-[#a01618] text-white px-8 py-3 rounded-lg font-bold"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            Start Designing →
+          </motion.button>
+        </motion.div>
       </div>
-      <p className="mt-6">Join thousands of satisfied customers. Create your custom sign today!</p>
-      <button className="mt-4 bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] text-white px-6 py-3 rounded-lg text-lg font-bold hover:from-[#590C0D] hover:to-[#BF1A1C] cursor-pointer">
-        Start Designing →
-      </button>
-    </div>
-</section>
-</motion.div>
+    </motion.div>
   );
 }
+
+export default TestimonialSlider;

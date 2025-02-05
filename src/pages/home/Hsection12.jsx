@@ -54,14 +54,14 @@ const FAQ = () => {
       <div className="w-full md:w-2/3">
         <div className="space-y-4">
           {faqData.map((item, index) => (
-            <div key={index} className="border-b border-gray-200">
+            <div key={index} className="border-b border-red-400">
               <button
                 className="w-full flex justify-between items-center py-4 text-left cursor-pointer"
                 onClick={() => toggleQuestion(index)}
               >
                 <span className="text-lg font-medium">{item.question}</span>
                 <Plus
-                  className={`transform transition-transform duration-200 ${
+                  className={`transform transition-transform duration-200 text-red-500 ${
                     openIndex === index ? "rotate-45" : ""
                   }`}
                 />

@@ -9,7 +9,6 @@ const Navbar = () => {
   const [currentBanner, setCurrentBanner] = useState(0)
   const [isProductsDropdownOpen, setIsProductsDropdownOpen] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [isProductsDropdownHovered, setIsProductsDropdownHovered] = useState(false)
   const userDropdownRef = useRef(null)
   const productsDropdownRef = useRef(null)
 

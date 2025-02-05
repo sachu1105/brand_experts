@@ -3,74 +3,121 @@ const WhyChooseUs = () => {
   const features = [
     {
       icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-8 h-8 text-red-500">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 8h10M7 12h10M7 16h10" />
+        <svg
+          width="37"
+          height="38"
+          viewBox="0 0 37 38"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M36.0817 12.6336C36.5897 12.6336 36.9998 12.2295 36.9998 11.7288V7.74924C36.9998 7.24859 36.5897 6.84445 36.0817 6.84445H32.0434C31.5353 6.84445 31.1252 7.24859 31.1252 7.74924V8.83495H18.8454L1.33244 0.0978829C1.00345 -0.066482 0.608641 -0.0212429 0.325579 0.213994C0.0440248 0.447725 -0.0676762 0.826202 0.0409654 1.17305L7.40426 24.6245V32.2108H6.30253C5.7945 32.2108 5.3844 32.615 5.3844 33.1156V37.0952C5.3844 37.5959 5.7945 38 6.30253 38H10.3408C10.8489 38 11.259 37.5959 11.259 37.0952V36.0095H31.1254V37.0952C31.1254 37.5959 31.5355 38 32.0436 38H36.0819C36.5899 38 37 37.5959 37 37.0952V33.1156C37 32.615 36.5899 32.2108 36.0819 32.2108H34.9801V12.6332L36.0817 12.6336ZM32.9617 8.65402H35.1636V10.8239H32.9617V8.65402ZM20.0684 11.4739L11.4915 12.4752C11.1273 12.5174 10.8228 12.7707 10.7187 13.1176L8.27654 21.2814L2.43432 2.675L20.0684 11.4739ZM9.42278 36.1904H7.22084V34.0204H9.42278V36.1904ZM35.1636 36.1904H32.9616V34.0204H35.1636V36.1904ZM33.1437 32.2108H32.0435C31.5355 32.2108 31.1254 32.6149 31.1254 33.1155V34.1997H11.259V33.1155C11.259 32.6149 10.8489 32.2108 10.3408 32.2108H9.24062V24.4615L12.3086 14.2016L23.3029 12.9168C23.7053 12.8701 24.0282 12.5685 24.0985 12.1764C24.1689 11.7844 23.97 11.3923 23.6089 11.2113L22.472 10.6443H31.1252V11.7285C31.1252 12.2292 31.5353 12.6333 32.0433 12.6333H33.1435L33.1437 32.2108Z"
+            fill="#E40F2D"
+          />
         </svg>
       ),
       title: "Free Design Tool",
-      description: "Create custom graphics using our advanced design tool or by uploading your own images"
+      description:
+        "Create custom graphics using our advanced design tool or by uploading your own images",
     },
     {
       icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-8 h-8 text-red-500">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h18v18H3z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v8m-4-4h8" />
+        <svg
+          width="37"
+          height="31"
+          viewBox="0 0 37 31"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M25.3973 6.16807L25.3957 6.16973L25.388 6.18137L25.3802 6.19467L25.3786 6.198C24.7228 7.19582 24.3373 8.4131 24.3373 9.72856C24.3373 11.4248 24.9792 12.9597 26.0174 14.0688C26.221 14.2867 26.4402 14.4896 26.6733 14.6709L26.6857 14.6792C27.6353 15.4242 28.8087 15.8649 30.0754 15.8649C31.6607 15.8649 33.0951 15.1781 34.1317 14.0672C35.1699 12.9563 35.8118 11.4214 35.8118 9.72691C35.8118 8.04563 35.1808 6.52233 34.1612 5.41472L34.1317 5.38478C33.0935 4.27389 31.659 3.58706 30.0754 3.58706C28.4901 3.58706 27.0556 4.27389 26.0191 5.38478C25.7922 5.62758 25.5839 5.88867 25.399 6.16974L25.3973 6.16807ZM27.1085 10.4253C26.9437 10.121 27.0401 9.73021 27.3245 9.55558C27.6089 9.3793 27.9741 9.48241 28.1373 9.78673L29.1212 11.6094L32.0135 6.24945C32.1782 5.94512 32.5419 5.84202 32.8263 6.01829C33.1108 6.19457 33.2071 6.5837 33.0424 6.88805L29.6371 13.199C29.5874 13.2938 29.5128 13.3753 29.418 13.4335C29.1336 13.6098 28.7684 13.5067 28.6052 13.2024L27.1054 10.4252L27.1085 10.4253ZM23.8571 6.45079H7.37168V22.2095L27.9695 18.7937C28.5321 18.7006 29.0217 18.4096 29.3823 17.9938L29.4087 17.9656C29.6092 17.7261 29.7677 17.445 29.8734 17.1374C28.815 17.1041 27.8156 16.8181 26.9282 16.3325V16.7932C26.9282 17.1457 26.6609 17.4317 26.3314 17.4317C26.0019 17.4317 25.7346 17.1457 25.7346 16.7932V15.5043C25.5403 15.3364 25.3538 15.1568 25.1767 14.9672C23.924 13.6268 23.1469 11.7709 23.1469 9.72395C23.1469 8.54822 23.4033 7.43567 23.8587 6.44785L23.8571 6.45079ZM31.1306 17.0574C30.9954 17.7242 30.7001 18.3296 30.2836 18.8218L30.2509 18.8617C29.7163 19.4803 28.9858 19.911 28.1481 20.0508L7.43529 23.4848C7.52388 23.8374 7.69795 24.1534 7.93263 24.4045C8.27921 24.7753 8.761 25.0065 9.291 25.0065H28.176C28.5055 25.0065 28.7728 25.2926 28.7728 25.6451C28.7728 25.9977 28.5055 26.2837 28.176 26.2837H26.1012C26.4213 26.7709 26.6094 27.3647 26.6094 28.0033C26.6094 28.8264 26.2954 29.5748 25.7887 30.1203L25.7856 30.1236C25.279 30.6657 24.5796 31 23.8087 31C23.0378 31 22.3369 30.6641 21.8302 30.1219C21.322 29.5798 21.008 28.8315 21.008 28.0033C21.008 27.3647 21.1961 26.771 21.5162 26.2837H14.7679C15.0881 26.771 15.2761 27.3647 15.2761 28.0033C15.2761 28.8298 14.9622 29.5798 14.4555 30.1219L14.4182 30.1585C13.9131 30.6791 13.2277 30.9984 12.4755 30.9984C11.7046 30.9984 11.0037 30.6624 10.497 30.1203C9.9888 29.5782 9.67484 28.8298 9.67484 28.0016C9.67484 27.363 9.8629 26.7694 10.183 26.2821H9.28783C8.43149 26.2821 7.65282 25.9079 7.08868 25.3042C6.5276 24.7022 6.17791 23.8773 6.17326 22.9694V3.33268C6.17326 2.76561 5.95722 2.25171 5.61062 1.88086C5.25938 1.50835 4.77915 1.27718 4.2507 1.27718H0.596807C0.267322 1.27718 0 0.991144 0 0.638591C0 0.286038 0.267322 0 0.596807 0H4.2507C5.10859 0 5.88882 0.375836 6.45141 0.977853C7.01404 1.58319 7.36528 2.418 7.36528 3.33264V5.17025H24.5995C24.7767 4.92745 24.9663 4.69794 25.1683 4.4801C26.421 3.13642 28.1555 2.30489 30.0685 2.30489C31.9833 2.30489 33.7162 3.13472 34.9687 4.47678L35.0013 4.51503C36.2369 5.85539 37 7.6947 37 9.72167C37 11.7705 36.2245 13.6247 34.9702 14.9649C33.9507 16.0559 32.6156 16.8075 31.1236 17.052L31.1306 17.0574ZM20.6431 10.0243C20.6431 9.67179 20.9104 9.38575 21.2399 9.38575C21.5694 9.38575 21.8367 9.67179 21.8367 10.0243V17.2068C21.8367 17.5593 21.5694 17.8454 21.2399 17.8454C20.9104 17.8454 20.6431 17.5593 20.6431 17.2068V10.0243ZM15.5547 10.0243C15.5547 9.67179 15.822 9.38575 16.1515 9.38575C16.481 9.38575 16.7483 9.67179 16.7483 10.0243V17.6176C16.7483 17.9702 16.481 18.2562 16.1515 18.2562C15.822 18.2562 15.5547 17.9702 15.5547 17.6176V10.0243ZM10.4663 10.0243C10.4663 9.67179 10.7336 9.38575 11.0631 9.38575C11.3926 9.38575 11.6599 9.67179 11.6599 10.0243V18.0284C11.6599 18.381 11.3926 18.667 11.0631 18.667C10.7336 18.667 10.4663 18.381 10.4663 18.0284V10.0243ZM12.5008 26.285H12.4604C12.0236 26.2917 11.6289 26.4812 11.3444 26.7872C11.0538 27.0982 10.8751 27.5273 10.8751 28.0046C10.8751 28.4802 11.0554 28.9092 11.346 29.2202C11.6366 29.5312 12.0376 29.7241 12.4821 29.7241C12.9142 29.7241 13.3058 29.5445 13.5918 29.2501L13.6182 29.2202C13.9089 28.9092 14.0892 28.4802 14.0892 28.0046C14.0892 27.5439 13.9198 27.1248 13.6447 26.8155L13.6182 26.7889C13.3323 26.4829 12.9391 26.2916 12.5039 26.285L12.5008 26.285ZM23.8321 26.285H23.7917C23.355 26.2917 22.9603 26.4829 22.6758 26.7872C22.3852 27.0982 22.2065 27.5273 22.2065 28.0046C22.2065 28.4802 22.3867 28.9092 22.6774 29.2202C22.9665 29.5312 23.369 29.7241 23.8135 29.7241C24.258 29.7241 24.6605 29.5329 24.9496 29.2235C25.2403 28.9126 25.4205 28.4818 25.4205 28.0046C25.4205 27.5439 25.2511 27.1248 24.976 26.8155L24.9496 26.7889C24.6637 26.4829 24.2705 26.2916 23.8353 26.285H23.8321Z"
+            fill="#E40F2D"
+          />
         </svg>
       ),
       title: "Customizable Buying Options",
-      description: "Fully customize your sign to your taste and requirements in just a few clicks."
+      description:
+        "Fully customize your sign to your taste and requirements in just a few clicks.",
     },
     {
       icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-8 h-8 text-red-500">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 5h16a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1z" />
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 3v2m6-2v2M9 19v2m6-2v2" />
+        <svg
+          width="33"
+          height="33"
+          viewBox="0 0 33 33"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M31.625 0H9.625C8.86553 0 8.25 0.615527 8.25 1.375V23.375C8.25 24.1345 8.86553 24.75 9.625 24.75H31.625C32.3845 24.75 33 24.1345 33 23.375V1.375C33 0.615527 32.3845 0 31.625 0ZM22 22H11V11H22V22ZM30.25 22H24.75V11H30.25V22ZM30.25 8.25H11V2.75H30.25V8.25Z"
+            fill="#E40F2D"
+          />
+          <path
+            d="M5.5 11V8.25H1.375C0.615527 8.25 0 8.86553 0 9.625V31.625C0 32.3845 0.615527 33 1.375 33H23.375C24.1345 33 24.75 32.3845 24.75 31.625V27.5H22V30.25H2.75V11H5.5Z"
+            fill="#E40F2D"
+          />
         </svg>
       ),
       title: "2000+ Free Templates",
-      description: "Get inspired by our thousands of free templates. Pick one and start customizing it right away!"
+      description:
+        "Get inspired by our thousands of free templates. Pick one and start customizing it right away!",
     },
     {
       icon: (
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" className="w-8 h-8 text-red-500">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-5h-4m4 0v4m0 0l-5-5m-5 14h4m-4 0v-4m0 4l5-5m5 5v-4m0 4h-4m0 0l-5-5" />
+        <svg width="27" height="34" viewBox="0 0 27 34" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path fill-rule="evenodd" clip-rule="evenodd" d="M6.78384 12.1537L13.418 6.7832L20.0521 12.1537L13.418 17.5242L6.78384 12.1537Z" stroke="#E40F2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M6.15202 16.2617L13.7339 22.5799L21.3158 16.2617" stroke="#E40F2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M6.15202 20.6836L13.7339 27.0018L21.3158 20.6836" stroke="#E40F2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M20.0522 6.78359L24.7909 2.04492" stroke="#E40F2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M21.9477 1.09766H25.7386V4.88859" stroke="#E40F2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M6.88135 6.68228L1.98019 2.11187" stroke="#E40F2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M1.13227 4.98633L0.999973 1.1977L4.7886 1.0654" stroke="#E40F2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M20.0522 26.3707L24.7909 31.1094" stroke="#E40F2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M21.9477 32.0566H25.7386V28.2657" stroke="#E40F2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M6.88135 26.472L1.98019 31.0424" stroke="#E40F2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M1.13227 28.168L0.999973 31.9566L4.7886 32.0889" stroke="#E40F2D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
+        
       ),
       title: "Flexible Sizes",
-      description: "Everything at Brand Experts is customizable, including product sizes."
-    }
+      description:
+        "Everything at Brand Experts is customizable, including product sizes.",
+    },
   ];
 
   return (
     <motion.div
-    className=""
-    initial={{ opacity: 0, y: 50 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    transition={{ duration: 0.8 }}
-    viewport={{ once: true, amount: 0.3 }} // Animates when 30% of the section is visible
-  >
-    <div className="py-16 px-4 bg-white">
-      <div className="max-w-6xl mx-auto">
-        <h2 className="text-3xl font-bold text-center mb-12">Why choose us</h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 ">
-          {features.map((feature, index) => (
-            <div key={index} className="border border-gray-200 bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer">
-              <div className="flex flex-col items-center text-center ">
-                <div className="mb-4">
-                  {feature.icon}
+      className=""
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+      viewport={{ once: true, amount: 0.3 }} // Animates when 30% of the section is visible
+    >
+      <div className="py-16 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold text-center mb-12">
+            Why choose us
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 ">
+            {features.map((feature, index) => (
+              <div
+                key={index}
+                className="border border-gray-200 bg-white p-6 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 cursor-pointer"
+              >
+                <div className="flex flex-col items-center text-center ">
+                  <div className="mb-4">{feature.icon}</div>
+                  <h3 className="text-lg font-semibold mb-2">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-600">{feature.description}</p>
                 </div>
-                <h3 className="text-lg font-semibold mb-2">{feature.title}</h3>
-                <p className="text-gray-600">{feature.description}</p>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
-    </div>
-    
-    </motion.div> 
+    </motion.div>
   );
 };
 

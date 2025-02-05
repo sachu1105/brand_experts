@@ -52,23 +52,23 @@ const ModernFeaturesGrid = () => {
           {features.map((feature, index) => (
             <div 
               key={index}
-              className="group bg-white rounded-lg p-6 shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+              className="group bg-white rounded-lg p-6 shadow-sm transition-all duration-300 hover:shadow-lg hover:-translate-y-1 cursor-pointer"
             >
-              <div className="h-12 w-12 rounded-lg bg-red-50 p-2 mb-4 group-hover:bg-red-100 transition-colors duration-300">
+              <div className="flex justify-center mb-4">
                 <feature.icon 
-                  className="h-8 w-8 text-red-600" 
+                  className="h-24 w-24 text-red-600 stroke-1" 
                 />
               </div>
               
-              <h3 className="text-xl font-semibold mb-3 text-gray-900 group-hover:text-red-600 transition-colors duration-300">
+              <h3 className="text-xl font-semibold mb-3 text-gray-900 group-hover:text-red-600 transition-colors duration-300 text-center">
                 {feature.title}
               </h3>
               
-              <p className="text-gray-600 leading-relaxed mb-4">
+              <p className="text-gray-600 leading-relaxed mb-4 text-center">
                 {feature.description}
               </p>
               
-              <div className="flex items-center text-sm font-medium text-red-600 hover:text-red-500 transition-colors duration-300 cursor-pointer">
+              <div className="flex justify-center items-center text-sm font-medium text-red-600 hover:text-red-500 transition-colors duration-300 cursor-pointer">
                 Learn More
                 <svg
                   className="ml-2 h-4 w-4 transform transition-transform duration-300 group-hover:translate-x-1"

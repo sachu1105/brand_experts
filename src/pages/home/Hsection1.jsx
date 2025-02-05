@@ -2,9 +2,8 @@ import bannerPostPng from "../../assets/images/banner-post.png";
 import bannerPostWebp from "../../assets/images/banner-post(1).webp";
 import grassPng from "../../assets/images/grass.png";
 import grassWebp from "../../assets/images/grass.webp";
-import arrowPng from "../../assets/images/arrow.png"
+import arrowPng from "../../assets/images/arrow.png";
 import React from "react";
-
 import {
   CircleArrowRight,
   Images,
@@ -60,7 +59,6 @@ const HeroSection = () => {
                     {item.text}
                   </p>
                 </div>
-
                 {/* Add arrow image between icons, but not after the last icon */}
                 {index < array.length - 1 && (
                   <img
@@ -88,10 +86,9 @@ const HeroSection = () => {
             </motion.div>
           </button>
         </div>
-
         {/* Right Billboard with Sliding Images */}
         <div className="lg:w-1/2 relative hidden lg:block">
-          <picture className="" >
+          <picture className="">
             <source srcSet={bannerPostWebp} type="image/webp" />
             <source srcSet={bannerPostPng} type="image/png" />
             <img
@@ -100,58 +97,62 @@ const HeroSection = () => {
               alt="hero section banner Logo"
             />
           </picture>
-
           <picture className="absolute bottom-0 right-0 h-12">
             <source srcSet={grassWebp} type="image/webp" />
             <source srcSet={grassPng} type="image/png" />
             <img src={grassPng} className="" alt="hero section banner Logo" />
           </picture>
-
           {/* Sliding Content */}
-          <div className="absolute top-8 left-6 w-[85%] h-[100%] overflow-hidden transform skew-y-[-7deg]">
+          <div className="absolute top-8 left-6 w-[85%] h-[52%] overflow-hidden transform skew-y-[-7deg]">
             <div className="sliding-content flex">
-              <img
+              <motion.img
                 src="https://www.picmaker.com/assets/images/postermaker/poster_maker_ogimage.png"
                 alt="Slide 1"
-                className="w-full h-full object-cover " // Match the skew with the billboard's angle
+                className="w-full h-full object-cover absolute top-0 left-0"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{
+                  duration: 1,
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  repeatDelay: 2,  // Wait 2 seconds before reversing
+                  ease: "easeInOut",
+                }}
               />
-              <img
+              <motion.img
                 src="https://www.dochipo.com/wp-content/uploads/2021/06/How-to-Make-a-Music-Poster-1.png"
                 alt="Slide 2"
-                className="w-full h-full object-cover " // Match the skew with the billboard's angle
+                className="w-full h-full object-cover absolute top-0 left-0"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{
+                  duration: 1,
+                  delay: 3,  // Start after 3 seconds
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  repeatDelay: 2,  // Wait 2 seconds before reversing
+                  ease: "easeInOut",
+                }}
               />
-              <img
+              <motion.img
                 src="https://www.dochipo.com/wp-content/uploads/2022/07/25-Creative-Poster-Making-Ideas.png"
                 alt="Slide 3"
-                className="w-full h-full " // Match the skew with the billboard's angle
+                className="w-full h-full object-cover absolute top-0 left-0"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{
+                  duration: 1,
+                  delay: 6,  // Start after 6 seconds
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  repeatDelay: 2,  // Wait 2 seconds before reversing
+                  ease: "easeInOut",
+                }}
               />
             </div>
           </div>
         </div>
       </section>
-
-      {/* CSS for sliding effect */}
-      <style jsx>{`
-        .sliding-content {
-          animation: slide 10s linear infinite;
-          display: flex;
-        }
-
-        @keyframes slide {
-          0% {
-            transform: translateX(0);
-          }
-          100% {
-            transform: translateX(-100%);
-          }
-        }
-
-        @media (max-width: 640px) {
-          button:hover {
-            background-color: transparent;
-          }
-        }
-      `}</style>
     </motion.div>
   );
 };
