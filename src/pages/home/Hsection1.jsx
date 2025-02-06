@@ -86,75 +86,97 @@ const HeroSection = () => {
             </motion.div>
           </button>
         </div>
-        {/* Right Billboard with Sliding Images */}
+
+  {/* Right Billboard with Fixed Sliding Images */}
         <div className="lg:w-1/2 relative hidden lg:block">
-          <picture className="">
+          <picture>
             <source srcSet={bannerPostWebp} type="image/webp" />
             <source srcSet={bannerPostPng} type="image/png" />
             <img
               src={bannerPostPng}
-              className=""
+              className="w-full"
               alt="hero section banner Logo"
             />
           </picture>
           <picture className="absolute bottom-0 right-0 h-12">
             <source srcSet={grassWebp} type="image/webp" />
             <source srcSet={grassPng} type="image/png" />
-            <img src={grassPng} className="" alt="hero section banner Logo" />
+            <img src={grassPng} alt="hero section banner Logo" />
           </picture>
-          {/* Sliding Content */}
-          <div className="absolute top-8 left-6 w-[85%] h-[52%] overflow-hidden transform skew-y-[-7deg]">
-            <div className="sliding-content flex">
-              <motion.img
-                src="https://www.picmaker.com/assets/images/postermaker/poster_maker_ogimage.png"
-                alt="Slide 1"
-                className="w-full h-full object-cover absolute top-0 left-0"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{
-                  duration: 1,
-                  repeat: Infinity,
-                  repeatType: "reverse",
-                  repeatDelay: 2,  // Wait 2 seconds before reversing
-                  ease: "easeInOut",
-                }}
-              />
-              <motion.img
-                src="https://www.dochipo.com/wp-content/uploads/2021/06/How-to-Make-a-Music-Poster-1.png"
-                alt="Slide 2"
-                className="w-full h-full object-cover absolute top-0 left-0"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{
-                  duration: 1,
-                  delay: 3,  // Start after 3 seconds
-                  repeat: Infinity,
-                  repeatType: "reverse",
-                  repeatDelay: 2,  // Wait 2 seconds before reversing
-                  ease: "easeInOut",
-                }}
-              />
-              <motion.img
-                src="https://www.dochipo.com/wp-content/uploads/2022/07/25-Creative-Poster-Making-Ideas.png"
-                alt="Slide 3"
-                className="w-full h-full object-cover absolute top-0 left-0"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{
-                  duration: 1,
-                  delay: 6,  // Start after 6 seconds
-                  repeat: Infinity,
-                  repeatType: "reverse",
-                  repeatDelay: 2,  // Wait 2 seconds before reversing
-                  ease: "easeInOut",
-                }}
-              />
+          
+          {/* Improved Sliding Content Container */}
+          <div className="absolute top-[7%] left-[2%] w-[85%] h-[50%] ">
+            {/* Adding a perspective container */}
+            <div className="relative w-full h-full" style={{
+              perspective: '500px',
+              transformStyle: 'preserve-3d'
+            }}>
+              {/* Image container with adjusted transform */}
+              <div className="w-full h-full" style={{
+                transform: 'rotateX(3deg) rotateY(-8deg) skewY(-8deg)',
+                transformOrigin: 'center center'
+              }}>
+                <motion.img
+                  src="https://www.picmaker.com/assets/images/postermaker/poster_maker_ogimage.png"
+                  alt="Slide 1"
+                  className="w-full h-full object-cover absolute top-0 left-0"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{
+                    duration: 2,
+                    delay: 0,
+                    repeat: Infinity,
+                    repeatType: "reverse",
+                    repeatDelay: 4,
+                    ease: "easeInOut",
+                  }}
+                  style={{
+                    backfaceVisibility: 'hidden'
+                  }}
+                />
+                <motion.img
+                  src="https://www.dochipo.com/wp-content/uploads/2021/06/How-to-Make-a-Music-Poster-1.png"
+                  alt="Slide 2"
+                  className="w-full h-full object-cover absolute top-0 left-0"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{
+                    duration: 2,
+                    delay: 6,
+                    repeat: Infinity,
+                    repeatType: "reverse",
+                    repeatDelay: 4,
+                    ease: "easeInOut",
+                  }}
+                  style={{
+                    backfaceVisibility: 'hidden'
+                  }}
+                />
+                <motion.img
+                  src="https://www.dochipo.com/wp-content/uploads/2022/07/25-Creative-Poster-Making-Ideas.png"
+                  alt="Slide 3"
+                  className="w-full h-full object-cover absolute top-0 left-0"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{
+                    duration: 2,
+                    delay: 12,
+                    repeat: Infinity,
+                    repeatType: "reverse",
+                    repeatDelay: 4,
+                    ease: "easeInOut",
+                  }}
+                  style={{
+                    backfaceVisibility: 'hidden'
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>
       </section>
     </motion.div>
-  );
+      );
 };
 
 export default HeroSection;

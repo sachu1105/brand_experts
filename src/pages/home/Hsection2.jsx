@@ -1,43 +1,45 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import GradientButton from "../../components/GradientButton";
 import { MoveRight, X } from "lucide-react";
 import { motion } from "framer-motion";
-import sectionTwoImg from "../../assets/images/seccondsection2.png";
+import craftWebp from "../../assets/images/craft-min.webp";
+import craftPng from "../../assets/images/craft-min.png";
 
 const Hsection2 = () => {
   const [isTemplateModalOpen, setTemplateModalOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [quantity, setQuantity] = useState(1);
   const [selectedSizeIndex, setSelectedSizeIndex] = useState(0);
-  const [selectedUnit, setSelectedUnit] = useState('inches');
-  const [customWidth, setCustomWidth] = useState('12');
-  const [customHeight, setCustomHeight] = useState('12');
+  const [selectedUnit, setSelectedUnit] = useState("inches");
+  const [customWidth, setCustomWidth] = useState("12");
+  const [customHeight, setCustomHeight] = useState("12");
   const [price, setPrice] = useState(0);
 
   const templates = [
     {
       id: 1,
-      title: 'Acrylic Photo Prints',
-      image: 'https://kotart.in/cdn/shop/products/Kotart-Modern-Abstract-Art-Paintings-for-Living-Room-Bedroom-Wall-Decor-Paintings-for-Home-Decor-2.jpg?v=1697554365&width=1946',
+      title: "Acrylic Photo Prints",
+      image:
+        "https://kotart.in/cdn/shop/products/Kotart-Modern-Abstract-Art-Paintings-for-Living-Room-Bedroom-Wall-Decor-Paintings-for-Home-Decor-2.jpg?v=1697554365&width=1946",
       basePrice: 99.99,
       sizes: [
         { width: 12, height: 12 },
         { width: 18, height: 18 },
-        { width: 24, height: 24 }
+        { width: 24, height: 24 },
       ],
-      baseSizeIndex: 0
+      baseSizeIndex: 0,
     },
     {
       id: 2,
-      title: 'Canvas Prints',
-      image: 'https://m.media-amazon.com/images/I/81LFRsQs-wL.jpg',
+      title: "Canvas Prints",
+      image: "https://m.media-amazon.com/images/I/81LFRsQs-wL.jpg",
       basePrice: 99.99,
       sizes: [
         { width: 12, height: 12 },
         { width: 18, height: 18 },
-        { width: 24, height: 24 }
+        { width: 24, height: 24 },
       ],
-      baseSizeIndex: 0
+      baseSizeIndex: 0,
     },
     // ... other templates remain the same
   ];
@@ -68,10 +70,13 @@ const Hsection2 = () => {
 
   const Modal = ({ children, isOpen, onClose }) => {
     if (!isOpen) return null;
-    
+
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center">
-        <div className="absolute inset-0 bg-black bg-opacity-50" onClick={onClose} />
+        <div
+          className="absolute inset-0 bg-black bg-opacity-50"
+          onClick={onClose}
+        />
         <div className="relative bg-white rounded-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto m-4">
           {children}
         </div>
@@ -128,8 +133,8 @@ const Hsection2 = () => {
                     <label className="flex items-center">
                       <input
                         type="radio"
-                        checked={selectedUnit === 'inches'}
-                        onChange={() => setSelectedUnit('inches')}
+                        checked={selectedUnit === "inches"}
+                        onChange={() => setSelectedUnit("inches")}
                         className="mr-2"
                       />
                       Inch
@@ -137,8 +142,8 @@ const Hsection2 = () => {
                     <label className="flex items-center">
                       <input
                         type="radio"
-                        checked={selectedUnit === 'feet'}
-                        onChange={() => setSelectedUnit('feet')}
+                        checked={selectedUnit === "feet"}
+                        onChange={() => setSelectedUnit("feet")}
                         className="mr-2"
                       />
                       Feet
@@ -148,7 +153,9 @@ const Hsection2 = () => {
                 <select
                   className="w-full p-3 border border-red-400 rounded-md focus:outline-none focus:ring-1 focus:ring-red-500"
                   value={selectedSizeIndex}
-                  onChange={(e) => setSelectedSizeIndex(parseInt(e.target.value))}
+                  onChange={(e) =>
+                    setSelectedSizeIndex(parseInt(e.target.value))
+                  }
                 >
                   {selectedTemplate.sizes.map((size, index) => (
                     <option key={index} value={index}>
@@ -207,22 +214,33 @@ const Hsection2 = () => {
         {/* Right Content */}
         <div className="w-full lg:w-1/2 text-center lg:text-left">
           <h1 className="text-3xl lg:text-5xl font-bold mb-4">
-          Craft Your Style, Ship Your Smile!
+            Craft Your Style, Ship Your Smile!
           </h1>
           <p className="text-lg text-gray-600 mb-4">
-            Create stunning custom signage in your preferred measurements. 
+            Create stunning custom signage in your preferred measurements.
             Perfect for both personal and professional applications.
           </p>
           <div className="w-full flex justify-center lg:justify-start">
             <GradientButton text="Start Designing" Icon={MoveRight} />
           </div>
           <div className="flex justify-center lg:justify-end">
-            <img src={sectionTwoImg} className="w-72 h-50" alt="craft vision" />
+               <picture>
+                    <source srcSet={craftWebp} type="image/webp" />
+                    <img
+                      src={craftPng}
+                      alt="craft-Img"
+                      className="hidden sm:block   w-78 pointer-events-none"
+                      loading="lazy"
+                    />
+                  </picture>
           </div>
         </div>
 
         {/* Template Selection Modal */}
-        <Modal isOpen={isTemplateModalOpen} onClose={() => setTemplateModalOpen(false)}>
+        <Modal
+          isOpen={isTemplateModalOpen}
+          onClose={() => setTemplateModalOpen(false)}
+        >
           <div className="p-6">
             <div className="flex justify-between items-center mb-4">
               <h2 className="text-xl font-semibold">Choose Product Type</h2>
@@ -233,7 +251,7 @@ const Hsection2 = () => {
                 <X className="h-5 w-5" />
               </button>
             </div>
-            
+
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
               {templates.map((template) => (
                 <div

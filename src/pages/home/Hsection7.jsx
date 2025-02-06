@@ -60,7 +60,7 @@ const ModernFeaturesGrid = () => {
                 />
               </div>
               
-              <h3 className="text-xl font-semibold mb-3 text-gray-900 group-hover:text-red-600 transition-colors duration-300 text-center">
+              <h3 className="text-xl font-semibold mb-3 text-gray-700 group-hover:text-red-600 transition-colors duration-300 text-center">
                 {feature.title}
               </h3>
               

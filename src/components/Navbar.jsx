@@ -45,7 +45,7 @@ const Navbar = () => {
 
   const menuItems = [
     { title: "Home", path: "/" },
-    { title: "All products", hasDropdown: true },
+    { title: "All products", hasDropdown: true, path: "/products" },
   ]
 
   useEffect(() => {
@@ -296,24 +296,27 @@ const Navbar = () => {
               {/* Menu Items - Desktop */}
               <div className="hidden md:flex items-center space-x-8">
                 {menuItems.map((item) => (
-                  <div key={item.path} className="relative">
-                    <button
-                      onClick={() => {
-                        if (item.hasDropdown) {
-                          setIsProductsDropdownOpen(!isProductsDropdownOpen)
-                        }
-                      }}
-                      className={`text-gray-700 hover:text-red-600 flex items-center transition-colors duration-200`}
-                    >
-                      {item.title}
-                      {item.hasDropdown && (
+                  <div key={item.title} className="relative">
+                    {item.hasDropdown ? (
+                      <button
+                        onClick={() => setIsProductsDropdownOpen(!isProductsDropdownOpen)}
+                        className="text-gray-700 hover:text-red-600 flex items-center transition-colors duration-200"
+                      >
+                        {item.title}
                         <ChevronDown
                           className={`ml-1 h-4 w-4 transition-transform duration-200 ${
                             isProductsDropdownOpen ? "rotate-180" : ""
                           }`}
                         />
-                      )}
-                    </button>
+                      </button>
+                    ) : (
+                      <Link
+                        to={item.path}
+                        className="text-gray-700 hover:text-red-600 transition-colors duration-200"
+                      >
+                        {item.title}
+                      </Link>
+                    )}
                     {item.hasDropdown && isProductsDropdownOpen && <ProductsDropdown />}
                   </div>
                 ))}

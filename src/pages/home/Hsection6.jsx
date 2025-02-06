@@ -65,13 +65,13 @@ const Hsection6 = () => {
         <div className="flex justify-between items-center absolute top-1/2 left-0 right-0 transform -translate-y-1/2 px-4 z-10 ">
           <button
             onClick={() => sliderRef.current.slickPrev()}
-            className="bg-red-200 text-white p-2 rounded-full cursor-pointer hover:bg-red-500"
+            className="bg-red-200 text-white p-2 rounded-full cursor-pointer hover:bg-red-500 transition transform hover:scale-105"
           >
             <FaArrowLeft size={20} />
           </button>
           <button
             onClick={() => sliderRef.current.slickNext()}
-            className="bg-red-200 text-white p-2 rounded-full cursor-pointer hover:bg-red-500"
+            className="bg-red-200 text-white p-2 rounded-full cursor-pointer hover:bg-red-500 transition transform hover:scale-105"
           >
             <FaArrowRight size={20} />
           </button>
@@ -89,7 +89,7 @@ const Hsection6 = () => {
                   className="w-full h-1/2 object-cover mb-4 rounded-t-lg"
                 />
                 <div className="flex-grow p-4">
-                  <p className=" text-xl font-black mb-2">{card.text}</p>
+                  <p className=" text-xl font-black mb-2 text-gray-700">{card.text}</p>
                   <p className=" text-sm text-gray-600">{card.paragraph}</p>
                 </div>
               </div>
