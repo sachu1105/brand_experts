@@ -5,12 +5,7 @@ import grassWebp from "../../assets/images/grass.webp";
 import arrowPng from "../../assets/images/arrow.png";
 import React from "react";
 import {
-  CircleArrowRight,
-  Images,
-  MoveRight,
-  Newspaper,
-  ShoppingCart,
-} from "lucide-react";
+  CircleArrowRight,Images, MoveRight,Newspaper,ShoppingCart,} from "lucide-react";
 import { motion } from "framer-motion";
 import GradientButton from "../../components/GradientButton";
 

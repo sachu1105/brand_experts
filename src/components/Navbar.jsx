@@ -7,10 +7,8 @@ import logo from '../assets/images/br_logo.png';
 const Navbar = () => {
   const [currentBanner, setCurrentBanner] = useState(0);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
-  const [isProductsDropdownOpen, setIsProductsDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const userDropdownRef = useRef(null);
-  const productsDropdownRef = useRef(null);
 
   const bannerMessages = [
     "Buy more, save more! Flat 5% off on all products 10,000+",
@@ -41,9 +39,6 @@ const Navbar = () => {
     const handleClickOutside = (event) => {
       if (userDropdownRef.current && !userDropdownRef.current.contains(event.target)) {
         setIsUserDropdownOpen(false);
-      }
-      if (productsDropdownRef.current && !productsDropdownRef.current.contains(event.target)) {
-        setIsProductsDropdownOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -165,47 +160,44 @@ const Navbar = () => {
 
           {/* Category Navigation */}
           <div className="hidden md:flex space-x-12 py-4 border-t border-gray-100">
-            <div className="relative" ref={productsDropdownRef}>
+            <div className="relative group">
               <button
-                onClick={() => setIsProductsDropdownOpen(!isProductsDropdownOpen)}
                 className="flex items-center ml-4 space-x-6 font-semibold text-gray-700 text-sm hover:text-red-600 whitespace-nowrap cursor-pointer"
               >
                 All products
-                <ChevronDown className={`ml-1 w-4 h-4 transform transition-transform ${isProductsDropdownOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown className="ml-1 w-4 h-4 transform transition-transform group-hover:rotate-180" />
               </button>
 
-              <AnimatePresence>
-                {isProductsDropdownOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="absolute top-full left-0 w-64 bg-white shadow-lg rounded-lg mt-2 py-2 z-50"
-                  >
-                    {categories.slice(1).map((category) => (
-                      <Link
-                        key={category.title}
-                        to={category.path}
-                        className="flex items-center justify-between px-4 py-2 text-gray-600 hover:bg-gray-50 hover:text-red-600"
-                        onClick={() => setIsProductsDropdownOpen(false)}
-                      >
-                        {category.title}
-                        <ChevronRight className="w-4 h-4" />
-                      </Link>
-                    ))}
-                  </motion.div>
-                )}
-              </AnimatePresence>
+              {/* Added padding-top to create hover gap */}
+              <div className="hidden group-hover:block absolute top-full left-0 pt-2">
+                {/* Actual dropdown content */}
+                <div className="w-64 bg-white shadow-lg rounded-lg py-2 z-50">
+                  {categories.slice(1).map((category) => (
+                    <Link
+                      key={category.title}
+                      to={category.path}
+                      className="flex items-center justify-between px-4 py-2 text-gray-600 hover:bg-gray-50 hover:text-red-600"
+                    >
+                      {category.title}
+                      <ChevronRight className="w-4 h-4" />
+                    </Link>
+                  ))}
+                </div>
+              </div>
             </div>
-            {categories.slice(1).map((category) => (
-              <Link
-                key={category.title}
-                to={category.path}
-                className="text-gray-600 hover:text-red-600 text-sm font-semibold whitespace-nowrap overflow-hidden text-ellipsis"
-              >
-                {category.title}
-              </Link>
-            ))}
+            <div className="flex-1 overflow-x-scroll md:overflow-x-auto"> 
+              <div className="flex md:space-x-6 min-w-max">
+                {categories.slice(1).map((category) => (
+                  <Link
+                    key={category.title}
+                    to={category.path}
+                    className="text-gray-600 hover:text-red-600 text-sm font-semibold whitespace-nowrap px-3"
+                  >
+                    {category.title}
+                  </Link>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
