@@ -105,7 +105,7 @@ const HeroSection = () => {
           </picture>
           
           {/* Improved Sliding Content Container */}
-          <div className="absolute top-[7%] left-[2%] w-[85%] h-[50%] ">
+          <div className="absolute top-[9%] left-[-1%] w-[87%] h-[48%] ">
             {/* Adding a perspective container */}
             <div className="relative w-full h-full" style={{
               perspective: '500px',
@@ -135,7 +135,7 @@ const HeroSection = () => {
                   }}
                 />
                 <motion.img
-                  src="https://www.dochipo.com/wp-content/uploads/2021/06/How-to-Make-a-Music-Poster-1.png"
+                  src="https://fiverr-res.cloudinary.com/images/t_main1,q_auto,f_auto,q_auto,f_auto/gigs/323265237/original/5158009026e4637bb8dc93fea90065c1f5775797/design-product-advertisement-poster-and-social-media-ads.png"
                   alt="Slide 2"
                   className="w-full h-full object-cover absolute top-0 left-0"
                   initial={{ opacity: 0 }}
@@ -153,7 +153,7 @@ const HeroSection = () => {
                   }}
                 />
                 <motion.img
-                  src="https://www.dochipo.com/wp-content/uploads/2022/07/25-Creative-Poster-Making-Ideas.png"
+                  src="https://assets.designhill.com/design-blog/wp-content/uploads/2022/11/Top-5-Poster-Template-Designs-For-2025.jpg"
                   alt="Slide 3"
                   className="w-full h-full object-cover absolute top-0 left-0"
                   initial={{ opacity: 0 }}

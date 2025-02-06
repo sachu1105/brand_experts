@@ -109,7 +109,7 @@ const Navbar = () => {
 
             {/* Right Controls */}
             <div className="flex items-center space-x-6">
-              <button className="hidden md:block px-4 py-2 text-red-600 border border-red-300 rounded-lg hover:bg-red-50">
+              <button className="hidden md:block px-4 py-2 text-red-600 border border-red-300 rounded-lg hover:bg-red-50 cursor-pointer" >
                 Design tool
               </button>
 
@@ -125,9 +125,9 @@ const Navbar = () => {
               <div className="relative hidden md:block" ref={userDropdownRef}>
                 <button
                   onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
-                  className="flex items-center space-x-1"
+                  className="flex items-center space-x-1 cursor-pointer"
                 >
-                  <User className="w-6 h-6 text-gray-700" />
+                  <User className="w-6 h-6 text-gray-700 " />
                   <ChevronDown className="w-4 h-4 text-gray-700" />
                 </button>
 
@@ -168,10 +168,10 @@ const Navbar = () => {
             <div className="relative" ref={productsDropdownRef}>
               <button
                 onClick={() => setIsProductsDropdownOpen(!isProductsDropdownOpen)}
-                className="flex items-center space-x-6 font-semibold text-gray-700 hover:text-red-600 whitespace-nowrap"
+                className="flex items-center ml-4 space-x-6 font-semibold text-gray-700 text-sm hover:text-red-600 whitespace-nowrap cursor-pointer"
               >
-                <span>All products</span>
-                <ChevronDown className={`w-4 h-4 transform transition-transform ${isProductsDropdownOpen ? 'rotate-180' : ''}`} />
+                All products
+                <ChevronDown className={`ml-1 w-4 h-4 transform transition-transform ${isProductsDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
 
               <AnimatePresence>
@@ -186,7 +186,7 @@ const Navbar = () => {
                       <Link
                         key={category.title}
                         to={category.path}
-                        className="flex items-center justify-between px-4 py-2 text-gray-700 hover:bg-gray-50 hover:text-red-600"
+                        className="flex items-center justify-between px-4 py-2 text-gray-600 hover:bg-gray-50 hover:text-red-600"
                         onClick={() => setIsProductsDropdownOpen(false)}
                       >
                         {category.title}
@@ -201,7 +201,7 @@ const Navbar = () => {
               <Link
                 key={category.title}
                 to={category.path}
-                className="text-gray-700 hover:text-red-600 text-sm font-semibold whitespace-nowrap overflow-hidden text-ellipsis"
+                className="text-gray-600 hover:text-red-600 text-sm font-semibold whitespace-nowrap overflow-hidden text-ellipsis"
               >
                 {category.title}
               </Link>
