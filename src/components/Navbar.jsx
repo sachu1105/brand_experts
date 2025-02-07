@@ -1,20 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { Link } from 'react-router-dom';
-import { Search, ShoppingCart, User, ChevronDown, Menu, X, Tag, ChevronRight } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-import logo from '../assets/images/br_logo.png';
+import { useState, useEffect, useRef } from "react"
+import { Link } from "react-router-dom"
+import { Search, ShoppingCart, User, ChevronDown, Menu, X, Tag, ChevronRight } from "lucide-react"
+import { motion, AnimatePresence } from "framer-motion"
+import logo from "../assets/images/br_logo.png"
 
 const Navbar = () => {
-  const [currentBanner, setCurrentBanner] = useState(0);
-  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const userDropdownRef = useRef(null);
+  const [currentBanner, setCurrentBanner] = useState(0)
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false)
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const userDropdownRef = useRef(null)
 
   const bannerMessages = [
     "Buy more, save more! Flat 5% off on all products 10,000+",
     "FREE SHIPPING ON ORDERS OVER $85",
-    "SPECIAL OFFER: 20% OFF ALL TEMPLATES"
-  ];
+    "SPECIAL OFFER: 20% OFF ALL TEMPLATES",
+  ]
 
   const categories = [
     { title: "All products", path: "/products" },
@@ -25,41 +25,75 @@ const Navbar = () => {
     { title: "Office signs", path: "/office-signs" },
     { title: "Outdoor signs", path: "/outdoor-signs" },
     { title: "Photo & decor", path: "/photo-decor" },
-    { title: "Wedding & parties", path: "/wedding-parties" }
-  ];
+    { title: "Wedding & parties", path: "/wedding-parties" },
+  ]
 
   useEffect(() => {
     const timer = setInterval(() => {
-      setCurrentBanner((prev) => (prev + 1) % bannerMessages.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, []);
+      setCurrentBanner((prev) => (prev + 1) % bannerMessages.length)
+    }, 5000)
+    return () => clearInterval(timer)
+  }, [])
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (userDropdownRef.current && !userDropdownRef.current.contains(event.target)) {
-        setIsUserDropdownOpen(false);
+        setIsUserDropdownOpen(false)
       }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
+    }
+    document.addEventListener("mousedown", handleClickOutside)
+    return () => document.removeEventListener("mousedown", handleClickOutside)
+  }, [])
+
+  useEffect(() => {
+    const scrollContainer = document.querySelector(".hide-scrollbar")
+    let isDown = false
+    let startX
+    let scrollLeft
+
+    scrollContainer.addEventListener("mousedown", (e) => {
+      isDown = true
+      scrollContainer.classList.add("active")
+      startX = e.pageX - scrollContainer.offsetLeft
+      scrollLeft = scrollContainer.scrollLeft
+    })
+
+    scrollContainer.addEventListener("mouseleave", () => {
+      isDown = false
+      scrollContainer.classList.remove("active")
+    })
+
+    scrollContainer.addEventListener("mouseup", () => {
+      isDown = false
+      scrollContainer.classList.remove("active")
+    })
+
+    scrollContainer.addEventListener("mousemove", (e) => {
+      if (!isDown) return
+      e.preventDefault()
+      const x = e.pageX - scrollContainer.offsetLeft
+      const walk = (x - startX) * 2
+      scrollContainer.scrollLeft = scrollLeft - walk
+    })
+  }, [])
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="w-full"
-    >
+    <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="w-full">
       {/* Top Banner */}
       <div className="bg-gradient-to-r from-red-600 to-pink-600 text-white py-2">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between">
-            <button className="text-white p-2" onClick={() => setCurrentBanner((prev) => (prev - 1 + bannerMessages.length) % bannerMessages.length)}>
+            <button
+              className="text-white p-2"
+              onClick={() => setCurrentBanner((prev) => (prev - 1 + bannerMessages.length) % bannerMessages.length)}
+            >
               <ChevronDown className="w-5 h-5 transform rotate-90" />
             </button>
             <p className="text-sm font-medium text-center flex-1">{bannerMessages[currentBanner]}</p>
-            <button className="text-white p-2" onClick={() => setCurrentBanner((prev) => (prev + 1) % bannerMessages.length)}>
+            <button
+              className="text-white p-2"
+              onClick={() => setCurrentBanner((prev) => (prev + 1) % bannerMessages.length)}
+            >
               <ChevronDown className="w-5 h-5 transform -rotate-90" />
             </button>
           </div>
@@ -74,9 +108,15 @@ const Navbar = () => {
               <Tag className="w-4 h-4 mr-1" />
               Special deals
             </Link>
-            <Link to="/products" className="text-gray-600 hover:text-gray-900">Products</Link>
-            <Link to="/templates" className="text-gray-600 hover:text-gray-900">Templates</Link>
-            <Link to="/corporate-offers" className="text-gray-600 hover:text-gray-900">Corporate Offers</Link>
+            <Link to="/products" className="text-gray-600 hover:text-gray-900">
+              Products
+            </Link>
+            <Link to="/templates" className="text-gray-600 hover:text-gray-900">
+              Templates
+            </Link>
+            <Link to="/corporate-offers" className="text-gray-600 hover:text-gray-900">
+              Corporate Offers
+            </Link>
           </div>
         </div>
       </div>
@@ -87,7 +127,7 @@ const Navbar = () => {
           <div className="flex items-center justify-between py-4">
             {/* Logo */}
             <Link to="/" className="flex-shrink-0">
-              <img src={logo} alt="Logo" className="h-8" />
+              <img src={logo || "/placeholder.svg"} alt="Logo" className="h-12 " />
             </Link>
 
             {/* Search Bar */}
@@ -104,7 +144,7 @@ const Navbar = () => {
 
             {/* Right Controls */}
             <div className="flex items-center space-x-6">
-              <button className="hidden md:block px-4 py-2 text-red-600 border border-red-300 rounded-lg hover:bg-red-50 cursor-pointer" >
+              <button className="hidden md:block px-4 py-2 text-red-600 border border-red-300 rounded-lg hover:bg-red-50 cursor-pointer">
                 Design tool
               </button>
 
@@ -132,23 +172,28 @@ const Navbar = () => {
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: 10 }}
-                      className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1"
+                      className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-10"
                     >
-                      <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">My Profile</Link>
-                      <Link to="/orders" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">My Orders</Link>
+                      <Link to="/profile" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                        My Profile
+                      </Link>
+                      <Link to="/orders" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                        My Orders
+                      </Link>
                       <div className="border-t border-gray-100 my-1"></div>
-                      <Link to="/signin" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Sign In</Link>
-                      <Link to="/signup" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Sign Up</Link>
+                      <Link to="/signin" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                        Sign In
+                      </Link>
+                      <Link to="/signup" className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                        Sign Up
+                      </Link>
                     </motion.div>
                   )}
                 </AnimatePresence>
               </div>
 
               {/* Mobile Menu Button */}
-              <button
-                className="md:hidden"
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              >
+              <button className="md:hidden" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
                 {isMobileMenuOpen ? (
                   <X className="w-6 h-6 text-gray-700" />
                 ) : (
@@ -159,11 +204,9 @@ const Navbar = () => {
           </div>
 
           {/* Category Navigation */}
-          <div className="hidden md:flex space-x-12 py-4 border-t border-gray-100">
+          <div className="hidden md:flex space-x-6 py-4 " >
             <div className="relative group">
-              <button
-                className="flex items-center ml-4 space-x-6 font-semibold text-gray-700 text-sm hover:text-red-600 whitespace-nowrap cursor-pointer"
-              >
+              <button className="flex items-center ml-2 space-x-6 font-semibold text-gray-700 text-sm hover:text-red-600 whitespace-nowrap cursor-pointer">
                 All products
                 <ChevronDown className="ml-1 w-4 h-4 transform transition-transform group-hover:rotate-180" />
               </button>
@@ -185,17 +228,19 @@ const Navbar = () => {
                 </div>
               </div>
             </div>
-            <div className="flex-1 overflow-x-scroll md:overflow-x-auto"> 
-              <div className="flex md:space-x-6 min-w-max">
-                {categories.slice(1).map((category) => (
-                  <Link
-                    key={category.title}
-                    to={category.path}
-                    className="text-gray-600 hover:text-red-600 text-sm font-semibold whitespace-nowrap px-3"
-                  >
-                    {category.title}
-                  </Link>
-                ))}
+            <div className="hidden md:block relative flex-1 ">
+              <div className="flex-1 overflow-x-auto hide-scrollbar md:overflow-x-auto px-4">
+                <div className="flex space-x-8 min-w-max pb-2">
+                  {categories.slice(1).map((category) => (
+                    <Link
+                      key={category.title}
+                      to={category.path}
+                      className="text-gray-600 hover:text-red-600 text-sm font-medium" 
+                    >
+                      {category.title}
+                    </Link>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -207,7 +252,7 @@ const Navbar = () => {
         {isMobileMenuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
+            animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
             className="md:hidden bg-white border-t border-gray-100"
           >
@@ -230,14 +275,27 @@ const Navbar = () => {
                 </Link>
               ))}
               <div className="border-t border-gray-100 my-4"></div>
-              <Link to="/signin" className="block py-2 text-gray-700 hover:text-red-600" onClick={() => setIsMobileMenuOpen(false)}>Sign In</Link>
-              <Link to="/signup" className="block py-2 text-gray-700 hover:text-red-600" onClick={() => setIsMobileMenuOpen(false)}>Sign Up</Link>
+              <Link
+                to="/signin"
+                className="block py-2 text-gray-700 hover:text-red-600"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Sign In
+              </Link>
+              <Link
+                to="/signup"
+                className="block py-2 text-gray-700 hover:text-red-600"
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                Sign Up
+              </Link>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
     </motion.div>
-  );
-};
+  )
+}
 
-export default Navbar;
+export default Navbar
+
