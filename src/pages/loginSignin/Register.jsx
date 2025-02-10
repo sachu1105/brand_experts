@@ -96,7 +96,7 @@ function Register() {
         const errorMessage =
           error.response?.data?.message ||
           "Something went wrong during registration";
-        toast.error(`❌ ${errorMessage}`, {
+        toast.error(`${errorMessage}`, {
           position: "top-center",
           autoClose: 5000,
           hideProgressBar: false,
@@ -246,7 +246,7 @@ function Register() {
               <button
                 type="submit"
                 disabled={mutation.isLoading}
-                className={`w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-md transition-all duration-300 ${
+                className={`w-full bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] hover:from-[#590C0D] hover:to-[#BF1A1C] text-white font-bold py-2 px-4 rounded-md transition-all duration-300 ${
                   mutation.isLoading ? "opacity-70 cursor-not-allowed" : ""
                 }`}
               >
