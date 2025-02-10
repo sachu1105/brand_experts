@@ -51,32 +51,46 @@ function Register() {
 
   // Setup API mutation using React Query
   // This handles the API call to register a new user
-  const mutation = useMutation(async (formData) => {
-    const response = await axios.post(
-      `${import.meta.env.VITE_API_BASE_URL}/register/`,
-      formData
-    );
-    return response.data;
-  });
+  const registerUser = async (formData) => {
+    try {
+      const response = await axios.post(
+        `https://dash.brandexperts.ae/register/`, // Correct API endpoint
+        formData
+      );
+      return response.data;
+    } catch (error) {
+      // Enhanced error logging
+      console.group("Registration Error Details");
+      console.error("Error:", {
+        name: error.name,
+        message: error.message,
+        code: error.code,
+        stack: error.stack,
+      });
+      console.error("Response Details:", {
+        status: error.response?.status,
+        statusText: error.response?.statusText,
+        data: error.response?.data,
+        headers: error.response?.headers,
+      });
+      console.error("Request Details:", {
+        method: error.config?.method,
+        url: error.config?.url,
+        data: error.config?.data,
+        headers: error.config?.headers,
+      });
+      console.groupEnd();
+      throw error;
+    }
+  };
 
-  // Handle form submission
-  const onSubmit = (data) => {
-    // Transform form data to match API requirements
-    const payload = {
-      first_name: data.firstName,
-      last_name: data.lastName,
-      email: data.email,
-      mobile: data.mobile,
-      gender: data.gender,
-      password: data.password,
-    };
-
-    // Submit data to the API
-    mutation.mutate(payload, {
-      // Handle successful registration
-      onSuccess: (response) => {
-        // Show success message
-        toast.success("🎉 Registration Successful! Redirecting to login...", {
+  // Update the mutation configuration with mutationFn
+  const mutation = useMutation({
+    mutationFn: registerUser,
+    onSuccess: (response) => {
+      console.log("Registration Success:", response);
+      if (response.success) {
+        toast.success(response.message || "Registration Successful!", {
           position: "top-center",
           autoClose: 3000,
           hideProgressBar: false,
@@ -86,27 +100,68 @@ function Register() {
           progress: undefined,
         });
 
-        // Redirect to login page after successful registration
         setTimeout(() => {
           navigate("/login");
         }, 3000);
-      },
-      // Handle registration errors
-      onError: (error) => {
-        const errorMessage =
-          error.response?.data?.message ||
-          "Something went wrong during registration";
-        toast.error(`${errorMessage}`, {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-        });
-      },
-    });
+      }
+    },
+    onError: (error) => {
+      console.group("Registration Error");
+      console.error("Error Response:", error.response?.data);
+      console.groupEnd();
+
+      let errorMessage;
+      const errorData = error.response?.data;
+
+      switch (error.response?.status) {
+        case 409: // Conflict - Duplicate email/mobile
+          errorMessage =
+            errorData.message ||
+            "A user with this email or mobile already exists.";
+          break;
+        case 400: // Validation errors
+          const validationErrors = errorData.errors;
+          errorMessage =
+            Object.values(validationErrors || {})
+              .flat()
+              .join(", ") ||
+            errorData.message ||
+            "Please check your input.";
+          break;
+        case 500:
+          errorMessage =
+            "An unexpected server error occurred. Please try again later.";
+          break;
+        default:
+          errorMessage =
+            errorData?.message || "Registration failed. Please try again.";
+      }
+
+      toast.error(errorMessage, {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        className: "error-toast",
+      });
+    },
+  });
+
+  // Update the onSubmit function to use mutate directly
+  const onSubmit = (data) => {
+    const payload = {
+      first_name: data.firstName,
+      last_name: data.lastName,
+      email: data.email,
+      mobile: data.mobile,
+      gender: data.gender,
+      password: data.password,
+    };
+
+    mutation.mutate(payload);
   };
 
   // Render the registration form
@@ -116,7 +171,7 @@ function Register() {
       {/* Toast notification container for showing messages */}
       <ToastContainer
         position="top-center"
-        autoClose={5000}
+        autoClose={3000}
         hideProgressBar={false}
         newestOnTop={false}
         closeOnClick
