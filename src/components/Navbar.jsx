@@ -17,10 +17,7 @@ const Navbar = () => {
   const [currentBanner, setCurrentBanner] = useState(0);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isWarrantyDropdownOpen, setIsWarrantyDropdownOpen] = useState(false);
   const userDropdownRef = useRef(null);
-  const warrantyDropdownRef = useRef(null);
-  const [timeoutId, setTimeoutId] = useState(null);
 
   const bannerMessages = [
     "Buy more, save more! Flat 5% off on all products 10,000+",
@@ -67,18 +64,6 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        warrantyDropdownRef.current &&
-        !warrantyDropdownRef.current.contains(event.target)
-      ) {
-        setIsWarrantyDropdownOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
 
   useEffect(() => {
     const scrollContainer = document.querySelector(".hide-scrollbar");
@@ -112,21 +97,7 @@ const Navbar = () => {
     });
   }, []);
 
-  // Handle warranty dropdown hover
-  const handleMouseEnter = () => {
-    if (timeoutId) {
-      clearTimeout(timeoutId);
-      setTimeoutId(null);
-    }
-    setIsWarrantyDropdownOpen(true);
-  };
 
-  const handleMouseLeave = () => {
-    const newTimeoutId = setTimeout(() => {
-      setIsWarrantyDropdownOpen(false);
-    }, 300); // 300ms delay before closing
-    setTimeoutId(newTimeoutId);
-  };
 
   return (
     <motion.div
@@ -170,48 +141,20 @@ const Navbar = () => {
           <div className="flex justify-end space-x-6 py-2 text-sm">
             <div
               className="relative group"
-              ref={warrantyDropdownRef}
-              onMouseEnter={handleMouseEnter}
-              onMouseLeave={handleMouseLeave}
             >
               <Link
-                to=""
+                to="/warranty"
                 className="text-red-600 hover:text-red-700 flex items-center"
               >
                 <BadgeCheck className="w-5 h-5 mr-1" />
                 Warranty
-                <ChevronDown className="w-4 h-4 ml-1" />
               </Link>
-              <AnimatePresence>
-                {isWarrantyDropdownOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 5 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 5 }}
-                    transition={{ duration: 0.2 }}
-                    className="absolute top-full left-0 mt-1 w-48 bg-white border border-gray-200 rounded-md shadow-lg z-50"
-                    onMouseEnter={handleMouseEnter}
-                    onMouseLeave={handleMouseLeave}
-                  >
-                    <Link
-                      to="/create-warranty"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      Create Warranty
-                    </Link>
-                    <Link
-                      to="/register-warranty"
-                      className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                    >
-                      Register Warranty
-                    </Link>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
+             
+          </div>
             <Link to="/products" className="text-gray-600 hover:text-gray-900">
               Products
             </Link>
+
             <Link to="/templates" className="text-gray-600 hover:text-gray-900">
               Templates
             </Link>
@@ -296,17 +239,17 @@ const Navbar = () => {
                       </Link>
                       <div className="border-t border-gray-100 my-1"></div>
                       <Link
-                        to="/signin"
+                        to="/login"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                       >
-                        Sign In
+                       Login In
                       </Link>
-                      <a
-                        href="https://api.brandexperts.ae/admin_dash/admin_function/"
+                      <Link
+                        to="/register"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                       >
-                        Sign Up
-                      </a>
+                        Register
+                      </Link>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -413,18 +356,18 @@ const Navbar = () => {
               ))}
               <div className="border-t border-gray-100 my-4"></div>
               <Link
-                to="/signin"
+                to="/login"
                 className="block py-2 text-gray-700 hover:text-red-600"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                Sign In
+                Log In 
               </Link>
               <a
-                href="https://api.brandexperts.ae/admin_dash/admin_function/"
+                href="/register"
                 className="block py-2 text-gray-700 hover:text-red-600"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                Sign Up
+                Register
               </a>
             </div>
           </motion.div>
