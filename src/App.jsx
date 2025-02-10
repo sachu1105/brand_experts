@@ -5,6 +5,8 @@ import Templates from "./pages/betemplates/Templates";
 import Cart from "./pages/cart/Cart";
 import Login from "./pages/loginSignin/Login";
 import Signin from "./pages/loginSignin/Signin";
+import RegisterWarranty from "./pages/warranty/RegisterWarranty";
+import CreateWarranty from "./pages/warranty/CreateWarranty";
 
 const App = () => {
   return (
@@ -17,6 +19,8 @@ const App = () => {
             <Route path="/signup" element={<Login />} />
             <Route path="/signin" element={<Signin />} />
             <Route path="/templates" element={<Templates />} />
+            <Route path="/register-warranty" element={<RegisterWarranty />} />
+            <Route path="/create-warranty" element={<CreateWarranty />} />
           </Route>
         </Routes>
       </Router>
