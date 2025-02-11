@@ -23,7 +23,7 @@ const HeroSection = () => {
         <div className="lg:w-1/2 w-full flex flex-col items-center lg:items-start space-y-6">
           <h1 className="text-5xl sm:text-4xl lg:text-6xl font-bold text-center lg:text-left">
             Create, Enhance, and <br className="hidden sm:block" />
-            Showcase Your{" "}
+            Showcase Your AWS{" "}
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#BF1A1C] to-[#590C0D]">
               Brand!
             </span>

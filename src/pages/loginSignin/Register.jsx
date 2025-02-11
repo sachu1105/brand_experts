@@ -25,7 +25,7 @@ const schema = yup.object().shape({
   // Password must be at least 6 characters
   password: yup
     .string()
-    .min(6, "Password must be at least 6 characters")
+    .min(3, "Password must be at least 3 characters")
     .required("Password is required"),
   // Confirm password must match the password field
   confirmPassword: yup
@@ -53,10 +53,7 @@ function Register() {
   // This handles the API call to register a new user
   const registerUser = async (formData) => {
     try {
-      const response = await axios.post(
-        `https://dash.brandexperts.ae/register/`, // Correct API endpoint
-        formData
-      );
+      const response = await axios.post(`https://dash.brandexperts.ae/register/`,formData);
       return response.data;
     } catch (error) {
       // Enhanced error logging
