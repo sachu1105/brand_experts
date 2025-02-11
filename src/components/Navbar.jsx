@@ -15,9 +15,10 @@ import logo from "../assets/images/br_logo.png";
 
 const Navbar = () => {
   const [currentBanner, setCurrentBanner] = useState(0);
-  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const userDropdownRef = useRef(null);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
+  let dropdownTimeout = useRef(null);
 
   const bannerMessages = [
     "Buy more, save more! Flat 5% off on all products 10,000+",
@@ -52,20 +53,6 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        userDropdownRef.current &&
-        !userDropdownRef.current.contains(event.target)
-      ) {
-        setIsUserDropdownOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-
-  useEffect(() => {
     const scrollContainer = document.querySelector(".hide-scrollbar");
     let isDown = false;
     let startX;
@@ -97,7 +84,16 @@ const Navbar = () => {
     });
   }, []);
 
+  const handleDropdownEnter = () => {
+    if (dropdownTimeout.current) clearTimeout(dropdownTimeout.current);
+    setIsUserDropdownOpen(true);
+  };
 
+  const handleDropdownLeave = () => {
+    dropdownTimeout.current = setTimeout(() => {
+      setIsUserDropdownOpen(false);
+    }, 200); // 200ms delay before closing
+  };
 
   return (
     <motion.div
@@ -139,9 +135,7 @@ const Navbar = () => {
       <div className="bg-gray-50 hidden sm:block">
         <div className="container mx-auto px-4">
           <div className="flex justify-end space-x-6 py-2 text-sm">
-            <div
-              className="relative group"
-            >
+            <div className="relative group">
               <Link
                 to="/warranty"
                 className="text-red-600 hover:text-red-700 flex items-center"
@@ -149,8 +143,7 @@ const Navbar = () => {
                 <BadgeCheck className="w-5 h-5 mr-1" />
                 Warranty
               </Link>
-             
-          </div>
+            </div>
             <Link to="/products" className="text-gray-600 hover:text-gray-900">
               Products
             </Link>
@@ -207,52 +200,52 @@ const Navbar = () => {
                 </span>
               </Link>
 
-              {/* User Menu */}
-              <div className="relative hidden md:block" ref={userDropdownRef}>
-                <button
-                  onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
-                  className="flex items-center space-x-1 cursor-pointer"
-                >
-                  <User className="w-6 h-6 text-gray-700 " />
-                  <ChevronDown className="w-4 h-4 text-gray-700" />
+              {/* User Menu - Fixed Version */}
+              <div
+                className="relative hidden md:block"
+                ref={userDropdownRef}
+                onMouseEnter={handleDropdownEnter}
+                onMouseLeave={handleDropdownLeave}
+              >
+                <button className="flex items-center space-x-1 cursor-pointer p-2 hover:text-red-600">
+                  <User className="w-6 h-6" />
+                  <ChevronDown className="w-4 h-4" />
                 </button>
 
-                <AnimatePresence>
-                  {isUserDropdownOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-1 z-10"
-                    >
+                {isUserDropdownOpen && (
+                  <div
+                    className="absolute right-0 top-[calc(100%-8px)] w-48 pt-4"
+                    style={{ zIndex: 1000 }}
+                  >
+                    <div className="bg-white rounded-lg shadow-lg py-1 border border-gray-100">
                       <Link
                         to="/profile"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                        className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-600"
                       >
                         My Profile
                       </Link>
                       <Link
                         to="/orders"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                        className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-600"
                       >
                         My Orders
                       </Link>
                       <div className="border-t border-gray-100 my-1"></div>
                       <Link
                         to="/login"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                        className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-600"
                       >
-                       Login In
+                        Login In
                       </Link>
                       <Link
                         to="/register"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
+                        className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-600"
                       >
                         Register
                       </Link>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Mobile Menu Button */}
@@ -360,7 +353,7 @@ const Navbar = () => {
                 className="block py-2 text-gray-700 hover:text-red-600"
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                Log In 
+                Log In
               </Link>
               <a
                 href="/register"

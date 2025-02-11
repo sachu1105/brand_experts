@@ -53,7 +53,10 @@ function Register() {
   // This handles the API call to register a new user
   const registerUser = async (formData) => {
     try {
-      const response = await axios.post(`https://dash.brandexperts.ae/register/`,formData);
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/register/`,
+        formData
+      );
       return response.data;
     } catch (error) {
       // Enhanced error logging
@@ -80,6 +83,7 @@ function Register() {
       throw error;
     }
   };
+  // console.log("API Base URL:", import.meta.env.VITE_API_BASE_URL);
 
   // Update the mutation configuration with mutationFn
   const mutation = useMutation({
@@ -108,6 +112,7 @@ function Register() {
       console.groupEnd();
 
       let errorMessage;
+      let validationErrors;
 
       // Handle network errors or when response is not available
       if (!error.response) {
@@ -122,7 +127,7 @@ function Register() {
               "A user with this email or mobile already exists.";
             break;
           case 400:
-            const validationErrors = errorData?.errors;
+            validationErrors = errorData?.errors;
             errorMessage = validationErrors
               ? Object.values(validationErrors).flat().join(", ")
               : errorData?.message || "Please check your input.";
