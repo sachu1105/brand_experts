@@ -42,7 +42,7 @@ const Products = () => {
           <img 
             src={ProductMainImage} 
             alt="Hero background" 
-            className="w-full h-full object-cover opacity-60"
+            className="w-full h-full object-cover opacity-60 "
           />
         </div>
         <div className="relative container mx-auto px-6 py-16">
@@ -84,7 +84,7 @@ const Products = () => {
                 <img
                   src={product.image}
                   alt={product.title}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover "
                 />
               </div>
               <div className="p-4">

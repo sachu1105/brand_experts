@@ -1,15 +1,32 @@
 // src/components/Layout.js
+import { Outlet } from "react-router-dom";
+import { Toaster } from "react-hot-toast";
 import Navbar from "./Navbar";
 import Footer from "./Footer";
-import { Outlet } from "react-router-dom";
 
 const Layout = () => {
   return (
-    <div>
+    <>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 2000,
+          style: {
+            background: "#333",
+            color: "#fff",
+          },
+          success: {
+            iconTheme: {
+              primary: "#4ade80",
+              secondary: "#fff",
+            },
+          },
+        }}
+      />
       <Navbar />
-        <Outlet /> {/* This is where the child components will be rendered */}
+      <Outlet /> {/* This is where the child components will be rendered */}
       <Footer />
-    </div>
+    </>
   );
 };
 

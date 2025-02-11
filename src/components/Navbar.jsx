@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import {
   Search,
   ShoppingCart,
@@ -12,13 +13,18 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "../assets/images/br_logo.png";
+import { useAuth } from "../context/AuthContext";
+import CategoryDropdown from "./CategoryDropdown";
 
 const Navbar = () => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [currentBanner, setCurrentBanner] = useState(0);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const userDropdownRef = useRef(null);
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   let dropdownTimeout = useRef(null);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const bannerMessages = [
     "Buy more, save more! Flat 5% off on all products 10,000+",
@@ -28,14 +34,14 @@ const Navbar = () => {
 
   const categories = [
     { title: "All products", path: "/products" },
-    { title: "Rigid signs", path: "/rigid-signs" },
-    { title: "Banners & displays", path: "/banners-displays" },
-    { title: "Decals & magnets", path: "/decals-magnets" },
-    { title: "Trade shows & events", path: "/trade-shows" },
-    { title: "Office signs", path: "/office-signs" },
-    { title: "Outdoor signs", path: "/outdoor-signs" },
-    { title: "Photo & decor", path: "/photo-decor" },
-    { title: "Wedding & parties", path: "/wedding-parties" },
+    { title: "Rigid signs", path: "" },
+    { title: "Banners & displays", path: "" },
+    { title: "Decals & magnets", path: "" },
+    { title: "Trade shows & events", path: "" },
+    { title: "Office signs", path: "" },
+    { title: "Outdoor signs", path: "" },
+    { title: "Photo & decor", path: "" },
+    { title: "Wedding & parties", path: "" },
   ];
 
   const requiredOptions = [
@@ -84,6 +90,15 @@ const Navbar = () => {
     });
   }, []);
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 80); // Adjust this value based on the top banner + secondary nav height
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   const handleDropdownEnter = () => {
     if (dropdownTimeout.current) clearTimeout(dropdownTimeout.current);
     setIsUserDropdownOpen(true);
@@ -95,11 +110,18 @@ const Navbar = () => {
     }, 200); // 200ms delay before closing
   };
 
+  const handleLogout = () => {
+    logout();
+    setIsUserDropdownOpen(false);
+    toast.success("Successfully logged out!");
+    navigate("/");
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="w-full z-50 "
+      className="w-full z-50 relative"
     >
       {/* Top Banner */}
       <div className="bg-gradient-to-r from-red-600 to-pink-600 text-white py-2">
@@ -161,11 +183,16 @@ const Navbar = () => {
         </div>
       </div>
 
-      {/* Main Navigation */}
-      <div className="bg-white shadow-md">
+      {/* Sticky Navigation Section */}
+      <div
+        className={`${
+          isScrolled ? "fixed top-0 left-0 right-0 shadow-lg" : ""
+        } bg-white z-50 transition-all duration-300`}
+      >
         <div className="container mx-auto px-4">
+          {/* Main Navigation */}
           <div className="flex items-center justify-between py-4">
-            {/* Logo */}
+            {/* Logo Section */}
             <Link to="/" className="flex-shrink-0">
               <img
                 src={logo || "/placeholder.svg"}
@@ -207,8 +234,11 @@ const Navbar = () => {
                 onMouseEnter={handleDropdownEnter}
                 onMouseLeave={handleDropdownLeave}
               >
-                <button className="flex items-center space-x-1 cursor-pointer p-2 hover:text-red-600">
+                <button className="flex items-center space-x-2 cursor-pointer p-2 hover:text-red-600">
                   <User className="w-6 h-6" />
+                  {user ? (
+                    <span className="text-sm font-medium">{user.name}</span>
+                  ) : null}
                   <ChevronDown className="w-4 h-4" />
                 </button>
 
@@ -218,31 +248,87 @@ const Navbar = () => {
                     style={{ zIndex: 1000 }}
                   >
                     <div className="bg-white rounded-lg shadow-lg py-1 border border-gray-100">
-                      <Link
-                        to="/profile"
-                        className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-600"
-                      >
-                        My Profile
-                      </Link>
-                      <Link
-                        to="/orders"
-                        className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-600"
-                      >
-                        My Orders
-                      </Link>
-                      <div className="border-t border-gray-100 my-1"></div>
-                      <Link
-                        to="/login"
-                        className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-600"
-                      >
-                        Login In
-                      </Link>
-                      <Link
-                        to="/register"
-                        className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-600"
-                      >
-                        Register
-                      </Link>
+                      {user ? (
+                        <>
+                          <div className="px-4 py-2 border-b border-gray-100">
+                            <p className="text-sm font-medium text-gray-900">
+                              {user.name}
+                            </p>
+                            <p className="text-xs text-gray-500">
+                              {user.email}
+                            </p>
+                          </div>
+                          <Link
+                            to="/profile"
+                            className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-600"
+                          >
+                            My Profile
+                          </Link>
+                          <Link
+                            to="/orders"
+                            className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-600"
+                          >
+                            My Orders
+                          </Link>
+                          <Link
+                            to="/shared-orders"
+                            className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-600"
+                          >
+                            Shared Orders
+                          </Link>
+                          <Link
+                            to="/my-designs"
+                            className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-600"
+                          >
+                            My Designs
+                          </Link>
+                          <Link
+                            to="/address-book"
+                            className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-600"
+                          >
+                            Address Book
+                          </Link>
+                          <Link
+                            to="/payment-methods"
+                            className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-600"
+                          >
+                            Payment Methods
+                          </Link>
+                          <Link
+                            to="/email-notifications"
+                            className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-600"
+                          >
+                            Email Notifications
+                          </Link>
+                          <Link
+                            to="/profile-password"
+                            className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-600"
+                          >
+                            Profile & Password
+                          </Link>
+                          <button
+                            onClick={handleLogout}
+                            className="block w-full text-left px-4 py-2.5 text-sm text-red-600 hover:bg-gray-50"
+                          >
+                            Logout
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <Link
+                            to="/login"
+                            className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-600"
+                          >
+                            Login
+                          </Link>
+                          <Link
+                            to="/register"
+                            className="block px-4 py-2.5 text-sm text-gray-700 hover:bg-gray-50 hover:text-red-600"
+                          >
+                            Register
+                          </Link>
+                        </>
+                      )}
                     </div>
                   </div>
                 )}
@@ -263,31 +349,35 @@ const Navbar = () => {
           </div>
 
           {/* Category Navigation */}
-          <div className="hidden md:flex space-x-6 py-4 ">
+          <div className="hidden md:flex space-x-6 py-4">
             <div className="relative group">
               <button className="flex items-center ml-2 space-x-6 font-semibold text-gray-700 text-sm hover:text-red-600 whitespace-nowrap cursor-pointer">
                 All products
                 <ChevronDown className="ml-1 w-4 h-4 transform transition-transform group-hover:rotate-180" />
               </button>
 
-              {/* Added padding-top to create hover gap */}
-              <div className="hidden group-hover:block absolute top-full left-0 pt-2">
-                {/* Actual dropdown content */}
-                <div className="w-64 bg-white shadow-lg rounded-lg py-2 z-50">
+              {/* First level dropdown */}
+              <div className="hidden group-hover:block absolute top-full left-0 pt-2 z-50">
+                <div className="w-64 bg-white shadow-lg rounded-lg py-2">
                   {categories.slice(1).map((category) => (
-                    <Link
-                      key={category.title}
-                      to={category.path}
-                      className="flex items-center justify-between px-4 py-2 text-gray-600 hover:bg-gray-50 hover:text-red-600"
-                    >
-                      {category.title}
-                      <ChevronRight className="w-4 h-4" />
-                    </Link>
+                    <div key={category.title} className="relative group/item">
+                      <Link
+                        to={category.path}
+                        className="flex items-center justify-between px-4 py-2 text-gray-600 hover:text-red-600 hover:bg-gray-50 w-full"
+                      >
+                        {category.title}
+                        <ChevronRight className="w-4 h-4" />
+                      </Link>
+                      {/* Second level dropdown will only show when hovering over the parent item */}
+                      <div className="invisible group-hover/item:visible absolute left-full top-0">
+                        <CategoryDropdown category={category} />
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>
             </div>
-            <div className="hidden md:block relative flex-1 ">
+            <div className="hidden md:block relative flex-1">
               <div className="flex-1 overflow-x-auto hide-scrollbar md:overflow-x-auto px-4">
                 <div className="flex space-x-8 min-w-max pb-2">
                   {categories.slice(1).map((category) => (
