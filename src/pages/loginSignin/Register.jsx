@@ -111,42 +111,53 @@ function Register() {
       console.groupEnd();
 
       let errorMessage;
-      const errorData = error.response?.data;
 
-      switch (error.response?.status) {
-        case 409: // Conflict - Duplicate email/mobile
-          errorMessage =
-            errorData.message ||
-            "A user with this email or mobile already exists.";
-          break;
-        case 400: // Validation errors
-          const validationErrors = errorData.errors;
-          errorMessage =
-            Object.values(validationErrors || {})
-              .flat()
-              .join(", ") ||
-            errorData.message ||
-            "Please check your input.";
-          break;
-        case 500:
-          errorMessage =
-            "An unexpected server error occurred. Please try again later.";
-          break;
-        default:
-          errorMessage =
-            errorData?.message || "Registration failed. Please try again.";
+      // Handle network errors or when response is not available
+      if (!error.response) {
+        errorMessage = "Network error. Please check your internet connection.";
+      } else {
+        const errorData = error.response?.data;
+
+        switch (error.response?.status) {
+          case 409:
+            errorMessage =
+              errorData?.message ||
+              "A user with this email or mobile already exists.";
+            break;
+          case 400:
+            const validationErrors = errorData?.errors;
+            errorMessage = validationErrors
+              ? Object.values(validationErrors).flat().join(", ")
+              : errorData?.message || "Please check your input.";
+            break;
+          case 500:
+            errorMessage = "Server error. Please try again later.";
+            break;
+          default:
+            errorMessage = "Registration failed. Please try again.";
+        }
       }
 
-      toast.error(errorMessage, {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        className: "error-toast",
-      });
+      // Ensure toast is called with proper configuration
+      try {
+        toast.error(errorMessage, {
+          position: "top-center",
+          autoClose: 5000, // Increased duration
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored", // Explicitly set theme
+          style: {
+            backgroundColor: "#ef4444",
+            color: "white",
+          },
+        });
+      } catch (toastError) {
+        console.error("Toast error:", toastError);
+        alert(errorMessage); // Fallback to alert if toast fails
+      }
     },
   });
 
@@ -166,28 +177,27 @@ function Register() {
 
   // Render the registration form
   return (
-    // Main container with full height and centered content
-    <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      {/* Toast notification container for showing messages */}
+    <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-8 sm:px-6 lg:px-8">
       <ToastContainer
         position="top-center"
-        autoClose={3000}
+        autoClose={5000}
         hideProgressBar={false}
-        newestOnTop={false}
+        newestOnTop
         closeOnClick
         rtl={false}
         pauseOnFocusLoss
         draggable
         pauseOnHover
         theme="colored"
+        limit={3} // Limit number of toasts shown at once
       />
 
-      {/* Header section with title and login link */}
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
+      {/* Compact header */}
+      <div className="sm:mx-auto sm:w-full sm:max-w-2xl mb-6">
+        <h2 className="text-center text-2xl font-bold text-gray-900">
           Create an account
         </h2>
-        <p className="mt-2 text-center text-sm text-gray-600">
+        <p className="mt-1 text-center text-sm text-gray-600">
           Already have an account?{" "}
           <Link
             to="/login"
@@ -198,110 +208,125 @@ function Register() {
         </p>
       </div>
 
-      {/* Registration form container */}
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-6 shadow rounded-lg sm:px-10">
-          {/* Form with validation and submission handling */}
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            {/* Form fields - each field includes label, input, and error message */}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                First Name
-              </label>
-              <input
-                type="text"
-                {...register("firstName")}
-                className="mt-1 p-2 w-full border border-red-300 focus:outline-1 focus:outline-offset-1 focus:outline-red-500   rounded-md"
-              />
-              <p className="text-red-500 text-sm">
-                {errors.firstName?.message}
-              </p>
+      {/* Wider form container */}
+      <div className="sm:mx-auto sm:w-full sm:max-w-2xl">
+        <div className="bg-white py-6 px-6 shadow rounded-lg sm:px-8">
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+            {/* Grid layout for form fields */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {/* First Name and Last Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  First Name
+                </label>
+                <input
+                  type="text"
+                  {...register("firstName")}
+                  className="mt-1 p-2 w-full border border-red-300 focus:outline-1 focus:outline-offset-1 focus:outline-red-500 rounded-md"
+                />
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.firstName?.message}
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Last Name
+                </label>
+                <input
+                  type="text"
+                  {...register("lastName")}
+                  className="mt-1 p-2 w-full border border-red-300 focus:outline-1 focus:outline-offset-1 focus:outline-red-500 rounded-md"
+                />
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.lastName?.message}
+                </p>
+              </div>
+
+              {/* Email and Mobile */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Email
+                </label>
+                <input
+                  type="email"
+                  {...register("email")}
+                  className="mt-1 p-2 w-full border border-red-300 focus:outline-1 focus:outline-offset-1 focus:outline-red-500 rounded-md"
+                />
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.email?.message}
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Mobile
+                </label>
+                <input
+                  type="text"
+                  {...register("mobile")}
+                  className="mt-1 p-2 w-full border border-red-300 focus:outline-1 focus:outline-offset-1 focus:outline-red-500 rounded-md"
+                />
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.mobile?.message}
+                </p>
+              </div>
+
+              {/* Gender and Password */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Gender
+                </label>
+                <select
+                  {...register("gender")}
+                  className="mt-1 p-2 w-full border border-red-300 focus:outline-1 focus:outline-offset-1 focus:outline-red-500 rounded-md"
+                >
+                  <option value="">Select Gender</option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.gender?.message}
+                </p>
+              </div>
+
+              {/* Password and Confirm Password in the same row */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Password
+                </label>
+                <input
+                  type="password"
+                  {...register("password")}
+                  className="mt-1 p-2 w-full border border-red-300 focus:outline-1 focus:outline-offset-1 focus:outline-red-500 rounded-md"
+                />
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.password?.message}
+                </p>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700">
+                  Confirm Password
+                </label>
+                <input
+                  type="password"
+                  {...register("confirmPassword")}
+                  className="mt-1 p-2 w-full border border-red-300 focus:outline-1 focus:outline-offset-1 focus:outline-red-500 rounded-md"
+                />
+                <p className="text-red-500 text-xs mt-1">
+                  {errors.confirmPassword?.message}
+                </p>
+              </div>
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Last Name
-              </label>
-              <input
-                type="text"
-                {...register("lastName")}
-                className="mt-1 p-2 w-full border border-red-300 focus:outline-1 focus:outline-offset-1 focus:outline-red-500  rounded-md"
-              />
-              <p className="text-red-500 text-sm">{errors.lastName?.message}</p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Email
-              </label>
-              <input
-                type="email"
-                {...register("email")}
-                className="mt-1 p-2 w-full border border-red-300 focus:outline-1 focus:outline-offset-1 focus:outline-red-500   rounded-md"
-              />
-              <p className="text-red-500 text-sm">{errors.email?.message}</p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Mobile
-              </label>
-              <input
-                type="text"
-                {...register("mobile")}
-                className="mt-1 p-2 w-full border border-red-300 focus:outline-1 focus:outline-offset-1 focus:outline-red-500  rounded-md"
-              />
-              <p className="text-red-500 text-sm">{errors.mobile?.message}</p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Gender
-              </label>
-              <select
-                {...register("gender")}
-                className="mt-1 p-2 w-full border border-red-300 focus:outline-1 focus:outline-offset-1 focus:outline-red-500  rounded-md"
-              >
-                <option value="">Select Gender</option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </select>
-              <p className="text-red-500 text-sm">{errors.gender?.message}</p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <input
-                type="password"
-                {...register("password")}
-                className="mt-1 p-2 w-full border border-red-300 focus:outline-1 focus:outline-offset-1 focus:outline-red-500  rounded-md"
-              />
-              <p className="text-red-500 text-sm">{errors.password?.message}</p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700">
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                {...register("confirmPassword")}
-                className="mt-1 p-2 w-full border border-red-300 focus:outline-1 focus:outline-offset-1 focus:outline-red-500  rounded-md"
-              />
-              <p className="text-red-500 text-sm">
-                {errors.confirmPassword?.message}
-              </p>
-            </div>
-
-            {/* Submit button with loading state */}
-            <div>
+            {/* Submit button */}
+            <div className="mt-6 flex justify-center">
               <button
                 type="submit"
                 disabled={mutation.isLoading}
-                className={`w-full bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] hover:from-[#590C0D] hover:to-[#BF1A1C] text-white font-bold py-2 px-4 rounded-md transition-all duration-300 ${
+                className={`w-48 bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] hover:shadow-xl text-white font-bold py-2.5 px-4 rounded-md transition-all duration-300 cursor-pointer hover:scale-[0.98] active:scale-95 ${
                   mutation.isLoading ? "opacity-70 cursor-not-allowed" : ""
                 }`}
               >
