@@ -1,22 +1,22 @@
 "use client";
-
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
 import { Eye, EyeOff, Facebook, ChromeIcon } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import Api  from "./Api";
 
 const schema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
-  password: z
-    .string()
-    .min(8, { message: "Password must be at least 8 characters long" }),
+  password: z.string().min(3, { message: "Password must be at least 3 characters long" }),
   rememberMe: z.boolean().optional(),
 });
 
-export default function Login() {
+const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const navigate = useNavigate();
 
   const {
     register,
@@ -31,9 +31,28 @@ export default function Login() {
     },
   });
 
+  const loginMutation = useMutation({
+    mutationFn: async (data) => {
+      const response = await Api.post(`/login/`, {
+        username: data.email,
+        password: data.password,
+      });
+      return response.data;
+    },
+    onSuccess: (data) => {
+      console.log("Login successful:", data);
+      alert("Login successful!");
+      localStorage.setItem("access_token", data.access_token);
+      localStorage.setItem("refresh_token", data.refresh_token);
+      navigate("/");
+    },
+    onError: (error) => {
+      alert(error.response?.data?.error || "Login failed. Please try again.");
+    },
+  });
+
   const onSubmit = (data) => {
-    // Handle successful form submission here
-    console.log("Form submitted:", data);
+    loginMutation.mutate(data);
   };
 
   return (
@@ -43,8 +62,7 @@ export default function Login() {
           Log in
         </h2>
         <p className="mt-2 text-center text-sm text-gray-600">
-          Enter your username and password to sign in to your Square Signs
-          account.
+          Enter your username and password to sign in to your Square Signs account.
         </p>
       </div>
 
@@ -52,10 +70,7 @@ export default function Login() {
         <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
           <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
             <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                 Email
               </label>
               <div className="mt-1">
@@ -66,19 +81,12 @@ export default function Login() {
                   className="appearance-none block w-full px-3 py-2 border border-red-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-red-500 focus:border-red-500 sm:text-sm"
                   {...register("email")}
                 />
-                {errors.email && (
-                  <p className="mt-2 text-sm text-red-600">
-                    {errors.email.message}
-                  </p>
-                )}
+                {errors.email && <p className="mt-2 text-sm text-red-600">{errors.email.message}</p>}
               </div>
             </div>
 
             <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-gray-700"
-              >
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Password
               </label>
               <div className="mt-1 relative">
@@ -94,17 +102,9 @@ export default function Login() {
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
                   onClick={() => setShowPassword(!showPassword)}
                 >
-                  {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400" />
-                  ) : (
-                    <Eye className="h-5 w-5 text-gray-400" />
-                  )}
+                  {showPassword ? <Eye className="h-5 w-5 text-gray-400" /> : <EyeOff className="h-5 w-5 text-gray-400" />}
                 </button>
-                {errors.password && (
-                  <p className="mt-2 text-sm text-red-600">
-                    {errors.password.message}
-                  </p>
-                )}
+                {errors.password && <p className="mt-2 text-sm text-red-600">{errors.password.message}</p>}
               </div>
             </div>
 
@@ -116,34 +116,28 @@ export default function Login() {
                   className="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300 rounded"
                   {...register("rememberMe")}
                 />
-                <label
-                  htmlFor="rememberMe"
-                  className="ml-2 block text-sm text-gray-900"
-                >
+                <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-900">
                   Remember me
                 </label>
               </div>
 
               <div className="text-sm">
-                <a
-                  href="#"
-                  className="font-medium text-red-600 hover:text-red-500"
-                >
+                <a href="#" className="font-medium text-red-600 hover:text-red-500">
                   Forgot password?
                 </a>
               </div>
             </div>
 
-            <div>
+            <div className="flex justify-center">
               <button
                 type="submit"
-                className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] hover:from-[#590C0D] hover:to-[#BF1A1C] "
+                className="w-48 bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] hover:shadow-xl text-white font-bold py-2.5 px-4 rounded-md transition-all duration-300 cursor-pointer hover:scale-[0.98] active:scale-95"
+                disabled={loginMutation.isLoading}
               >
-                Log in
+                {loginMutation.isLoading ? "Logging in..." : "Log in"}
               </button>
             </div>
           </form>
-
           <div className="mt-6">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
@@ -179,12 +173,10 @@ export default function Login() {
             </div>
           </div>
 
+
           <p className="mt-8 text-center text-sm text-gray-600">
             Don't have an account?{" "}
-            <Link
-              to="/register"
-              className="font-medium text-red-600 hover:text-red-500"
-            >
+            <Link to="/register" className="font-medium text-red-600 hover:text-red-500">
               Register
             </Link>
           </p>
@@ -192,4 +184,6 @@ export default function Login() {
       </div>
     </div>
   );
-}
+};
+
+export default Login;

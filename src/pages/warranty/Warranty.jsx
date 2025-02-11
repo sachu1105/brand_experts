@@ -122,7 +122,7 @@ const Warranty = () => {
               <div className="flex justify-center">
                 <button
                   type="submit"
-                  className="bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] text-white py-2 px-4 text-sm rounded-md hover:bg-red-700 cursor-pointer"
+                  className="w-58 bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] hover:shadow-xl text-white font-bold py-2.5 px-4 rounded-md transition-all duration-300 cursor-pointer hover:scale-[0.98] active:scale-95"
                 >
                   Proceed to payment
                 </button>
@@ -130,7 +130,7 @@ const Warranty = () => {
             </form>
           </div>
 
-          <div className="md:col-span-2 flex items-center justify-center">
+          <div className="md:col-span-2 flex items-center justify-center ">
             <img
               src={register}
               alt="Warranty Registration"
@@ -168,13 +168,14 @@ const Warranty = () => {
                   rows="6"
                 ></textarea>
               </div>
-
+              <div className="flex justify-center">
               <button
                 type="submit"
-                className="w-full bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] text-white py-2 px-4 text-sm rounded-md hover:bg-red-700"
+                className="w-48 bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] hover:shadow-xl text-white font-bold py-2.5 px-4 rounded-md transition-all duration-300 cursor-pointer hover:scale-[0.98] active:scale-95"
               >
                 Submit claim
               </button>
+              </div>
             </form>
           </div>
           
