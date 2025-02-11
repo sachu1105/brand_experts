@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "https://dash.brandexperts.ae/",
+  baseURL: "https://dash.brandexperts.ae/", // Already has trailing slash
 });
 
 // Function to refresh the access token

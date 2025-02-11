@@ -8,7 +8,7 @@ import * as yup from "yup";
 import { Link, useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import Api from "./Api";
 // Define form validation rules using Yup
 // This ensures all user inputs meet our requirements before submission
 const schema = yup.object().shape({
@@ -53,10 +53,7 @@ function Register() {
   // This handles the API call to register a new user
   const registerUser = async (formData) => {
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/register/`,
-        formData
-      );
+      const response = await Api.post("register/", formData); // Added trailing slash
       return response.data;
     } catch (error) {
       // Enhanced error logging
