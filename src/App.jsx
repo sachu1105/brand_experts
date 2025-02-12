@@ -17,6 +17,7 @@ import Warranty from "./pages/warranty/Warranty";
 import Products from "./pages/products/Products";
 import ProductDetail from "./components/ProductDetail";
 import DesignUpload from "./components/DesignUpload";
+import WarrantyClaim from "./pages/warranty/WarrantyClaim";
 
 const queryClient = new QueryClient();
 
@@ -61,6 +62,10 @@ const App = () => {
                     element={<h1>Profile & Password</h1>}
                   />
                   <Route path="/design-upload" element={<DesignUpload />} />
+                  <Route
+                    path="/warranty-claim/:warrantyNumber"
+                    element={<WarrantyClaim />}
+                  />
                 </Route>
               </Routes>
             </Router>
