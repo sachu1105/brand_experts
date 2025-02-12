@@ -24,7 +24,7 @@ const Layout = () => {
         }}
       />
       <Navbar />
-      <Outlet /> {/* This is where the child components will be rendered */}
+      <Outlet />
       <Footer />
     </>
   );

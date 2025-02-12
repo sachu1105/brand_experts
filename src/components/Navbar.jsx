@@ -15,6 +15,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import logo from "../assets/images/br_logo.png";
 import { useAuth } from "../context/AuthContext";
 import CategoryDropdown from "./CategoryDropdown";
+import { useQuery } from "@tanstack/react-query";
+import { getParentCategories } from "../services/categoryApi";
+import { useCart } from "../context/CartContext";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -25,23 +28,15 @@ const Navbar = () => {
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   let dropdownTimeout = useRef(null);
   const [isScrolled, setIsScrolled] = useState(false);
+  const {
+    state: { items },
+    dispatch: cartDispatch,
+  } = useCart();
 
   const bannerMessages = [
     "Buy more, save more! Flat 5% off on all products 10,000+",
     "FREE SHIPPING ON ORDERS OVER $85",
     "SPECIAL OFFER: 20% OFF ALL TEMPLATES",
-  ];
-
-  const categories = [
-    { title: "All products", path: "/products" },
-    { title: "Rigid signs", path: "" },
-    { title: "Banners & displays", path: "" },
-    { title: "Decals & magnets", path: "" },
-    { title: "Trade shows & events", path: "" },
-    { title: "Office signs", path: "" },
-    { title: "Outdoor signs", path: "" },
-    { title: "Photo & decor", path: "" },
-    { title: "Wedding & parties", path: "" },
   ];
 
   const requiredOptions = [
@@ -111,11 +106,33 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
+    // Clear cart first
+    cartDispatch({ type: "CLEAR_ON_LOGOUT" });
+    // Then logout
     logout();
     setIsUserDropdownOpen(false);
     toast.success("Successfully logged out!");
     navigate("/");
   };
+
+  // Replace the static categories array with API data
+  const { data: parentCategories } = useQuery({
+    queryKey: ["parentCategories"],
+    queryFn: getParentCategories,
+    // Transform the data to match the expected format
+    select: (data) => [
+      { title: "All products", path: "/products" },
+      ...data.map((cat) => ({
+        title: cat.name,
+        path: `/category/${cat.id}`,
+      })),
+    ],
+  });
+
+  // Use parentCategories || [] as a fallback when data is loading
+  const categories = parentCategories || [
+    { title: "All products", path: "/products" },
+  ];
 
   return (
     <motion.div
@@ -219,12 +236,14 @@ const Navbar = () => {
                 Design tool
               </button>
 
-              {/* Cart */}
+              {/* Cart with badge */}
               <Link to="/cart" className="relative">
                 <ShoppingCart className="w-6 h-6 text-gray-700" />
-                <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  0
-                </span>
+                {items.length > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
+                    {items.length}
+                  </span>
+                )}
               </Link>
 
               {/* User Menu - Fixed Version */}

@@ -1,10 +1,17 @@
 import { Link } from "react-router-dom";
-import { ChevronRight } from "lucide-react";
 
 const CategoryDropdown = ({ category }) => {
-  // Hardcoded data for all categories
+  // Check for both categories
+  if (
+    category.title !== "Rigid Signs" &&
+    category.title !== "Banner & Displays"
+  ) {
+    return null;
+  }
+
+  // Define subcategories based on parent category
   const subcategoriesData = {
-    "Rigid signs": [
+    "Rigid Signs": [
       {
         id: "acrylic",
         title: "Acrylic Signs",
@@ -133,21 +140,46 @@ const CategoryDropdown = ({ category }) => {
         subcategories: [],
       },
     ],
+    "Banner & Displays": [
+      {
+        id: "vinyl-banners",
+        title: "Vinyl Banners",
+        path: "/banners/vinyl-banners",
+        subcategories: [
+          {
+            id: 1,
+            title: "Standard Vinyl Banners",
+            path: "/banners/standard-vinyl",
+            badge: "Best Seller",
+          },
+          {
+            id: 2,
+            title: "Mesh Banners",
+            path: "/banners/mesh",
+          },
+          // ... more subcategories
+        ],
+      },
+      {
+        id: "retractable-banners",
+        title: "Retractable Banners",
+        path: "/banners/retractable",
+        subcategories: [
+          // ... subcategories
+        ],
+      },
+      // ... more main categories
+    ],
   };
 
-  // Get subcategories based on category title
-  const subCategories = subcategoriesData[category.title] || [];
-
-  // If no subcategories found, don't render the dropdown
-  if (subCategories.length === 0) return null;
+  // Use the appropriate subcategories based on category title
+  const subcategories = subcategoriesData[category.title];
 
   return (
     <div className="ml-2">
-      {" "}
-      {/* Remove invisible/visible classes since parent controls visibility */}
       <div className="w-[900px] bg-white shadow-lg rounded-lg p-6">
         <div className="grid grid-cols-3 gap-x-8">
-          {subCategories.map((mainCategory, index) => (
+          {subcategories.map((mainCategory, index) => (
             <div key={mainCategory.id} className={`${index > 2 ? "mt-8" : ""}`}>
               <Link
                 to={mainCategory.path}

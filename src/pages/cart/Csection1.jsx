@@ -1,7 +1,16 @@
-import { ShoppingCart, X, ArrowRight } from "lucide-react"
-import { Link } from "react-router-dom"
+import { ShoppingCart, X, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useCart } from "../../context/CartContext";
 
 export default function Csection1() {
+  const {
+    state: { items },
+  } = useCart();
+
+  if (items.length > 0) {
+    return null; // Don't show empty cart message if there are items
+  }
+
   return (
     <div className="min-h-screen flex items-center justify-center p-4">
       <div className="max-w-md w-full text-center space-y-6">
@@ -35,13 +44,12 @@ export default function Csection1() {
 
         <Link
           to="/get-started"
-          className="inline-flex items-center justify-center gap-2 bg-red-600 text-white px-8 py-3 rounded-full hover:bg-emerald-700 transition-colors"
+          className="inline-flex items-center justify-center gap-2 bg-red-600 text-white px-8 py-3 rounded-full hover:bg-red-700 transition-colors"
         >
           GET STARTED
           <ArrowRight className="w-5 h-5" />
         </Link>
       </div>
     </div>
-  )
+  );
 }
-
