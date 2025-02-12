@@ -66,6 +66,24 @@ export default function ProductDetail() {
     }
   };
 
+  const handleStandardSizeChange = (e) => {
+    const selectedSize = e.target.value;
+    setStandardSize(selectedSize);
+
+    // Find the matching standard size object
+    const sizeObject = product.standard_sizes.find(
+      (size) => size.standard_sizes === selectedSize
+    );
+
+    // Update custom size if a standard size is selected
+    if (sizeObject) {
+      setCustomSize({
+        width: parseFloat(sizeObject.width),
+        height: parseFloat(sizeObject.height),
+      });
+    }
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     const productDetails = {
@@ -88,7 +106,7 @@ export default function ProductDetail() {
     Specification: (
       <div className="space-y-4">
         <h4 className="font-semibold">Dimensions</h4>
-        <p>- Standard Size: {product.standard_size}</p>
+        <p>- Standard Size: {product.standard_sizes}</p>
         <p>- Width: {product.width} inches</p>
         <p>- Height: {product.height} inches</p>
         {product.specifications?.map((spec, index) => (
@@ -193,13 +211,24 @@ export default function ProductDetail() {
                 <label className="block text-sm font-medium mb-2">
                   Standard Size:
                 </label>
-                <select
-                  value={standardSize}
-                  onChange={(e) => setStandardSize(e.target.value)}
-                  className="w-full p-2 border border-gray-300 rounded-lg bg-white"
-                >
-                  <option>{product.standard_size}</option>
-                </select>
+                {product.standard_sizes && product.standard_sizes.length > 0 ? (
+                  <select
+                    value={standardSize}
+                    onChange={handleStandardSizeChange}
+                    className="w-full p-2 border border-gray-300 rounded-lg bg-white"
+                  >
+                    <option value="">Select a size</option>
+                    {product.standard_sizes.map((size, index) => (
+                      <option key={index} value={size.standard_sizes}>
+                        {size.standard_sizes} inches
+                      </option>
+                    ))}
+                  </select>
+                ) : (
+                  <p className="text-gray-500 italic">
+                    No standard sizes available
+                  </p>
+                )}
               </div>
 
               <div>

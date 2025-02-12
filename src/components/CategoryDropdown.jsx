@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getCategoryDetails } from "../services/categoryApi";
+import { ChevronRight } from "lucide-react";
 
 const CategoryDropdown = ({ category, position = "right" }) => {
   // Fetch category details using the category ID from the parent category
@@ -25,6 +26,7 @@ const CategoryDropdown = ({ category, position = "right" }) => {
         id: sub.subcategory_id,
         title: sub.subcategory_name,
         path: `/products?subcategory=${sub.subcategory_id}`,
+        status: sub.status,
       })),
     }));
   };
@@ -41,7 +43,7 @@ const CategoryDropdown = ({ category, position = "right" }) => {
             <div key={mainCategory.id} className={`${index > 2 ? "mt-8" : ""}`}>
               <Link
                 to={mainCategory.path}
-                className="block text-gray-800 hover:text-red-600 font-medium border-b border-gray-100 pb-2 mb-3"
+                className="block text-gray-900 hover:text-red-600 font-medium border-b border-gray-200 pb-2 mb-3"
               >
                 {mainCategory.title}
               </Link>
@@ -51,11 +53,26 @@ const CategoryDropdown = ({ category, position = "right" }) => {
                     <Link
                       key={subCategory.id}
                       to={subCategory.path}
-                      className="flex items-center text-gray-600 hover:text-red-600 text-sm group/item"
+                      className="flex items-center justify-between text-gray-600 hover:text-red-600 text-sm group/item"
                     >
-                      <span className="flex items-center gap-2">
-                        {subCategory.title}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span>{subCategory.title}</span>
+                        {subCategory.status === "Best Seller" && (
+                          <span className="px-2 py-0.5 text-xs bg-orange-100 text-orange-600 rounded-full">
+                            Best Seller
+                          </span>
+                        )}
+                        {subCategory.status?.includes("%") && (
+                          <span className="px-2 py-0.5 text-xs bg-red-100 text-red-600 rounded-full">
+                            {subCategory.status}
+                          </span>
+                        )}
+                        {subCategory.status === "Trending" && (
+                          <span className="px-2 py-0.5 text-xs bg-green-100 text-green-600 rounded-full">
+                            Trending
+                          </span>
+                        )}
+                      </div>
                     </Link>
                   ))}
                 </div>
