@@ -11,6 +11,7 @@ export default function ProductDetail() {
   const [quantity, setQuantity] = useState(1);
   const [standardSize, setStandardSize] = useState("");
   const [customSize, setCustomSize] = useState({ width: 12, height: 12 });
+  const [measurementUnit, setMeasurementUnit] = useState("inches");
   const [activeTab, setActiveTab] = useState("Overview");
   const navigate = useNavigate();
 
@@ -34,8 +35,28 @@ export default function ProductDetail() {
     product.image4,
   ].filter(Boolean);
 
+  const convertToInches = (value, unit) => {
+    switch (unit) {
+      case "cm":
+        return value / 2.54;
+      case "feet":
+        return value * 12;
+      default:
+        return value;
+    }
+  };
+
   const calculatePrice = () => {
-    return (parseFloat(product.price) * quantity).toFixed(2);
+    const widthInInches = convertToInches(customSize.width, measurementUnit);
+    const heightInInches = convertToInches(customSize.height, measurementUnit);
+    const area = widthInInches * heightInInches;
+    const basePrice = parseFloat(product.price);
+    const pricePerSqInch = basePrice / 144;
+    return (pricePerSqInch * area * quantity).toFixed(2);
+  };
+
+  const getUnitLabel = () => {
+    return measurementUnit === "feet" ? "feet" : "inches";
   };
 
   const handleQuantityChange = (e) => {
@@ -90,7 +111,6 @@ export default function ProductDetail() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm mb-8">
         <a href="/" className="text-gray-600 hover:text-gray-900">
           Home
@@ -104,7 +124,6 @@ export default function ProductDetail() {
       </nav>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-        {/* Left side - Images */}
         <div className="space-y-4">
           <div className="relative aspect-[4/3] w-full overflow-hidden rounded-lg bg-gray-100">
             <img
@@ -134,20 +153,42 @@ export default function ProductDetail() {
           </div>
         </div>
 
-        {/* Right side - Product Details */}
         <div className="space-y-6 border-1 border-gray-100 p-6 rounded-lg bg-gray-50 ">
           <div>
             <div className="flex items-center gap-4 mb-4">
               <h1 className="text-2xl font-bold">{product.name}</h1>
-              {/* <span className="bg-orange-100 text-orange-800 text-sm px-3 py-1 rounded-full">
-                Best Seller
-              </span> */}
             </div>
             <p className="text-gray-600">{product.description}</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-4">
+              <div className="flex justify-end mb-4">
+                <div className="flex gap-4 items-center">
+                  <span className="text-sm font-medium">Size:</span>
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      value="inches"
+                      checked={measurementUnit === "inches"}
+                      onChange={(e) => setMeasurementUnit(e.target.value)}
+                      className="mr-2"
+                    />
+                    Inches
+                  </label>
+                  <label className="flex items-center">
+                    <input
+                      type="radio"
+                      value="feet"
+                      checked={measurementUnit === "feet"}
+                      onChange={(e) => setMeasurementUnit(e.target.value)}
+                      className="mr-2"
+                    />
+                    Feet
+                  </label>
+                </div>
+              </div>
+
               <div>
                 <label className="block text-sm font-medium mb-2">
                   Standard Size:
@@ -168,7 +209,7 @@ export default function ProductDetail() {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm text-gray-600">
-                      Width (inches)
+                      Width ({getUnitLabel()})
                     </label>
                     <input
                       type="number"
@@ -185,7 +226,7 @@ export default function ProductDetail() {
                   </div>
                   <div>
                     <label className="block text-sm text-gray-600">
-                      Height (inches)
+                      Height ({getUnitLabel()})
                     </label>
                     <input
                       type="number"
@@ -236,7 +277,6 @@ export default function ProductDetail() {
         </div>
       </div>
 
-      {/* Tabs */}
       <div className="mt-16">
         <div className="border-b border-gray-200">
           <nav className="flex gap-8">

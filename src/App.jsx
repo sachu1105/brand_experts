@@ -18,6 +18,7 @@ import Products from "./pages/products/Products";
 import ProductDetail from "./components/ProductDetail";
 import DesignUpload from "./components/DesignUpload";
 import WarrantyClaim from "./pages/warranty/WarrantyClaim";
+import CategoryPage from "./pages/CategoryPage"; // You'll need to create this
 
 const queryClient = new QueryClient();
 
@@ -65,6 +66,10 @@ const App = () => {
                   <Route
                     path="/warranty-claim/:warrantyNumber"
                     element={<WarrantyClaim />}
+                  />
+                  <Route
+                    path="/category/:categoryId"
+                    element={<CategoryPage />}
                   />
                 </Route>
               </Routes>

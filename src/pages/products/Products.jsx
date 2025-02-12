@@ -1,9 +1,31 @@
-import React from 'react';
-import { Link } from "react-router-dom";
+import React from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 import { useProducts } from "../../hooks/useProducts";
+import { getProductsBySubcategory } from "../../services/categoryApi";
 
 export default function Products() {
-  const { data: productsData, isLoading, error } = useProducts();
+  const [searchParams] = useSearchParams();
+  const subcategoryId = searchParams.get("subcategory");
+
+  // Separate query for all products
+  const productsQuery = useProducts();
+
+  // Query for filtered products
+  const filteredProductsQuery = useQuery({
+    queryKey: ["products", subcategoryId],
+    queryFn: () => getProductsBySubcategory(subcategoryId),
+    enabled: !!subcategoryId, // Only run query when subcategoryId exists
+  });
+
+  // Determine which query to use
+  const {
+    data: productsData,
+    isLoading,
+    error,
+  } = subcategoryId ? filteredProductsQuery : productsQuery;
+
+  console.log("Query error:", error); // For debugging
 
   if (isLoading) {
     return (
@@ -25,9 +47,13 @@ export default function Products() {
     <div className="bg-white min-h-screen">
       <div className="max-w-[90rem] mx-auto px-4 py-16 sm:px-6 lg:px-8">
         <div className="text-left mb-8">
-          <h1 className="text-4xl font-bold text-gray-900">Custom Sign Printing</h1>
+          <h1 className="text-4xl font-bold text-gray-900">
+            Custom Sign Printing
+          </h1>
           <p className="mt-2 text-lg text-gray-600">
-            Select from our versatile range of signs and customize them to suit your needs.
+            {subcategoryId
+              ? `Showing filtered results`
+              : `Select from our versatile range of signs and customize them to suit your needs.`}
           </p>
         </div>
 
@@ -47,10 +73,12 @@ export default function Products() {
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                    <span className="text-gray-400 text-sm">No image available</span>
+                    <span className="text-gray-400 text-sm">
+                      No image available
+                    </span>
                   </div>
                 )}
-              </div >
+              </div>
               <div className="p-6 flex flex-col flex-grow ">
                 <h3 className="text-lg font-medium text-gray-900 mb-3 ">
                   {product.name}
@@ -58,7 +86,6 @@ export default function Products() {
                 <p className="text-sm text-gray-600 line-clamp-3 ">
                   {product.description}
                 </p>
-      
               </div>
             </Link>
           ))}

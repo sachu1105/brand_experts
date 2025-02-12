@@ -40,7 +40,7 @@ const Navbar = () => {
   ];
 
   const requiredOptions = [
-    { title: "Warranty", path: "/special-deals" },
+    { title: "Warranty", path: "/warranty" },
     { title: "Products", path: "/products" },
     { title: "Templates", path: "/templates" },
     { title: "Corporate Offers", path: "/corporate-offers" },
@@ -119,26 +119,16 @@ const Navbar = () => {
   const { data: parentCategories } = useQuery({
     queryKey: ["parentCategories"],
     queryFn: getParentCategories,
-    // Transform the data to match the expected format
-    select: (data) => [
-      { title: "All products", path: "/products" },
-      ...data.map((cat) => ({
-        title: cat.name,
-        path: `/category/${cat.id}`,
-      })),
-    ],
   });
 
   // Use parentCategories || [] as a fallback when data is loading
-  const categories = parentCategories || [
-    { title: "All products", path: "/products" },
-  ];
+  const categories = parentCategories || [];
 
   return (
     <motion.div
       initial={{ opacity: 0, y: -20 }}
       animate={{ opacity: 1, y: 0 }}
-      className="w-full z-50 relative"
+      className="w-full z-50 relative border-b border-gray-100 shadow-md"
     >
       {/* Top Banner */}
       <div className="bg-gradient-to-r from-red-600 to-pink-600 text-white py-2">
@@ -378,16 +368,15 @@ const Navbar = () => {
               {/* First level dropdown */}
               <div className="hidden group-hover:block absolute top-full left-0 pt-2 z-50">
                 <div className="w-64 bg-white shadow-lg rounded-lg py-2">
-                  {categories.slice(1).map((category) => (
-                    <div key={category.title} className="relative group/item">
+                  {categories.map((category) => (
+                    <div key={category.id} className="relative group/item">
                       <Link
                         to={category.path}
                         className="flex items-center justify-between px-4 py-2 text-gray-600 hover:text-red-600 hover:bg-gray-50 w-full"
                       >
-                        {category.title}
+                        {category.name}
                         <ChevronRight className="w-4 h-4" />
                       </Link>
-                      {/* Second level dropdown will only show when hovering over the parent item */}
                       <div className="invisible group-hover/item:visible absolute left-full top-0">
                         <CategoryDropdown category={category} />
                       </div>
@@ -396,16 +385,18 @@ const Navbar = () => {
                 </div>
               </div>
             </div>
+
+            {/* Update the horizontal category list with dropdowns */}
             <div className="hidden md:block relative flex-1">
               <div className="flex-1 overflow-x-auto hide-scrollbar md:overflow-x-auto px-4">
                 <div className="flex space-x-8 min-w-max pb-2">
-                  {categories.slice(1).map((category) => (
+                  {categories.map((category) => (
                     <Link
-                      key={category.title}
+                      key={category.id}
                       to={category.path}
                       className="text-gray-600 hover:text-red-600 text-sm font-medium"
                     >
-                      {category.title}
+                      {category.name}
                     </Link>
                   ))}
                 </div>

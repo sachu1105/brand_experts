@@ -1,183 +1,41 @@
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { getCategoryDetails } from "../services/categoryApi";
 
-const CategoryDropdown = ({ category }) => {
-  // Check for both categories
-  if (
-    category.title !== "Rigid Signs" &&
-    category.title !== "Banner & Displays"
-  ) {
+const CategoryDropdown = ({ category, position = "right" }) => {
+  // Fetch category details using the category ID from the parent category
+  const { data: categoryDetails, isLoading } = useQuery({
+    queryKey: ["categoryDetails", category.id],
+    queryFn: () => getCategoryDetails(category.id),
+    // Enable for all categories since we want to fetch all of them
+    enabled: !!category.id,
+  });
+
+  if (isLoading || !categoryDetails) {
     return null;
   }
 
-  // Define subcategories based on parent category
-  const subcategoriesData = {
-    "Rigid Signs": [
-      {
-        id: "acrylic",
-        title: "Acrylic Signs",
-        path: "/rigid-signs/acrylic-signs",
-        subcategories: [
-          {
-            id: 2,
-            title: "Clear Acrylic Signs",
-            path: "/rigid-signs/clear-acrylic-signs",
-            badge: "Best Seller",
-          },
-          {
-            id: 3,
-            title: "White Acrylic Signs",
-            path: "/rigid-signs/white-acrylic-signs",
-          },
-          {
-            id: 4,
-            title: "Frosted Acrylic Signs",
-            path: "/rigid-signs/frosted-acrylic-signs",
-          },
-          {
-            id: 5,
-            title: "Black Acrylic Signs",
-            path: "/rigid-signs/black-acrylic-signs",
-          },
-          {
-            id: 6,
-            title: "Black Transparent Acrylic Signs",
-            path: "/rigid-signs/black-transparent-acrylic-signs",
-          },
-          {
-            id: 7,
-            title: "Gold Acrylic Signs",
-            path: "/rigid-signs/gold-acrylic-signs",
-            badge: "20% OFF",
-          },
-        ],
-      },
-      {
-        id: "metal",
-        title: "Metal Signs",
-        path: "/rigid-signs/metal-signs",
-        subcategories: [
-          {
-            id: 9,
-            title: "Aluminum Signs",
-            path: "/rigid-signs/aluminum-signs",
-            badge: "Best Seller",
-          },
-          {
-            id: 10,
-            title: "Dibond Signs",
-            path: "/rigid-signs/dibond-signs",
-            badge: "Best Seller",
-          },
-          {
-            id: 11,
-            title: "Brushed Aluminum Signs",
-            path: "/rigid-signs/brushed-aluminum-signs",
-          },
-          {
-            id: 12,
-            title: "Reflective Aluminum Signs",
-            path: "/rigid-signs/reflective-aluminum-signs",
-          },
-        ],
-      },
-      {
-        id: "foam",
-        title: "Foam Core Signs",
-        path: "/rigid-signs/foam-core-signs",
-        subcategories: [
-          {
-            id: 14,
-            title: "Foam Board Signs",
-            path: "/rigid-signs/foam-board-signs",
-            badge: "Best Seller",
-          },
-          {
-            id: 15,
-            title: "Gatorboard Signs",
-            path: "/rigid-signs/gatorboard-signs",
-          },
-          {
-            id: 16,
-            title: "Ultra Board Signs",
-            path: "/rigid-signs/ultra-board-signs",
-          },
-          {
-            id: 17,
-            title: "Self Adhesive Foam Boards",
-            path: "/rigid-signs/self-adhesive-foam-boards",
-          },
-        ],
-      },
-      {
-        id: "plastic",
-        title: "Plastic Signs",
-        path: "/rigid-signs/plastic-signs",
-        subcategories: [
-          { id: 19, title: "PVC Signs", path: "/rigid-signs/pvc-signs" },
-          {
-            id: 20,
-            title: "Styrene Signs",
-            path: "/rigid-signs/styrene-signs",
-          },
-          {
-            id: 21,
-            title: "Corrugated Plastic Signs",
-            path: "/rigid-signs/corrugated-plastic-signs",
-            badge: "Best Seller",
-          },
-        ],
-      },
-      {
-        id: "wooden",
-        title: "Wooden Signs",
-        path: "/rigid-signs/wooden-signs",
-        subcategories: [],
-      },
-      {
-        id: "accessories",
-        title: "Accessories",
-        path: "/rigid-signs/accessories",
-        subcategories: [],
-      },
-    ],
-    "Banner & Displays": [
-      {
-        id: "vinyl-banners",
-        title: "Vinyl Banners",
-        path: "/banners/vinyl-banners",
-        subcategories: [
-          {
-            id: 1,
-            title: "Standard Vinyl Banners",
-            path: "/banners/standard-vinyl",
-            badge: "Best Seller",
-          },
-          {
-            id: 2,
-            title: "Mesh Banners",
-            path: "/banners/mesh",
-          },
-          // ... more subcategories
-        ],
-      },
-      {
-        id: "retractable-banners",
-        title: "Retractable Banners",
-        path: "/banners/retractable",
-        subcategories: [
-          // ... subcategories
-        ],
-      },
-      // ... more main categories
-    ],
+  // Transform API data to match our dropdown structure
+  const transformCategories = (data) => {
+    return data.categories.map((cat) => ({
+      id: cat.category_id,
+      title: cat.category_name,
+      path: `/category/${cat.category_id}`,
+      subcategories: cat.subcategories.map((sub) => ({
+        id: sub.subcategory_id,
+        title: sub.subcategory_name,
+        path: `/products?subcategory=${sub.subcategory_id}`,
+      })),
+    }));
   };
 
-  // Use the appropriate subcategories based on category title
-  const subcategories = subcategoriesData[category.title];
+  const subcategories = transformCategories(categoryDetails);
 
   return (
-    <div className="ml-2">
-      <div className="w-[900px] bg-white shadow-lg rounded-lg p-6">
+    <div
+      className={position === "right" ? "left-full top-0" : "left-0 top-full"}
+    >
+      <div className="w-[900px] bg-white shadow-lg rounded-lg p-6 border border-gray-100">
         <div className="grid grid-cols-3 gap-x-8">
           {subcategories.map((mainCategory, index) => (
             <div key={mainCategory.id} className={`${index > 2 ? "mt-8" : ""}`}>
@@ -197,17 +55,6 @@ const CategoryDropdown = ({ category }) => {
                     >
                       <span className="flex items-center gap-2">
                         {subCategory.title}
-                        {subCategory.badge && (
-                          <span
-                            className={`text-xs px-2 py-0.5 rounded ${
-                              subCategory.badge === "Best Seller"
-                                ? "bg-green-100 text-green-700"
-                                : "bg-orange-100 text-orange-700"
-                            }`}
-                          >
-                            {subCategory.badge}
-                          </span>
-                        )}
                       </span>
                     </Link>
                   ))}

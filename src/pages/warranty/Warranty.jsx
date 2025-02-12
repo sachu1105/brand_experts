@@ -20,11 +20,11 @@ const WarrantyForm = ({
   claimData,
   handleClaimChange,
   handleClaimSubmit,
+  verificationStatus, // Add this prop
+  verifiedWarranty, // Add this prop
 }) => {
   // Predefined invoice value ranges
   const invoiceRanges = [
-    { label: "1,000 AED", value: "0-1000" },
-    { label: "5,000 AED", value: "1001-5000" },
     { label: "10,000 AED", value: "5001-10000" },
     { label: "50,000 AED", value: "10001-50000" },
     { label: "50,001+ AED", value: "custom" },
