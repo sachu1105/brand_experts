@@ -3,8 +3,11 @@ import { useNavigate } from "react-router-dom";
 import { Trash2, Plus, Minus } from "lucide-react";
 import { toast } from "react-toastify";
 import EmptyCartIcon from "./EmptyCartIcon";
+import { useModal } from "../context/ModalContext";
+import { isAuthenticated } from "../utils/auth";
 
 export default function Cart() {
+  const { openModal } = useModal();
   const navigate = useNavigate();
   const [cart, setCart] = useState(
     () => JSON.parse(sessionStorage.getItem("cart")) || { cart_items: [] }
@@ -42,6 +45,16 @@ export default function Cart() {
       }),
     };
     updateCart(newCart);
+  };
+
+  const handleCheckout = () => {
+    if (!isAuthenticated()) {
+      openModal("login");
+      return;
+    }
+
+    // Proceed to checkout/address page
+    navigate("/checkout");
   };
 
   if (cart.cart_items.length === 0) {
@@ -226,7 +239,10 @@ export default function Cart() {
               </div>
             </div>
           </div>
-          <button className="w-full mt-6 bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] text-white px-8 py-3 rounded-lg hover:shadow-lg transition-all cursor-pointer">
+          <button
+            onClick={handleCheckout}
+            className="w-full mt-6 bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] text-white px-8 py-3 rounded-lg hover:shadow-lg transition-all cursor-pointer"
+          >
             Proceed to Checkout
           </button>
         </div>

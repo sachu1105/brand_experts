@@ -10,6 +10,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import Api from "./Api";
 import LoadingSpinner from "../../components/Spinner";
 import { useAuth } from "../../context/AuthContext";
+import { useModal } from "../../context/ModalContext";
 
 const schema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -19,8 +20,9 @@ const schema = z.object({
   rememberMe: z.boolean().optional(),
 });
 
-const Login = () => {
+const Login = ({ isModal = false }) => {
   const { login } = useAuth();
+  const { closeModal, openModal } = useModal();
   const [showPassword, setShowPassword] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const navigate = useNavigate();
@@ -72,7 +74,12 @@ const Login = () => {
 
       // Navigate after a delay
       setTimeout(() => {
-        navigate("/");
+        if (isModal) {
+          closeModal();
+          navigate("/checkout");
+        } else {
+          navigate("/");
+        }
       }, 2000);
     },
     onError: (error) => {
@@ -137,7 +144,7 @@ const Login = () => {
         </div>
       )}
 
-      <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className={isModal ? "" : "min-h-screen bg-gray-100"}>
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Log in
@@ -307,12 +314,21 @@ const Login = () => {
 
             <p className="mt-8 text-center text-sm text-gray-600">
               Don't have an account?{" "}
-              <Link
-                to="/register"
-                className="font-medium text-red-600 hover:text-red-500"
-              >
-                Register
-              </Link>
+              {isModal ? (
+                <button
+                  onClick={() => openModal("register")}
+                  className="font-medium text-red-600 hover:text-red-500"
+                >
+                  Register
+                </button>
+              ) : (
+                <Link
+                  to="/register"
+                  className="font-medium text-red-600 hover:text-red-500"
+                >
+                  Register
+                </Link>
+              )}
             </p>
           </div>
         </div>
