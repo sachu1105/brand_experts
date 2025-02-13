@@ -20,7 +20,6 @@ const schema = yup.object().shape({
     .string()
     .matches(/^\d{10}$/, "Mobile number must be 10 digits")
     .required("Mobile number is required"),
-  gender: yup.string().required("Please select gender"),
   // Password must be at least 6 characters
   password: yup
     .string()
@@ -166,7 +165,6 @@ function Register() {
       last_name: data.lastName,
       email: data.email,
       mobile: data.mobile,
-      gender: data.gender,
       password: data.password,
     };
 

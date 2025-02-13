@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Trash2, Plus, Minus } from "lucide-react";
 import { toast } from "react-toastify";
+import EmptyCartIcon from "./EmptyCartIcon";
 
 export default function Cart() {
   const navigate = useNavigate();
@@ -45,20 +46,33 @@ export default function Cart() {
 
   if (cart.cart_items.length === 0) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-16 text-center">
-        <h2 className="text-2xl font-bold mb-4">Your cart is empty</h2>
-        <button
-          onClick={() => navigate("/products")}
-          className="bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] text-white px-6 py-2 rounded-lg hover:shadow-lg"
-        >
-          Browse Products
-        </button>
+      <div className="min-h-[calc(100vh-160px)] flex items-center justify-center">
+        <div className="text-center px-4 py-16">
+          <div className="flex justify-center mb-8 animate-bounce">
+            <EmptyCartIcon />
+          </div>
+          <h2 className="text-3xl font-bold mb-4 text-gray-800">
+            Your cart is empty
+          </h2>
+          <p className="text-gray-600 mb-8 max-w-md mx-auto">
+            Looks like you haven't added anything to your cart yet. Explore our
+            products and find something you'll love!
+          </p>
+          <button
+            onClick={() => navigate("/products")}
+            className="bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] text-white px-8 py-3 rounded-lg 
+            hover:shadow-lg transform transition-all duration-300 hover:-translate-y-1 
+            focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50"
+          >
+            Browse Products
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="min-h-[calc(100vh-160px)] max-w-7xl mx-auto px-4 py-8">
       <h1 className="text-2xl font-bold mb-8">Shopping Cart</h1>
 
       <div className="space-y-6">

@@ -3,78 +3,88 @@ import { useQuery } from "@tanstack/react-query";
 import { getCategoryDetails } from "../services/categoryApi";
 
 const CategoryDropdown = ({ category, position = "right" }) => {
-  // Fetch category details using the category ID from the parent category
-  const { data: categoryDetails, isLoading } = useQuery({
-    queryKey: ["categoryDetails", category.id],
-    queryFn: () => getCategoryDetails(category.id),
-    // Enable for all categories since we want to fetch all of them
-    enabled: !!category.id,
+  const {
+    data: categoryDetails,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["categoryDetails", category?.id],
+    queryFn: () => getCategoryDetails(category?.id),
+    enabled: !!category?.id,
+    staleTime: 300000, // Cache for 5 minutes
+    retry: 2,
   });
 
-  if (isLoading || !categoryDetails) {
-    return null;
+  console.log("Category prop:", category); // Debug
+  console.log("Category Details:", categoryDetails); // Debug
+
+  if (isLoading) {
+    return (
+      <div className="absolute z-50 bg-white shadow-lg rounded-lg p-4 min-w-[200px]">
+        <div className="animate-pulse">
+          <div className="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
+          <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+          <div className="h-4 bg-gray-200 rounded w-2/3"></div>
+        </div>
+      </div>
+    );
   }
 
-  // Transform API data to match our dropdown structure
-  const transformCategories = (data) => {
-    return data.categories.map((cat) => ({
-      id: cat.category_id,
-      title: cat.category_name,
-      path: `/products?category=${cat.category_id}`, // Updated path
-      subcategories: cat.subcategories.map((sub) => ({
-        id: sub.subcategory_id,
-        title: sub.subcategory_name,
-        path: `/products?subcategory=${sub.subcategory_id}`,
-        status: sub.status,
-      })),
-    }));
-  };
+  if (error) {
+    console.error("CategoryDropdown Error:", error);
+    return (
+      <div className="absolute z-50 bg-white shadow-lg rounded-lg p-4">
+        <p className="text-red-500">Failed to load categories</p>
+      </div>
+    );
+  }
 
-  const subcategories = transformCategories(categoryDetails);
+  // Guard against missing or empty data
+  if (!categoryDetails?.categories?.length) {
+    return (
+      <div className="absolute z-50 bg-white shadow-lg rounded-lg p-4">
+        <p className="text-gray-500">No products available</p>
+      </div>
+    );
+  }
 
   return (
     <div
-      className={`${
-        position === "right" 
-          ? "left-full top-0" 
-          : position === "top" 
-            ? "left-0 top-full" 
-            : "left-0 top-full"
+      className={`absolute z-50 ${
+        position === "right" ? "left-full top-0" : "left-0 top-full"
       }`}
     >
       <div className="w-[900px] bg-white shadow-lg rounded-lg p-6 border border-gray-100">
         <div className="grid grid-cols-3 gap-x-8">
-          {subcategories.map((mainCategory, index) => (
-            <div key={mainCategory.id} className={`${index > 2 ? "mt-8" : ""}`}>
+          {categoryDetails.categories.map((category, index) => (
+            <div key={category.id} className={`${index > 2 ? "mt-8" : ""}`}>
               <Link
-                to={mainCategory.path}
+                to={`/category/${category.id}`}
                 className="block text-gray-900 hover:text-red-600 font-medium border-b border-gray-200 pb-2 mb-3"
               >
-                {mainCategory.title}
+                {category.name}
               </Link>
-              {mainCategory.subcategories?.length > 0 && (
+              {category.products?.length > 0 && (
                 <div className="flex flex-col space-y-2">
-                  {mainCategory.subcategories.map((subCategory) => (
+                  {category.products.map((product) => (
                     <Link
-                      key={subCategory.id}
-                      to={subCategory.path}
+                      key={product.id}
+                      to={`/product/${product.id}`}
                       className="flex items-center justify-between text-gray-600 hover:text-red-600 text-sm group/item"
                     >
                       <div className="flex items-center gap-2">
-                        <span>{subCategory.title}</span>
-                        {subCategory.status === "Best Seller" && (
-                          <span className="px-2 py-0.5 text-xs bg-orange-100 text-orange-600 rounded-full">
-                            Best Seller
-                          </span>
-                        )}
-                        {subCategory.status?.includes("%") && (
-                          <span className="px-2 py-0.5 text-xs bg-red-100 text-red-600 rounded-full">
-                            {subCategory.status}
-                          </span>
-                        )}
-                        {subCategory.status === "Trending" && (
-                          <span className="px-2 py-0.5 text-xs bg-green-100 text-green-600 rounded-full">
-                            Trending
+                        <span>{product.name}</span>
+                        {product.status && (
+                          <span
+                            className={`px-2 py-0.5 text-xs rounded-full ${
+                              product.status === "Best Seller"
+                                ? "bg-orange-100 text-orange-600"
+                                : product.status.includes("%")
+                                ? "bg-red-100 text-red-600"
+                                : "bg-green-100 text-green-600"
+                            }`}
+                          >
+                            {product.status}
                           </span>
                         )}
                       </div>
