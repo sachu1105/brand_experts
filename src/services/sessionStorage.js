@@ -45,19 +45,17 @@ export const addItemToSessionCart = (item) => {
   try {
     const cart = getFromSession() || initializeCart();
 
-    // Ensure item has all required fields
+    // Format item to match exact required structure
     const formattedItem = {
       product_id: item.id,
-      custom_width: item.customSize?.width || 0,
-      custom_height: item.customSize?.height || 0,
+      custom_width: parseFloat(item.customSize?.width) || 0,
+      custom_height: parseFloat(item.customSize?.height) || 0,
       size_unit: item.measurementUnit || "inches",
       design_image: item.designUrl || "",
       quantity: parseInt(item.quantity) || 1,
       price: parseFloat(item.price) || 0,
       total_price: parseFloat(item.total) || 0,
       status: "pending",
-      preview: item.designUrl, // Add preview for cart display
-      name: item.name || "Product",
     };
 
     cart.cart_items.push(formattedItem);
