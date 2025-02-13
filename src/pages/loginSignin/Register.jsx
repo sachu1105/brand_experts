@@ -270,7 +270,7 @@ function Register() {
                 </p>
               </div>
 
-              {/* Gender and Password */}
+              {/* Gender and Password
               <div>
                 <label className="block text-sm font-medium text-gray-700">
                   Gender
@@ -287,7 +287,7 @@ function Register() {
                 <p className="text-red-500 text-xs mt-1">
                   {errors.gender?.message}
                 </p>
-              </div>
+              </div> */}
 
               {/* Password and Confirm Password in the same row */}
               <div>

@@ -43,6 +43,8 @@ const Navbar = () => {
   } = useSearch(searchTerm);
   const [showSearchResults, setShowSearchResults] = useState(false);
   const [isComingSoonModalOpen, setIsComingSoonModalOpen] = useState(false);
+  const [navbarHeight, setNavbarHeight] = useState(0);
+  const navbarRef = useRef(null);
 
   const bannerMessages = [
     "Buy more, save more! Flat 5% off on all products 10,000+",
@@ -120,6 +122,21 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  useEffect(() => {
+    const updateNavbarHeight = () => {
+      if (navbarRef.current) {
+        setNavbarHeight(navbarRef.current.offsetHeight);
+      }
+    };
+
+    // Initial height calculation
+    updateNavbarHeight();
+
+    // Update height on window resize
+    window.addEventListener("resize", updateNavbarHeight);
+    return () => window.removeEventListener("resize", updateNavbarHeight);
+  }, []);
+
   const handleDropdownEnter = () => {
     if (dropdownTimeout.current) clearTimeout(dropdownTimeout.current);
     setIsUserDropdownOpen(true);
@@ -159,16 +176,14 @@ const Navbar = () => {
 
   return (
     <>
-      {/* Add a placeholder div to prevent content jump */}
-      <div
-        className={`h-[${
-          isScrolled ? "0" : "116px"
-        }] transition-all duration-300`}
-      />
+      {/* Replace the old placeholder div with this dynamic one */}
+      <div style={{ height: isScrolled ? `${navbarHeight}px` : "0px" }} />
+
       <motion.div
+        ref={navbarRef}
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className={`w-full z-50 ${
+        className={`w-full z-50 bg-white ${
           isScrolled ? "fixed top-0 left-0 right-0" : "relative"
         } transition-all duration-300`}
       >
