@@ -15,7 +15,6 @@ const CategoryDropdown = ({ category, position = "right" }) => {
     retry: 2,
   });
 
-
   if (isLoading) {
     return (
       <div className="absolute z-50 bg-white shadow-lg rounded-lg p-4 min-w-[200px]">
@@ -48,9 +47,14 @@ const CategoryDropdown = ({ category, position = "right" }) => {
   return (
     <div
       className={`absolute z-50 ${
-        position === "right" ? "left-full top-0" : "left-0 top-full"
+        position === "right"
+          ? "left-full top-0"
+          : "left-0 top-[calc(100%-0.5rem)]"
       }`}
     >
+      {/* Add padding bridge at the top */}
+      <div className="h-2"></div>
+
       <div className="w-[900px] bg-white shadow-lg rounded-lg p-6 border border-gray-100">
         <div className="grid grid-cols-3 gap-x-8">
           {categoryDetails.categories.map((category, index) => (

@@ -13,7 +13,7 @@ export const getFromSession = () => {
     if (
       parsedData &&
       typeof parsedData === "object" &&
-      Array.isArray(parsedData.cart_items)
+      Array.isArray(parsedData.cartitems)
     ) {
       return parsedData;
     }
@@ -32,8 +32,8 @@ export const initializeCart = () => {
   const existingCart = getFromSession();
   if (!existingCart) {
     const newCart = {
-      customer_id: null, // Will be updated upon login
-      cart_items: [],
+      customerid: null,
+      cartitems: [],
     };
     saveToSession(newCart);
     return newCart;
@@ -47,18 +47,18 @@ export const addItemToSessionCart = (item) => {
 
     // Format item to match exact required structure
     const formattedItem = {
-      product_id: item.id,
-      custom_width: parseFloat(item.customSize?.width) || 0,
-      custom_height: parseFloat(item.customSize?.height) || 0,
-      size_unit: item.measurementUnit || "inches",
-      design_image: item.designUrl || "",
+      productid: item.id,
+      customwidth: parseFloat(item.customSize?.width) || 0,
+      customheight: parseFloat(item.customSize?.height) || 0,
+      sizeunit: item.measurementUnit || "inches",
+      designimage: item.designUrl || "",
       quantity: parseInt(item.quantity) || 1,
       price: parseFloat(item.price) || 0,
-      total_price: parseFloat(item.total) || 0,
+      totalprice: parseFloat(item.total) || 0,
       status: "pending",
     };
 
-    cart.cart_items.push(formattedItem);
+    cart.cartitems.push(formattedItem);
     saveToSession(cart);
     return cart;
   } catch (error) {
@@ -70,14 +70,14 @@ export const addItemToSessionCart = (item) => {
 export const updateCartCustomerId = (customerId) => {
   const cart = getFromSession();
   if (cart) {
-    cart.customer_id = customerId;
+    cart.customerid = customerId;
     saveToSession(cart);
   }
 };
 
 export const validateCart = () => {
   const cart = getFromSession();
-  if (!cart || !Array.isArray(cart.cart_items)) {
+  if (!cart || !Array.isArray(cart.cartitems)) {
     clearSession();
     return initializeCart();
   }

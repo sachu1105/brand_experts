@@ -173,6 +173,11 @@ export default function ShippingForm({ onNext, initialData, onSave }) {
             className="mt-1 block w-full px-4 py-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
           >
             <option value="UAE">United Arab Emirates</option>
+            <option value="Oman">Oman</option>
+            <option value="Bearhin">Beahrin</option>
+            <option value="Qatar">Qatar</option>
+            <option value="Quwite">Quwite</option>
+
           </select>
         </div>
 

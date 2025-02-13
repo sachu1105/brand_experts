@@ -480,7 +480,7 @@ const Navbar = () => {
                     {categories.map((category) => (
                       <div key={category.id} className="relative group/item">
                         <Link
-                          to={`/products?category=${category.id}`}
+                          to=""
                           className="flex items-center justify-between px-4 py-2 text-gray-600 hover:text-red-600 hover:bg-gray-50 w-full"
                         >
                           {category.name}
@@ -499,13 +499,16 @@ const Navbar = () => {
               {categories.map((category) => (
                 <div key={category.id} className="relative group">
                   <Link
-                    to={`/products?category=${category.id}`}
-                    className="text-gray-600 hover:text-red-600 text-sm font-medium flex items-center gap-1"
+                    to=""
+                    className="text-gray-600 hover:text-red-600 text-sm font-medium flex items-center gap-1 py-2"
                   >
                     {category.name}
                   </Link>
 
-                  <div className="hidden group-hover:block absolute top-full left-0 pt-2 z-50">
+                  {/* Add padding bridge to prevent gap */}
+                  <div className="absolute h-4 -bottom-4 left-0 right-0"></div>
+
+                  <div className="hidden group-hover:block absolute top-full left-0 z-50">
                     <CategoryDropdown category={category} position="top" />
                   </div>
                 </div>

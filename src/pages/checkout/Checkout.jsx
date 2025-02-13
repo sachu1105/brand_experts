@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useCart } from "../../context/CartContext";
 import { Steps } from "./components/Steps";
 import ShippingForm from "./components/ShippingForm";
 import PaymentForm from "./components/PaymentForm";
@@ -13,11 +14,58 @@ const steps = [
 ];
 
 export default function Checkout() {
+  const { cart, total } = useCart();
   const [currentStep, setCurrentStep] = useState("shipping");
+
+  // Calculate total from cart items
+  const calculateTotal = (items) => {
+    return items.reduce((sum, item) => sum + parseFloat(item.total), 0);
+  };
+
+  const [customerData, setCustomerData] = useState(() => {
+    const customer_id = sessionStorage.getItem("customer_id");
+    const cartItems = cart || [];
+    const cartTotal = calculateTotal(cartItems);
+
+    console.log("Initializing customer data:", {
+      customer_id,
+      cartItems,
+      cartTotal,
+    });
+
+    return {
+      customer_id: parseInt(customer_id),
+      cart_items: cartItems,
+      total_amount: cartTotal,
+    };
+  });
+
+  // Update customer data when cart changes
+  useEffect(() => {
+    if (cart && cart.length > 0) {
+      const newTotal = calculateTotal(cart);
+      setCustomerData((prev) => ({
+        ...prev,
+        cart_items: cart,
+        total_amount: newTotal,
+      }));
+    }
+  }, [cart]);
+
   const [formData, setFormData] = useState({
     shipping: {},
     payment: {},
   });
+
+  useEffect(() => {
+    // Validate required data
+    if (!customerData.customer_id) {
+      console.error("Customer ID not found in session");
+      // Handle missing customer ID - maybe redirect to login
+    }
+
+    console.log("Customer Data:", customerData);
+  }, [customerData]);
 
   const updateFormData = (step, data) => {
     setFormData((prev) => ({
@@ -50,12 +98,17 @@ export default function Checkout() {
             <ShippingForm
               onNext={handleNext}
               initialData={formData.shipping}
-              onSave={(data) => updateFormData("shipping", data)}
+              onSave={(data) => {
+                updateFormData("shipping", data);
+                // Log the shipping data for verification
+                console.log("Shipping data saved:", data);
+              }}
             />
           )}
 
-          {currentStep === "payment" && (
+          {currentStep === "payment" && customerData.total_amount > 0 && (
             <PaymentForm
+              customerData={customerData}
               onNext={handleNext}
               onBack={handleBack}
               initialData={formData.payment}
