@@ -1,12 +1,23 @@
 import { useQuery } from "@tanstack/react-query";
 import API from "../pages/loginSignin/Api";
 
-export const useProducts = () => {
+export const useProducts = (searchTerm = "") => {
   return useQuery({
-    queryKey: ["products"],
+    queryKey: ["products", searchTerm],
     queryFn: async () => {
       const response = await API.get("dash/products/");
-      return response.data;
+      const products = response.data;
+
+      // Handle search filtering on the client side
+      if (searchTerm) {
+        return products
+          .filter((product) =>
+            product.name.toLowerCase().includes(searchTerm.toLowerCase())
+          )
+          .sort((a, b) => a.name.localeCompare(b.name));
+      }
+
+      return products;
     },
   });
 };

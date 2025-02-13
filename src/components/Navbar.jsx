@@ -18,6 +18,9 @@ import CategoryDropdown from "./CategoryDropdown";
 import { useQuery } from "@tanstack/react-query";
 import { getParentCategories } from "../services/categoryApi";
 import { useCart } from "../context/CartContext";
+import { useSearch } from "../hooks/useSearch";
+import { useDebounce } from "../hooks/useDebounce";
+import { useProducts } from "../hooks/useProducts";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -32,6 +35,13 @@ const Navbar = () => {
     state: { items },
     dispatch: cartDispatch,
   } = useCart();
+  const [searchTerm, setSearchTerm] = useState("");
+  const {
+    searchResults,
+    isLoading: searchLoading,
+    setDebouncedTerm,
+  } = useSearch(searchTerm);
+  const [showSearchResults, setShowSearchResults] = useState(false);
 
   const bannerMessages = [
     "Buy more, save more! Flat 5% off on all products 10,000+",
@@ -124,6 +134,13 @@ const Navbar = () => {
   // Use parentCategories || [] as a fallback when data is loading
   const categories = parentCategories || [];
 
+  const handleSearchChange = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    setDebouncedTerm(value);
+    setShowSearchResults(true);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: -20 }}
@@ -213,10 +230,56 @@ const Navbar = () => {
               <div className="relative w-full">
                 <input
                   type="text"
-                  placeholder="Search for products or templates"
+                  value={searchTerm}
+                  onChange={handleSearchChange}
+                  onFocus={() => setShowSearchResults(true)}
+                  placeholder="Search for products..."
                   className="w-full px-4 py-2 pl-10 border border-gray-300 rounded-full focus:ring-2 focus:ring-red-500 focus:border-transparent"
                 />
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+
+                {/* Search Results Dropdown */}
+                {showSearchResults && searchTerm.length >= 2 && (
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg border border-gray-100 max-h-96 overflow-y-auto z-50">
+                    {searchLoading ? (
+                      <div className="p-4 text-center text-gray-500">
+                        Loading...
+                      </div>
+                    ) : searchResults && searchResults.length > 0 ? (
+                      <div className="py-2">
+                        {searchResults.map((product) => (
+                          <Link
+                            key={product.id}
+                            to={`/product/${product.id}`}
+                            onClick={() => {
+                              setShowSearchResults(false);
+                              setSearchTerm("");
+                            }}
+                            className="flex items-center px-4 py-2 hover:bg-gray-50"
+                          >
+                            <img
+                              src={product.image || "/placeholder.svg"}
+                              alt={product.name}
+                              className="w-12 h-12 object-cover rounded"
+                            />
+                            <div className="ml-3">
+                              <div className="text-sm font-medium text-gray-900">
+                                {product.name}
+                              </div>
+                              <div className="text-sm text-gray-500">
+                                ${product.price}
+                              </div>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
+                    ) : (
+                      <div className="p-4 text-center text-gray-500">
+                        No products found
+                      </div>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
 

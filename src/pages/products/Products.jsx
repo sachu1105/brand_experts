@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useProducts } from "../../hooks/useProducts";
 import { getProductsBySubcategory } from "../../services/categoryApi";
+import errorImg from "../../assets/images/error.svg"; // Add this import
 
 export default function Products() {
   const [searchParams] = useSearchParams();
@@ -30,15 +31,29 @@ export default function Products() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500">
+          <span className="sr-only">Loading...</span>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="min-h-screen flex items-center justify-center text-red-500">
-        Error loading products
+      <div className="min-h-screen flex flex-col items-center justify-center p-4 bg-white">
+        <img src={errorImg} alt="Error" className="w-32 h-32 mb-4 opacity-75" />
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">
+          Sorry, we hit a snag!
+        </h2>
+        <p className="text-gray-600 mb-4">
+          We couldn't load the products at this time
+        </p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+        >
+          Refresh Page
+        </button>
       </div>
     );
   }

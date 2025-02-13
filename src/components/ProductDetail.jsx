@@ -1,8 +1,9 @@
 "use client";
-
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useProduct } from "../hooks/useProducts";
+import ProductSelectionModal from "./ProductSelectionModal";
+import errorImg from "../assets/images/error.svg"; // Add this import
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -13,18 +14,35 @@ export default function ProductDetail() {
   const [customSize, setCustomSize] = useState({ width: 12, height: 12 });
   const [measurementUnit, setMeasurementUnit] = useState("inches");
   const [activeTab, setActiveTab] = useState("Overview");
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const navigate = useNavigate();
 
   if (isLoading)
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500">
+          <span className="sr-only">Loading...</span>
+        </div>
       </div>
     );
+  //error message configuration
   if (error)
     return (
-      <div className="min-h-screen flex items-center justify-center text-red-500">
-        Error loading products
+      <div className="min-h-screen flex flex-col items-center justify-center p-4">
+        <img src={errorImg} alt="Error" className="w-32 h-32 mb-4 opacity-75" />
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">
+          Oops! Something went wrong
+        </h2>
+        <p className="text-gray-600 mb-4">
+          We're having trouble loading this product
+        </p>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-6 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
+        >
+          Try Again
+        </button>
       </div>
     );
 
@@ -84,44 +102,87 @@ export default function ProductDetail() {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const productDetails = {
-      id: product.id,
-      name: product.name,
-      size: standardSize,
-      customSize,
-      quantity,
-      total: calculatePrice(),
-    };
-    navigate("/design-upload", { state: { productDetails } });
+    setIsSubmitting(true);
+    try {
+      const productDetails = {
+        id: product.id,
+        name: product.name,
+        size: standardSize,
+        customSize,
+        quantity,
+        total: calculatePrice(),
+      };
+      await navigate("/design-upload", { state: { productDetails } });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleProductChange = (newProduct) => {
+    navigate(`/product/${newProduct.id}`);
   };
 
   const tabContent = {
     Overview: (
-      <div className="space-y-4">
-        <p>{product.description}</p>
+      <div className="space-y-6">
+        {product.overview?.map((item, index) => (
+          <div key={index} className="space-y-2">
+            <h3 className="text-xl font-semibold">{item.heading}</h3>
+            <p className="text-gray-600">{item.description}</p>
+          </div>
+        ))}
+        {(!product.overview || product.overview.length === 0) && (
+          <p className="text-gray-500 italic">
+            No overview information available
+          </p>
+        )}
       </div>
     ),
     Specification: (
-      <div className="space-y-4">
-        <h4 className="font-semibold">Dimensions</h4>
-        <p>- Standard Size: {product.standard_sizes}</p>
-        <p>- Width: {product.width} inches</p>
-        <p>- Height: {product.height} inches</p>
+      <div className="space-y-6">
         {product.specifications?.map((spec, index) => (
-          <p key={index}>{spec}</p>
+          <div key={index} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {Object.entries(spec).map(
+              ([key, value]) =>
+                value && (
+                  <div key={key} className="space-y-1">
+                    <h4 className="font-semibold capitalize">
+                      {key.replace(/_/g, " ")}
+                    </h4>
+                    <p className="text-gray-600">{value}</p>
+                  </div>
+                )
+            )}
+          </div>
         ))}
+        {(!product.specifications || product.specifications.length === 0) && (
+          <p className="text-gray-500 italic">No specifications available</p>
+        )}
       </div>
     ),
     Installation: (
-      <div className="space-y-4">
-        {product.installation_steps?.length > 0 ? (
-          product.installation_steps.map((step, index) => (
-            <p key={index}>{step}</p>
-          ))
-        ) : (
-          <p>Installation instructions will be provided with the product.</p>
+      <div className="space-y-8">
+        {product.installation_steps?.map((section, index) => (
+          <div key={index} className="space-y-4">
+            <h3 className="text-xl font-semibold">
+              {section.installation_title}
+            </h3>
+            <ol className="list-decimal list-inside space-y-2">
+              {section.steps.map((step, stepIndex) => (
+                <li key={stepIndex} className="text-gray-600">
+                  {step.step}
+                </li>
+              ))}
+            </ol>
+          </div>
+        ))}
+        {(!product.installation_steps ||
+          product.installation_steps.length === 0) && (
+          <p className="text-gray-500 italic">
+            No installation steps available
+          </p>
         )}
       </div>
     ),
@@ -175,6 +236,12 @@ export default function ProductDetail() {
           <div>
             <div className="flex items-center gap-4 mb-4">
               <h1 className="text-2xl font-bold">{product.name}</h1>
+              <button
+                onClick={() => setIsModalOpen(true)}
+                className="text-red-500 text-sm hover:text-red-600"
+              >
+                Change
+              </button>
             </div>
             <p className="text-gray-600">{product.description}</p>
           </div>
@@ -297,9 +364,17 @@ export default function ProductDetail() {
 
               <button
                 type="submit"
-                className="w-full  bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] text-white py-4 rounded-lg hover:shadow-lg transition-colors font-medium cursor-pointer"
+                disabled={isSubmitting}
+                className="w-full bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] text-white py-4 rounded-lg hover:shadow-lg transition-colors font-medium cursor-pointer disabled:opacity-50"
               >
-                GET STARTED →
+                {isSubmitting ? (
+                  <div className="flex items-center justify-center">
+                    <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full mr-2"></div>
+                    Loading...
+                  </div>
+                ) : (
+                  "GET STARTED →"
+                )}
               </button>
             </div>
           </form>
@@ -326,6 +401,12 @@ export default function ProductDetail() {
         </div>
         <div className="py-8">{tabContent[activeTab]}</div>
       </div>
+
+      <ProductSelectionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSelect={handleProductChange}
+      />
     </div>
   );
 }

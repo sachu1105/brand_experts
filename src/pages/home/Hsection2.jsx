@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
-import GradientButton from "../../components/GradientButton";
 import { MoveRight, X } from "lucide-react";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
+import ProductSelectionModal from "../../components/ProductSelectionModal"; // Add this import
 import craftWebp from "../../assets/images/craft-min.webp";
 import craftPng from "../../assets/images/craft-min.png";
 
 const Hsection2 = () => {
+  const navigate = useNavigate(); // Add this hook
   const [isTemplateModalOpen, setTemplateModalOpen] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState(null);
   const [quantity, setQuantity] = useState(1);
@@ -14,6 +16,8 @@ const Hsection2 = () => {
   const [customWidth, setCustomWidth] = useState("12");
   const [customHeight, setCustomHeight] = useState("12");
   const [price, setPrice] = useState(0);
+  const [isProductModalOpen, setProductModalOpen] = useState(false); // Add this state
+  const [isLoading, setIsLoading] = useState(false);
 
   const templates = [
     {
@@ -68,6 +72,33 @@ const Hsection2 = () => {
     setTemplateModalOpen(false);
   };
 
+  const handleStartDesigning = () => {
+    if (selectedTemplate && selectedTemplate.id) {
+      navigate(`/product/${selectedTemplate.id}`);
+    }
+  };
+
+  // Update handleProductChange to show loading state
+  const handleProductChange = async (newProduct) => {
+    setIsLoading(true);
+    try {
+      setSelectedTemplate({
+        id: newProduct.id,
+        title: newProduct.name,
+        image: newProduct.image1,
+        basePrice: newProduct.price,
+        sizes: [
+          { width: 12, height: 12 },
+          { width: 18, height: 18 },
+          { width: 24, height: 24 },
+        ],
+        baseSizeIndex: 0,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const Modal = ({ children, isOpen, onClose }) => {
     if (!isOpen) return null;
 
@@ -84,6 +115,15 @@ const Hsection2 = () => {
     );
   };
 
+  // Add loading spinner to main section if needed
+  if (isLoading) {
+    return (
+      <div className="min-h-[50vh] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-red-500"></div>
+      </div>
+    );
+  }
+
   if (!selectedTemplate) return null;
 
   return (
@@ -99,7 +139,7 @@ const Hsection2 = () => {
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold">{selectedTemplate.title}</h2>
             <button
-              onClick={() => setTemplateModalOpen(true)}
+              onClick={() => setProductModalOpen(true)} // Change this line
               className="text-red-500 hover:text-red-600 font-medium"
             >
               Change &gt;
@@ -206,7 +246,16 @@ const Hsection2 = () => {
                 </select>
               </div>
 
-              {/* Price section removed from here */}
+              {/* Add the button at the end of the form */}
+              <div className="w-full mt-4">
+                <button
+                  onClick={handleStartDesigning}
+                  className="w-full px-6 py-3 bg-gradient-to-r from-red-600 to-red-800 text-white rounded-lg hover:from-red-700 hover:to-red-900 transition-all duration-200 flex items-center justify-center gap-2"
+                >
+                  <span>Start Designing</span>
+                  <MoveRight className="w-5 h-5" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -220,19 +269,17 @@ const Hsection2 = () => {
             Create stunning custom signage in your preferred measurements.
             Perfect for both personal and professional applications.
           </p>
-          <div className="w-full flex justify-center lg:justify-start">
-            <GradientButton text="Start Designing" Icon={MoveRight} />
-          </div>
+          {/* Remove the GradientButton from here */}
           <div className="flex justify-center lg:justify-end">
-               <picture>
-                    <source srcSet={craftWebp} type="image/webp" />
-                    <img
-                      src={craftPng}
-                      alt="craft-Img"
-                      className="hidden sm:block   w-78 pointer-events-none"
-                      loading="lazy"
-                    />
-                  </picture>
+            <picture>
+              <source srcSet={craftWebp} type="image/webp" />
+              <img
+                src={craftPng}
+                alt="craft-Img"
+                className="hidden sm:block   w-78 pointer-events-none"
+                loading="lazy"
+              />
+            </picture>
           </div>
         </div>
 
@@ -274,6 +321,13 @@ const Hsection2 = () => {
             </div>
           </div>
         </Modal>
+
+        {/* Add ProductSelectionModal */}
+        <ProductSelectionModal
+          isOpen={isProductModalOpen}
+          onClose={() => setProductModalOpen(false)}
+          onSelect={handleProductChange}
+        />
       </section>
     </motion.div>
   );
