@@ -22,6 +22,7 @@ import { useSearch } from "../hooks/useSearch";
 import { useDebounce } from "../hooks/useDebounce";
 import { useProducts } from "../hooks/useProducts";
 import ComingSoonModal from "./ComingSoonModal";
+import CartCount from "./CartCount";
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -327,14 +328,7 @@ const Navbar = () => {
                 </button>
 
                 {/* Cart with badge */}
-                <Link to="/cart" className="relative">
-                  <ShoppingCart className="w-6 h-6 text-gray-700" />
-                  {cartItemsCount > 0 && (
-                    <span className="absolute -top-2 -right-2 bg-red-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                      {cartItemsCount}
-                    </span>
-                  )}
-                </Link>
+                <CartCount />
 
                 {/* User Menu - Fixed Version */}
                 <div

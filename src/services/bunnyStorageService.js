@@ -1,6 +1,6 @@
-const API_KEY = "7d589972-67b3-49fd-bf18c77403d3-850d-4a78";
-const STORAGE_ZONE_NAME = "brand-experts";
-const STORAGE_ENDPOINT = "https://storage.bunnycdn.com";
+const API_KEY = import.meta.env.VITE_BUNNY_API_KEY;
+const STORAGE_ZONE_NAME = import.meta.env.VITE_BUNNY_STORAGE_ZONE;
+const STORAGE_ENDPOINT = import.meta.env.VITE_BUNNY_STORAGE_ENDPOINT;
 const STORAGE_PATH = `/${STORAGE_ZONE_NAME}/designs`; // Updated path construction
 
 export const uploadDesign = async (file) => {
