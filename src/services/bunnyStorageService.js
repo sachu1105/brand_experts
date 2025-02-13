@@ -5,7 +5,6 @@ const STORAGE_PATH = `/${STORAGE_ZONE_NAME}/designs`; // Updated path constructi
 
 export const uploadDesign = async (file) => {
   try {
-    // Generate a unique filename with timestamp and clean name
     const timestamp = Date.now();
     const safeFileName = `design_${timestamp}_${file.name.replace(
       /[^a-zA-Z0-9.-]/g,
@@ -13,35 +12,44 @@ export const uploadDesign = async (file) => {
     )}`;
     const uploadPath = `${STORAGE_PATH}/${safeFileName}`;
 
-    // Create blob from file and get array buffer
-    const arrayBuffer = await file.arrayBuffer();
+    // Convert file to Blob
+    const blob = new Blob([await file.arrayBuffer()], { type: file.type });
 
-    // Upload to Bunny.net storage with corrected URL
     const response = await fetch(`${STORAGE_ENDPOINT}${uploadPath}`, {
       method: "PUT",
       headers: {
         AccessKey: API_KEY,
-        "Content-Type": "application/octet-stream",
-        Accept: "*/*", // Added to ensure proper response handling
+        "Content-Type": file.type || "application/octet-stream",
+        // Remove CORS headers - these should be set on server side
       },
-      body: arrayBuffer,
+      body: blob,
+      // Add mode credentials if needed
+      credentials: "omit",
     });
 
     if (!response.ok) {
       const errorText = await response.text();
+      console.error("Upload failed:", {
+        status: response.status,
+        error: errorText,
+        path: uploadPath,
+      });
       throw new Error(`Upload failed: ${response.status} - ${errorText}`);
     }
 
-    // Construct the CDN URL correctly
-    const cdnUrl = `https://${STORAGE_ZONE_NAME}.b-cdn.net/designs/${safeFileName}`;
-
     return {
-      cdnUrl,
+      cdnUrl: `https://${STORAGE_ZONE_NAME}.b-cdn.net/designs/${safeFileName}`,
       storagePath: uploadPath,
     };
   } catch (error) {
-    console.error("Bunny.net Upload Error:", error);
-    throw new Error(`Failed to upload design: ${error.message}`);
+    // Improved error logging
+    console.error("Bunny.net Upload Error:", {
+      message: error.message,
+      fileName: file.name,
+      fileType: file.type,
+      fileSize: file.size,
+    });
+    throw error;
   }
 };
 
