@@ -174,9 +174,10 @@ export default function ShippingForm({ onNext, initialData, onSave }) {
           >
             <option value="UAE">United Arab Emirates</option>
             <option value="Oman">Oman</option>
-            <option value="Bearhin">Beahrin</option>
+            <option value="Bahrain">Bahrain</option>
             <option value="Qatar">Qatar</option>
-            <option value="Quwite">Quwite</option>
+            <option value="Kuwait">Kuwait</option>
+            <option value="Saudi Arabia">Saudi Arabia</option>
 
           </select>
         </div>
