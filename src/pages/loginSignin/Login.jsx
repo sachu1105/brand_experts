@@ -6,7 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import toast, { Toaster } from "react-hot-toast";
 import { z } from "zod";
 import { Eye, EyeOff, Facebook, ChromeIcon } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import Api from "./Api";
 import LoadingSpinner from "../../components/Spinner";
 import { useAuth } from "../../context/AuthContext";

@@ -4,6 +4,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useProduct } from "../hooks/useProducts";
 import ProductSelectionModal from "./ProductSelectionModal";
 import errorImg from "../assets/images/error.svg"; // Add this import
+import DesignModal from "./DesignModal"; // Add this import at the top
 
 export default function ProductDetail() {
   const { id } = useParams();
@@ -16,6 +17,8 @@ export default function ProductDetail() {
   const [activeTab, setActiveTab] = useState("Overview");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showDesignModal, setShowDesignModal] = useState(false);
+  const [productDetails, setProductDetails] = useState(null);
   const navigate = useNavigate();
 
   if (isLoading)
@@ -104,24 +107,28 @@ export default function ProductDetail() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
-    try {
-      const productDetails = {
-        id: product.id,
-        name: product.name,
-        size: standardSize,
-        customSize,
-        quantity,
-        total: calculatePrice(),
-      };
-      await navigate("/design-upload", { state: { productDetails } });
-    } finally {
-      setIsSubmitting(false);
-    }
+
+    const details = {
+      id: product.id,
+      name: product.name,
+      customSize,
+      measurementUnit,
+      quantity,
+      total: calculatePrice(),
+      standardSize,
+    };
+
+    setShowDesignModal(true);
+    setProductDetails(details);
   };
 
   const handleProductChange = (newProduct) => {
     navigate(`/product/${newProduct.id}`);
+  };
+
+  const handleGetStarted = (details) => {
+    setProductDetails(details);
+    setShowDesignModal(true);
   };
 
   const tabContent = {
@@ -406,6 +413,18 @@ export default function ProductDetail() {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSelect={handleProductChange}
+      />
+      <DesignModal
+        isOpen={showDesignModal}
+        onClose={() => setShowDesignModal(false)}
+        productDetails={{
+          id: product.id,
+          name: product.name,
+          size: standardSize,
+          customSize,
+          quantity,
+          total: calculatePrice(),
+        }}
       />
     </div>
   );

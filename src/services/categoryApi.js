@@ -31,3 +31,13 @@ export const getProductsBySubcategory = async (subcategoryId) => {
   }
   return response.json();
 };
+
+export const getProductsByCategory = async (categoryId) => {
+  const response = await fetch(
+    `https://dash.brandexperts.ae/dash/products-by-category/?category_id=${categoryId}`
+  );
+  if (!response.ok) {
+    throw new Error("Failed to fetch category products");
+  }
+  return response.json();
+};

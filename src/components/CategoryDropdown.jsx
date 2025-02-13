@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getCategoryDetails } from "../services/categoryApi";
-import { ChevronRight } from "lucide-react";
 
 const CategoryDropdown = ({ category, position = "right" }) => {
   // Fetch category details using the category ID from the parent category
@@ -21,7 +20,7 @@ const CategoryDropdown = ({ category, position = "right" }) => {
     return data.categories.map((cat) => ({
       id: cat.category_id,
       title: cat.category_name,
-      path: `/category/${cat.category_id}`,
+      path: `/products?category=${cat.category_id}`, // Updated path
       subcategories: cat.subcategories.map((sub) => ({
         id: sub.subcategory_id,
         title: sub.subcategory_name,
@@ -35,7 +34,13 @@ const CategoryDropdown = ({ category, position = "right" }) => {
 
   return (
     <div
-      className={position === "right" ? "left-full top-0" : "left-0 top-full"}
+      className={`${
+        position === "right" 
+          ? "left-full top-0" 
+          : position === "top" 
+            ? "left-0 top-full" 
+            : "left-0 top-full"
+      }`}
     >
       <div className="w-[900px] bg-white shadow-lg rounded-lg p-6 border border-gray-100">
         <div className="grid grid-cols-3 gap-x-8">

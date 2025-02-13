@@ -33,18 +33,7 @@ const Hsection2 = () => {
       ],
       baseSizeIndex: 0,
     },
-    {
-      id: 2,
-      title: "Canvas Prints",
-      image: "https://m.media-amazon.com/images/I/81LFRsQs-wL.jpg",
-      basePrice: 99.99,
-      sizes: [
-        { width: 12, height: 12 },
-        { width: 18, height: 18 },
-        { width: 24, height: 24 },
-      ],
-      baseSizeIndex: 0,
-    },
+  
     // ... other templates remain the same
   ];
 
@@ -252,7 +241,7 @@ const Hsection2 = () => {
                   onClick={handleStartDesigning}
                   className="w-full px-6 py-3 bg-gradient-to-r from-red-600 to-red-800 text-white rounded-lg hover:from-red-700 hover:to-red-900 transition-all duration-200 flex items-center justify-center gap-2"
                 >
-                  <span>Start Designing</span>
+                  <span>Proceed</span>
                   <MoveRight className="w-5 h-5" />
                 </button>
               </div>

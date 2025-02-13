@@ -2,21 +2,32 @@ import React from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { useProducts } from "../../hooks/useProducts";
-import { getProductsBySubcategory } from "../../services/categoryApi";
+import {
+  getProductsBySubcategory,
+  getProductsByCategory,
+} from "../../services/categoryApi";
 import errorImg from "../../assets/images/error.svg"; // Add this import
 
 export default function Products() {
   const [searchParams] = useSearchParams();
   const subcategoryId = searchParams.get("subcategory");
+  const categoryId = searchParams.get("category");
 
   // Separate query for all products
   const productsQuery = useProducts();
 
-  // Query for filtered products
-  const filteredProductsQuery = useQuery({
-    queryKey: ["products", subcategoryId],
+  // Query for filtered products by subcategory
+  const filteredBySubcategoryQuery = useQuery({
+    queryKey: ["products", "subcategory", subcategoryId],
     queryFn: () => getProductsBySubcategory(subcategoryId),
-    enabled: !!subcategoryId, // Only run query when subcategoryId exists
+    enabled: !!subcategoryId,
+  });
+
+  // Query for filtered products by category
+  const filteredByCategoryQuery = useQuery({
+    queryKey: ["products", "category", categoryId],
+    queryFn: () => getProductsByCategory(categoryId),
+    enabled: !!categoryId,
   });
 
   // Determine which query to use
@@ -24,7 +35,11 @@ export default function Products() {
     data: productsData,
     isLoading,
     error,
-  } = subcategoryId ? filteredProductsQuery : productsQuery;
+  } = subcategoryId
+    ? filteredBySubcategoryQuery
+    : categoryId
+    ? filteredByCategoryQuery
+    : productsQuery;
 
   console.log("Query error:", error); // For debugging
 
