@@ -1,7 +1,20 @@
 const API_KEY = import.meta.env.VITE_BUNNY_API_KEY;
 const STORAGE_ZONE_NAME = import.meta.env.VITE_BUNNY_STORAGE_ZONE;
 const STORAGE_ENDPOINT = import.meta.env.VITE_BUNNY_STORAGE_ENDPOINT;
-const STORAGE_PATH = `/${STORAGE_ZONE_NAME}/designs`; // Updated path construction
+
+// Validate environment variables
+if (!API_KEY || !STORAGE_ZONE_NAME || !STORAGE_ENDPOINT) {
+  console.error("Missing required environment variables:", {
+    API_KEY: !!API_KEY,
+    STORAGE_ZONE_NAME: !!STORAGE_ZONE_NAME,
+    STORAGE_ENDPOINT: !!STORAGE_ENDPOINT,
+  });
+  throw new Error(
+    "Missing required environment variables for Bunny.net storage"
+  );
+}
+
+const STORAGE_PATH = `/${STORAGE_ZONE_NAME}/designs`;
 
 export const uploadDesign = async (file) => {
   try {
@@ -12,10 +25,14 @@ export const uploadDesign = async (file) => {
     )}`;
     const uploadPath = `${STORAGE_PATH}/${safeFileName}`;
 
+    // Log the full upload URL for debugging
+    const uploadUrl = `${STORAGE_ENDPOINT}${uploadPath}`;
+    console.log("Attempting upload to:", uploadUrl);
+
     // Convert file to Blob
     const blob = new Blob([await file.arrayBuffer()], { type: file.type });
 
-    const response = await fetch(`${STORAGE_ENDPOINT}${uploadPath}`, {
+    const response = await fetch(uploadUrl, {
       method: "PUT",
       headers: {
         AccessKey: API_KEY,
@@ -48,8 +65,10 @@ export const uploadDesign = async (file) => {
       fileName: file.name,
       fileType: file.type,
       fileSize: file.size,
+      endpoint: STORAGE_ENDPOINT,
+      storagePath: STORAGE_PATH,
     });
-    throw error;
+    throw new Error(`Upload failed: ${error.message}`);
   }
 };
 
