@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react"; // Add useEffect import
 import { UploadCloud } from "lucide-react";
 import toast from "react-hot-toast";
 import register from "../../assets/images/Illustration-min.png";
@@ -22,13 +22,13 @@ const WarrantyForm = ({
   handleClaimSubmit,
   verificationStatus, // Add this prop
   verifiedWarranty, // Add this prop
+  priceRanges, // Add this prop
+  selectedPriceRange, // Add this prop
+  handlePriceRangeChange, // Add this prop
+  warrantyPlans, // Add this prop
 }) => {
   // Predefined invoice value ranges
-  const invoiceRanges = [
-    { label: "10,000 AED", value: "5001-10000" },
-    { label: "50,000 AED", value: "10001-50000" },
-    { label: "50,001+ AED", value: "custom" },
-  ];
+ 
 
   if (activeTab === "register") {
     return (
@@ -116,32 +116,62 @@ const WarrantyForm = ({
                   Invoice Value (AED) <span className="text-red-500">*</span>
                 </label>
                 <select
-                  value={selectedValue}
-                  onChange={handleValueChange}
+                  value={selectedPriceRange}
+                  onChange={handlePriceRangeChange}
                   className="w-full py-1.5 px-3 text-sm border border-gray-200 rounded-md focus:outline-none focus:border-red-500"
                   required
                 >
-                  <option value="">Select Invoice Value</option>
-                  {invoiceRanges.map((range) => (
-                    <option key={range.value} value={range.value}>
-                      {range.label}
+                  <option value="">Select Price Range</option>
+                  {priceRanges.map((range) => (
+                    <option key={range.price_range} value={range.price_range}>
+                      {range.price_range}
                     </option>
                   ))}
                 </select>
-                {selectedValue === "custom" && (
-                  <input
-                    type="number"
-                    name="invoice_value"
-                    value={customValue}
-                    onChange={handleInputChange}
-                    placeholder="Enter custom value"
-                    className="w-full mt-2 py-1.5 px-3 text-sm border border-gray-200 rounded-md focus:outline-none focus:border-red-500"
-                    required
-                    min="0"
-                    step="any"
-                  />
-                )}
               </div>
+              {selectedPriceRange && warrantyPlans && (
+                <div className="space-y-2">
+                  <label className="block text-sm">Select warranty plan</label>
+                  <div className="space-y-2">
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="warranty_plan_amount"
+                        value={warrantyPlans.year1}
+                        onChange={handleInputChange}
+                        className="text-red-500"
+                      />
+                      <span className="text-sm">
+                        {warrantyPlans.year1} AED - 1 year
+                      </span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="warranty_plan_amount"
+                        value={warrantyPlans.year2}
+                        onChange={handleInputChange}
+                        className="text-red-500"
+                      />
+                      <span className="text-sm">
+                        {warrantyPlans.year2} AED - 2 years
+                      </span>
+                    </label>
+                    <label className="flex items-center space-x-2">
+                      <input
+                        type="radio"
+                        name="warranty_plan_amount"
+                        value={warrantyPlans.year5}
+                        onChange={handleInputChange}
+                        className="text-red-500"
+                      />
+                      <span className="text-sm">
+                        {warrantyPlans.year5} AED - 5 years
+                      </span>
+                    </label>
+                  </div>
+                </div>
+              )}
             </div>
 
             <div>
@@ -178,44 +208,6 @@ const WarrantyForm = ({
               </div>
             </div>
 
-            <div className="space-y-2">
-              <label className="block text-sm">Select warranty plan</label>
-              <div className="space-y-2">
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    name="warranty_plan"
-                    value="799_1yr"
-                    checked={formData.warranty_plan === "799_1yr"}
-                    onChange={handleInputChange}
-                    className="text-red-500"
-                  />
-                  <span className="text-sm">799 AED - 1 year</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    name="warranty_plan"
-                    value="999_2yr"
-                    checked={formData.warranty_plan === "999_2yr"}
-                    onChange={handleInputChange}
-                    className="text-red-500"
-                  />
-                  <span className="text-sm">999 AED - 2 years</span>
-                </label>
-                <label className="flex items-center space-x-2">
-                  <input
-                    type="radio"
-                    name="warranty_plan"
-                    value="1799_5yr"
-                    checked={formData.warranty_plan === "1799_5yr"}
-                    onChange={handleInputChange}
-                    className="text-red-500"
-                  />
-                  <span className="text-sm">1799 AED - 5 years</span>
-                </label>
-              </div>
-            </div>
             <div className="flex justify-center">
               <button
                 type="submit"
@@ -323,6 +315,53 @@ const Warranty = () => {
   });
   const [showClaimModal, setShowClaimModal] = useState(false);
   const [claimDetails, setClaimDetails] = useState(null);
+  const [priceRanges, setPriceRanges] = useState([]);
+  const [warrantyPlans, setWarrantyPlans] = useState({});
+  const [selectedPriceRange, setSelectedPriceRange] = useState("");
+
+  // Fetch price ranges on component mount
+  useEffect(() => {
+    fetchPriceRanges();
+  }, []);
+
+  // Fetch price ranges from API
+  const fetchPriceRanges = async () => {
+    try {
+      const response = await API.get(
+        "https://dash.brandexperts.ae/dash/price-ranges/"
+      );
+      setPriceRanges(response.data.price_ranges);
+    } catch (error) {
+      console.error("Error fetching price ranges:", error);
+      toast.error("Failed to fetch price ranges");
+    }
+  };
+
+  // Fetch warranty plans when price range changes
+  const fetchWarrantyPlans = async (priceRange) => {
+    try {
+      const response = await API.get(
+        `https://dash.brandexperts.ae/dash/get-warranty-by-price-range/${priceRange}/`
+      );
+      setWarrantyPlans(response.data);
+    } catch (error) {
+      console.error("Error fetching warranty plans:", error);
+      toast.error("Failed to fetch warranty plans");
+    }
+  };
+
+  const handlePriceRangeChange = async (e) => {
+    const selectedRange = e.target.value;
+    setSelectedPriceRange(selectedRange);
+    if (selectedRange) {
+      await fetchWarrantyPlans(selectedRange);
+    }
+    setFormData((prev) => ({
+      ...prev,
+      price_range: selectedRange,
+      warranty_plan_amount: "", // Reset warranty plan when price range changes
+    }));
+  };
 
   const handleValueChange = (e) => {
     const value = e.target.value;
@@ -382,28 +421,29 @@ const Warranty = () => {
     try {
       const submitData = {
         ...formData,
-        invoice_value:
-          selectedValue === "custom" ? customValue : formData.invoice_value,
+        price_range: selectedPriceRange,
       };
 
-      const response = await API.post("register-warranty/", submitData);
+      const response = await API.post(
+        "https://dash.brandexperts.ae/register-warranty/",
+        submitData
+      );
 
       toast.success(
         `${response.data.message}\nWarranty Number: ${response.data.warranty_number}`
       );
+      // Reset form
       setFormData({
         full_name: "",
         email: "",
         phone: "",
         product_name: "",
         invoice_date: "",
-        invoice_value: "",
+        price_range: "",
         invoice_file: null,
-        warranty_plan: "799_1yr",
+        warranty_plan_amount: "",
       });
-      setSelectedValue("");
-      setCustomValue("");
-      document.getElementById("fileName").textContent = "No file chosen";
+      setSelectedPriceRange("");
     } catch (error) {
       toast.error(
         error.response?.data?.message || "Failed to register warranty"
@@ -496,6 +536,10 @@ const Warranty = () => {
           claimData={claimData}
           handleClaimChange={handleClaimChange}
           handleClaimSubmit={handleClaimSubmit}
+          priceRanges={priceRanges}
+          selectedPriceRange={selectedPriceRange}
+          handlePriceRangeChange={handlePriceRangeChange}
+          warrantyPlans={warrantyPlans}
         />
       </div>
 

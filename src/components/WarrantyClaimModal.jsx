@@ -51,6 +51,11 @@ const WarrantyClaimModal = ({ claimDetails, onClose }) => {
               <p className="text-sm text-gray-500">
                 Warranty Number: {claimDetails.warranty_details.warranty_number}
               </p>
+              {claimDetails.message && (
+                <p className="text-sm text-red-500 mt-1">
+                  {claimDetails.message}
+                </p>
+              )}
             </div>
             <button
               onClick={onClose}
@@ -60,18 +65,29 @@ const WarrantyClaimModal = ({ claimDetails, onClose }) => {
             </button>
           </div>
 
-          {/* Rest of the content similar to WarrantyClaim component */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <div className="space-y-4">
               <h3 className="font-semibold">Claim Information</h3>
               <div className="space-y-2">
                 <p>
                   <span className="text-gray-600">Status:</span>{" "}
-                  {claimDetails.claim_details.status}
+                  <span
+                    className={`font-medium ${
+                      claimDetails.claim_details.status === "Pending"
+                        ? "text-yellow-600"
+                        : claimDetails.claim_details.status === "Approved"
+                        ? "text-green-600"
+                        : "text-red-600"
+                    }`}
+                  >
+                    {claimDetails.claim_details.status}
+                  </span>
                 </p>
                 <p>
                   <span className="text-gray-600">Claimed At:</span>{" "}
-                  {claimDetails.claim_details.claimed_at}
+                  {new Date(
+                    claimDetails.claim_details.claimed_at
+                  ).toLocaleString()}
                 </p>
                 <p>
                   <span className="text-gray-600">Description:</span>{" "}
@@ -110,6 +126,16 @@ const WarrantyClaimModal = ({ claimDetails, onClose }) => {
                 <p>
                   <span className="text-gray-600">Warranty Plan:</span>{" "}
                   {claimDetails.warranty_details.warranty_plan}
+                </p>
+                <p>
+                  <span className="text-gray-600">Warranty Amount:</span>{" "}
+                  {claimDetails.warranty_details.warranty_amount} AED
+                </p>
+                <p>
+                  <span className="text-gray-600">Created At:</span>{" "}
+                  {new Date(
+                    claimDetails.warranty_details.created_at
+                  ).toLocaleString()}
                 </p>
               </div>
             </div>
