@@ -15,8 +15,6 @@ const CategoryDropdown = ({ category, position = "right" }) => {
     retry: 2,
   });
 
-  console.log("Category prop:", category); // Debug
-  console.log("Category Details:", categoryDetails); // Debug
 
   if (isLoading) {
     return (
@@ -31,7 +29,6 @@ const CategoryDropdown = ({ category, position = "right" }) => {
   }
 
   if (error) {
-    console.error("CategoryDropdown Error:", error);
     return (
       <div className="absolute z-50 bg-white shadow-lg rounded-lg p-4">
         <p className="text-red-500">Failed to load categories</p>

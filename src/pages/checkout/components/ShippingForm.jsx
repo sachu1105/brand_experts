@@ -1,41 +1,97 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-hot-toast";
+import Api from "../../../pages/loginSignin/Api";
 
 const schema = z.object({
-  locationType: z.enum(["commercial", "residential"]),
-  firstName: z.string().min(1, "First name is required"),
-  lastName: z.string().min(1, "Last name is required"),
-  email: z.string().email("Invalid email address"),
-  companyName: z.string().min(1, "Company name is required"),
-  phone: z.string().min(10, "Valid phone number is required"),
-  extension: z.string().optional(),
-  addressLine1: z.string().min(1, "Address is required"),
-  addressLine2: z.string().optional(),
+  company_name: z.string().min(1, "Company name is required"),
+  ext: z.string().optional().nullable(),
+  address_line1: z.string().min(1, "Address is required"),
+  address_line2: z.string().optional().nullable(),
   country: z.string().min(1, "Country is required"),
   city: z.string().min(1, "City is required"),
   state: z.string().min(1, "State is required"),
-  zipCode: z.string().min(5, "Valid ZIP code is required"),
-  saveAddress: z.boolean().optional(),
+  zip_code: z.string().min(1, "ZIP code is required"),
 });
 
 export default function ShippingForm({ onNext, initialData, onSave }) {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      country: "United States",
-      locationType: "commercial",
+      country: "UAE",
       ...initialData,
     },
   });
 
-  const onSubmit = (data) => {
-    onSave(data);
-    onNext();
+  const createAddressMutation = useMutation({
+    mutationFn: async (formData) => {
+      try {
+        const customer_id = sessionStorage.getItem("customer_id");
+        const user_id = sessionStorage.getItem("user_id");
+
+        console.log("Session IDs:", { customer_id, user_id });
+
+        if (!customer_id) {
+          throw new Error("Customer ID not found. Please login again.");
+        }
+
+        const payload = {
+          customer_id: parseInt(customer_id),
+          company_name: formData.company_name,
+          ext: formData.ext || "",
+          address_line1: formData.address_line1,
+          address_line2: formData.address_line2 || "",
+          country: formData.country,
+          city: formData.city,
+          state: formData.state,
+          zip_code: formData.zip_code,
+        };
+
+        console.log("Sending payload:", payload);
+
+        const response = await Api.post("create-customer-address/", payload, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            "Content-Type": "application/json",
+          },
+        });
+
+        console.log("API Response:", response.data);
+        return response.data;
+      } catch (error) {
+        console.error("Address creation error:", {
+          customer_id: sessionStorage.getItem("customer_id"),
+          user_id: sessionStorage.getItem("user_id"),
+          error: error.response?.data || error.message,
+        });
+        throw new Error(
+          error.response?.data?.error || "Failed to save address"
+        );
+      }
+    },
+  });
+
+  const onSubmit = async (data) => {
+    try {
+      console.log("Form submitted with data:", data);
+      const result = await createAddressMutation.mutateAsync(data);
+      console.log("Mutation result:", result);
+
+      if (result.message && result.address_details) {
+        toast.success(result.message);
+        onSave(result.address_details);
+        onNext();
+      }
+    } catch (error) {
+      console.error("Submit error:", error);
+      toast.error(error.message || "Failed to save address");
+    }
   };
 
   return (
@@ -43,237 +99,179 @@ export default function ShippingForm({ onNext, initialData, onSave }) {
       onSubmit={handleSubmit(onSubmit)}
       className="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow"
     >
-      <h2 className="text-2xl font-semibold mb-6">Shipping</h2>
-
-      {/* Location Type */}
-      <div className="mb-6">
-        <label className="text-sm font-medium text-gray-700 mb-2 block">
-          Location type
-        </label>
-        <div className="flex gap-4">
-          <label className="flex items-center">
-            <input
-              type="radio"
-              value="commercial"
-              {...register("locationType")}
-              className="text-red-600 focus:ring-red-500 h-4 w-4"
-            />
-            <span className="ml-2">Commercial</span>
-          </label>
-          <label className="flex items-center">
-            <input
-              type="radio"
-              value="residential"
-              {...register("locationType")}
-              className="text-red-600 focus:ring-red-500 h-4 w-4"
-            />
-            <span className="ml-2">Residential</span>
-          </label>
-        </div>
-      </div>
+      <h2 className="text-2xl font-semibold mb-6">Shipping Address</h2>
 
       <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
-        {/* First Name & Last Name */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            First Name *
-          </label>
-          <input
-            type="text"
-            {...register("firstName")}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
-          />
-          {errors.firstName && (
-            <p className="mt-1 text-sm text-red-600">
-              {errors.firstName.message}
-            </p>
-          )}
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Last Name *
-          </label>
-          <input
-            type="text"
-            {...register("lastName")}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
-          />
-          {errors.lastName && (
-            <p className="mt-1 text-sm text-red-600">
-              {errors.lastName.message}
-            </p>
-          )}
-        </div>
-
-        {/* Email & Company Name */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Email *
-          </label>
-          <input
-            type="email"
-            {...register("email")}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
-          />
-          {errors.email && (
-            <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
-          )}
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Company name *
-          </label>
-          <input
-            type="text"
-            {...register("companyName")}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
-          />
-          {errors.companyName && (
-            <p className="mt-1 text-sm text-red-600">
-              {errors.companyName.message}
-            </p>
-          )}
-        </div>
-
-        {/* Phone & Extension */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Phone number *
-          </label>
-          <input
-            type="tel"
-            placeholder="+1 (___) ___-____"
-            {...register("phone")}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
-          />
-          {errors.phone && (
-            <p className="mt-1 text-sm text-red-600">{errors.phone.message}</p>
-          )}
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Ext.
-          </label>
-          <input
-            type="text"
-            {...register("extension")}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
-          />
-        </div>
-
-        {/* Address */}
+        {/* Company Name */}
         <div className="sm:col-span-2">
           <label className="block text-sm font-medium text-gray-700">
-            Address Line 1: *
+            Company Name *
           </label>
           <input
             type="text"
-            placeholder="Enter a location"
-            {...register("addressLine1")}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
+            {...register("company_name")}
+            className="mt-1 block w-full px-4 py-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
+            placeholder="Enter company name"
           />
-          {errors.addressLine1 && (
+          {errors.company_name && (
             <p className="mt-1 text-sm text-red-600">
-              {errors.addressLine1.message}
+              {errors.company_name.message}
+            </p>
+          )}
+        </div>
+
+        {/* Address Lines */}
+        <div className="sm:col-span-2">
+          <label className="block text-sm font-medium text-gray-700">
+            Address Line 1 *
+          </label>
+          <input
+            type="text"
+            {...register("address_line1")}
+            className="mt-1 block w-full px-4 py-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
+            placeholder="Street address"
+          />
+          {errors.address_line1 && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.address_line1.message}
             </p>
           )}
         </div>
 
         <div className="sm:col-span-2">
           <label className="block text-sm font-medium text-gray-700">
-            Address Line 2:
+            Address Line 2
           </label>
           <input
             type="text"
-            {...register("addressLine2")}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
+            {...register("address_line2")}
+            className="mt-1 block w-full px-4 py-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
+            placeholder="Apartment, suite, unit, building, floor, etc."
           />
         </div>
 
-        {/* Country, City, State, ZIP */}
-        <div className="sm:col-span-2">
+        {/* Extension */}
+        <div>
           <label className="block text-sm font-medium text-gray-700">
-            Country: *
+            Extension/Suite
+          </label>
+          <input
+            type="text"
+            {...register("ext")}
+            className="mt-1 block w-full px-4 py-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
+            placeholder="Suite number"
+          />
+        </div>
+
+        {/* Country */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Country *
           </label>
           <select
             {...register("country")}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
+            className="mt-1 block w-full px-4 py-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
           >
-            <option value="United States">United States</option>
+            <option value="UAE">United Arab Emirates</option>
           </select>
         </div>
 
+        {/* State/Emirate - Changed from select to input */}
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            City: *
+            State/Emirate *
+          </label>
+          <input
+            type="text"
+            {...register("state")}
+            className="mt-1 block w-full px-4 py-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
+            placeholder="Enter state or emirate"
+          />
+          {errors.state && (
+            <p className="mt-1 text-sm text-red-600">{errors.state.message}</p>
+          )}
+        </div>
+
+        {/* City - Changed from select to input */}
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            City *
           </label>
           <input
             type="text"
             {...register("city")}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
+            className="mt-1 block w-full px-4 py-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
+            placeholder="Enter city name"
           />
           {errors.city && (
             <p className="mt-1 text-sm text-red-600">{errors.city.message}</p>
           )}
         </div>
 
+        {/* ZIP Code */}
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            State: *
-          </label>
-          <select
-            {...register("state")}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
-          >
-            <option value="">Select...</option>
-            <option value="1">United States</option>
-
-            {/* Add US states here */}
-          </select>
-          {errors.state && (
-            <p className="mt-1 text-sm text-red-600">{errors.state.message}</p>
-          )}
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Zip Code: *
+            ZIP Code *
           </label>
           <input
             type="text"
-            {...register("zipCode")}
-            className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
+            {...register("zip_code")}
+            className="mt-1 block w-full px-4 py-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
+            placeholder="Enter ZIP code"
           />
-          {errors.zipCode && (
+          {errors.zip_code && (
             <p className="mt-1 text-sm text-red-600">
-              {errors.zipCode.message}
+              {errors.zip_code.message}
             </p>
           )}
-        </div>
-
-        {/* Save Address Checkbox */}
-        <div className="sm:col-span-2">
-          <label className="flex items-center">
-            <input
-              type="checkbox"
-              {...register("saveAddress")}
-              className="text-red-600 focus:ring-red-500 h-4 w-4 rounded"
-            />
-            <span className="ml-2 text-sm text-gray-700">Save Address</span>
-          </label>
         </div>
 
         {/* Submit Button */}
         <div className="sm:col-span-2 mt-6">
           <button
             type="submit"
-            className="w-full bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] text-white px-6 py-3 rounded-lg hover:shadow-lg transition-all duration-300"
+            disabled={isSubmitting || createAddressMutation.isLoading}
+            onClick={handleSubmit(onSubmit)} // Added explicit click handler
+            className="w-full bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] text-white px-6 py-4 text-lg rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50"
           >
-            Continue to Payment
+            {isSubmitting || createAddressMutation.isLoading ? (
+              <span className="flex items-center justify-center">
+                <svg
+                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  />
+                </svg>
+                Saving Address...
+              </span>
+            ) : (
+              "Continue to Payment"
+            )}
           </button>
+
+          {/* Debug information */}
+          {Object.keys(errors).length > 0 && (
+            <div className="mt-4 p-4 bg-red-50 rounded-lg">
+              <p className="text-red-600 font-medium">Form Errors:</p>
+              <pre className="text-sm text-red-500">
+                {JSON.stringify(errors, null, 2)}
+              </pre>
+            </div>
+          )}
         </div>
       </div>
     </form>

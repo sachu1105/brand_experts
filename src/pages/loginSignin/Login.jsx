@@ -10,7 +10,6 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import Api from "./Api";
 import LoadingSpinner from "../../components/Spinner";
 import { useAuth } from "../../context/AuthContext";
-import { useModal } from "../../context/ModalContext";
 
 const schema = z.object({
   email: z.string().email({ message: "Invalid email address" }),
@@ -22,7 +21,6 @@ const schema = z.object({
 
 const Login = ({ isModal = false }) => {
   const { login } = useAuth();
-  const { closeModal, openModal } = useModal();
   const [showPassword, setShowPassword] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const navigate = useNavigate();
@@ -49,9 +47,7 @@ const Login = ({ isModal = false }) => {
         });
         return response.data;
       } catch (error) {
-        throw new Error(
-          error.response?.data?.error || "Login failed. Please try again."
-        );
+        throw new Error(error.response?.data?.error || "Login failed");
       }
     },
     onSuccess: (data) => {
@@ -59,17 +55,33 @@ const Login = ({ isModal = false }) => {
       localStorage.setItem("access_token", data.access_token);
       localStorage.setItem("refresh_token", data.refresh_token);
 
-      // Create user object using the correct fields from user_details
+      // Store IDs in sessionStorage
+      sessionStorage.setItem("user_id", data.user_id);
+      sessionStorage.setItem("customer_id", data.customer_id);
+
+      console.log("Stored IDs:", {
+        user_id: data.user_id,
+        customer_id: data.customer_id,
+      });
+
+      // Store complete user details
+      const userDetails = {
+        ...data.user_details,
+        user_id: data.user_id,
+        customer_id: data.customer_id,
+      };
+      localStorage.setItem("user_details", JSON.stringify(userDetails));
+
+      // Create user object for context
       const userData = {
+        id: data.user_id,
+        customer_id: data.customer_id,
         name: data.user_details.first_name || data.user_details.username,
         email: data.user_details.email,
         mobile: data.user_details.mobile,
       };
 
-      // Store user data
       login(userData);
-
-      // Show success message
       toast.success("Successfully logged in!");
 
       // Navigate after a delay
@@ -144,7 +156,7 @@ const Login = ({ isModal = false }) => {
         </div>
       )}
 
-      <div className={isModal ? "" : "min-h-screen bg-gray-100"}>
+      <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Log in
@@ -314,21 +326,12 @@ const Login = ({ isModal = false }) => {
 
             <p className="mt-8 text-center text-sm text-gray-600">
               Don't have an account?{" "}
-              {isModal ? (
-                <button
-                  onClick={() => openModal("register")}
-                  className="font-medium text-red-600 hover:text-red-500"
-                >
-                  Register
-                </button>
-              ) : (
-                <Link
-                  to="/register"
-                  className="font-medium text-red-600 hover:text-red-500"
-                >
-                  Register
-                </Link>
-              )}
+              <Link
+                to="/register"
+                className="font-medium text-red-600 hover:text-red-500"
+              >
+                Register
+              </Link>
             </p>
           </div>
         </div>
