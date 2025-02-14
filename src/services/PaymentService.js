@@ -8,7 +8,7 @@ export const createPaymentIntent = async () => {
     }
 
     const response = await Api.post(
-      "create-payment-intent/",
+      "https://dash.brandexperts.ae/create-payment-intent/",
       {
         cart_id: parseInt(cartId),
       },
@@ -20,8 +20,13 @@ export const createPaymentIntent = async () => {
       }
     );
 
+    if (!response.data?.clientSecret) {
+      throw new Error("Invalid response from payment service");
+    }
+
     return response.data.clientSecret;
   } catch (error) {
+    console.error("Payment intent creation error:", error);
     throw new Error(
       error.response?.data?.message || "Failed to create payment intent"
     );
@@ -36,7 +41,7 @@ export const confirmPayment = async (paymentIntentId) => {
     }
 
     const response = await Api.post(
-      "confirm-payment/",
+      "https://dash.brandexperts.ae/confirm-payment/",
       {
         payment_intent_id: paymentIntentId,
         cart_id: parseInt(cartId),
@@ -49,8 +54,13 @@ export const confirmPayment = async (paymentIntentId) => {
       }
     );
 
+    if (!response.data?.success) {
+      throw new Error(response.data?.message || "Payment confirmation failed");
+    }
+
     return response.data;
   } catch (error) {
+    console.error("Payment confirmation error:", error);
     throw new Error(
       error.response?.data?.message || "Failed to confirm payment"
     );

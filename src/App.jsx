@@ -112,6 +112,14 @@ const App = () => {
                           }
                         />
                         <Route
+                          path="/payment"
+                          element={
+                            <ProtectedRoute>
+                              <Payment />
+                            </ProtectedRoute>
+                          }
+                        />
+                        <Route
                           path="/payment-success"
                           element={
                             <ProtectedRoute>
@@ -119,7 +127,6 @@ const App = () => {
                             </ProtectedRoute>
                           }
                         />
-                        <Route path="/payment" element={<Payment />} />
                       </Route>
                     </Routes>
                     <AuthModal />
