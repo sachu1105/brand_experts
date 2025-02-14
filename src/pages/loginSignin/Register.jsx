@@ -268,24 +268,6 @@ function Register() {
                 </p>
               </div>
 
-              {/* Gender and Password
-              <div>
-                <label className="block text-sm font-medium text-gray-700">
-                  Gender
-                </label>
-                <select
-                  {...register("gender")}
-                  className="mt-1 p-2 w-full border border-red-300 focus:outline-1 focus:outline-offset-1 focus:outline-red-500 rounded-md"
-                >
-                  <option value="">Select Gender</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                  <option value="other">Other</option>
-                </select>
-                <p className="text-red-500 text-xs mt-1">
-                  {errors.gender?.message}
-                </p>
-              </div> */}
 
               {/* Password and Confirm Password in the same row */}
               <div>

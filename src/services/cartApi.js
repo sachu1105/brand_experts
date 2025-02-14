@@ -1,9 +1,15 @@
 import Api from "../pages/loginSignin/Api";
+import { refreshToken } from "../utils/auth"; // Create this utility
 
 export const submitCartToBackend = async () => {
   try {
     const customerId = sessionStorage.getItem("customer_id");
     const rawCartData = sessionStorage.getItem("cart");
+    const token = localStorage.getItem("access_token");
+
+    if (!token) {
+      throw new Error("No authentication token found");
+    }
 
     console.log("Raw cart data from session:", rawCartData);
 
@@ -44,27 +50,53 @@ export const submitCartToBackend = async () => {
       JSON.stringify(cartPayload, null, 2)
     );
 
-    const response = await Api.post("cart/", cartPayload, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
-        "Content-Type": "application/json",
-      },
-    });
+    try {
+      const response = await Api.post("cart/", cartPayload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
-    if (response.data.error) {
-      throw new Error(response.data.error);
+      // Store cart_id in session storage if present in response
+      if (response.data?.cart?.cart_id) {
+        sessionStorage.setItem(
+          "cart_id",
+          response.data.cart.cart_id.toString()
+        );
+      }
+
+      return response.data;
+    } catch (error) {
+      if (error.response?.status === 401) {
+        // Token expired, try to refresh
+        const newToken = await refreshToken();
+        if (newToken) {
+          // Retry with new token
+          const retryResponse = await Api.post("cart/", cartPayload, {
+            headers: {
+              Authorization: `Bearer ${newToken}`,
+              "Content-Type": "application/json",
+            },
+          });
+
+          // Store cart_id in session storage if present in retry response
+          if (retryResponse.data?.cart?.cart_id) {
+            sessionStorage.setItem(
+              "cart_id",
+              retryResponse.data.cart.cart_id.toString()
+            );
+          }
+
+          return retryResponse.data;
+        }
+      }
+      throw error;
     }
-
-    console.log("API Response:", response.data);
-    return response.data;
   } catch (error) {
-    console.error("Cart submission error details:", {
-      error,
-      payload: error.config?.data ? JSON.parse(error.config.data) : null,
-      message: error.response?.data?.error || error.message,
-    });
+    console.error("Cart submission error:", error);
     throw new Error(
-      error.response?.data?.error || error.message || "Failed to submit cart"
+      error.response?.data?.detail || error.message || "Failed to submit cart"
     );
   }
 };

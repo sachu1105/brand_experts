@@ -1,16 +1,17 @@
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 import CartItem from "./CartItem";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Csection1 from "./Csection1";
 
-function Cart() {
-  const {
-    state: { items, customerId },
-  } = useCart();
+const Cart = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
+  const {
+    state: { items },
+  } = useCart();
 
-  // If user is not logged in, show login prompt
+  // If user is not logged in, show login button that redirects
   if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center p-4">
@@ -19,12 +20,12 @@ function Cart() {
           <p className="text-gray-600">
             You need to be logged in to view your cart items.
           </p>
-          <Link
-            to="/login"
+          <button
+            onClick={() => navigate("/login", { state: { from: "/cart" } })}
             className="inline-block bg-red-600 text-white px-8 py-3 rounded-lg hover:bg-red-700"
           >
             Login
-          </Link>
+          </button>
         </div>
       </div>
     );
@@ -92,6 +93,6 @@ function Cart() {
       </div>
     </div>
   );
-}
+};
 
 export default Cart;

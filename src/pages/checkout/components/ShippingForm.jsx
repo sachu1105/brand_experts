@@ -4,8 +4,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import Api from "../../../pages/loginSignin/Api";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { submitCartToBackend } from "../../../services/cartApi";
+import { useNavigate } from "react-router-dom";
 
 const schema = z.object({
   company_name: z.string().min(1, "Company name is required"),
@@ -19,7 +20,19 @@ const schema = z.object({
 });
 
 export default function ShippingForm({ onNext, initialData, onSave }) {
+  const navigate = useNavigate();
   const [isSuccess, setIsSuccess] = useState(false);
+
+  useEffect(() => {
+    const customer_id = sessionStorage.getItem("customer_id");
+    const access_token = localStorage.getItem("access_token");
+
+    if (!customer_id || !access_token) {
+      toast.error("Please login to continue");
+      navigate("/login", { state: { from: "/checkout" } });
+    }
+  }, [navigate]);
+
   const {
     register,
     handleSubmit,
@@ -34,16 +47,16 @@ export default function ShippingForm({ onNext, initialData, onSave }) {
 
   const createAddressMutation = useMutation({
     mutationFn: async (formData) => {
+      const customer_id = sessionStorage.getItem("customer_id");
+      const access_token = localStorage.getItem("access_token");
+
+      if (!customer_id || !access_token) {
+        toast.error("Please login to continue");
+        navigate("/login", { state: { from: "/checkout" } });
+        throw new Error("Authentication required");
+      }
+
       try {
-        const customer_id = sessionStorage.getItem("customer_id");
-        const user_id = sessionStorage.getItem("user_id");
-
-        console.log("Session IDs:", { customer_id, user_id });
-
-        if (!customer_id) {
-          throw new Error("Customer ID not found. Please login again.");
-        }
-
         const payload = {
           customer_id: parseInt(customer_id),
           company_name: formData.company_name,
@@ -56,23 +69,20 @@ export default function ShippingForm({ onNext, initialData, onSave }) {
           zip_code: formData.zip_code,
         };
 
-        console.log("Sending payload:", payload);
-
         const response = await Api.post("create-customer-address/", payload, {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+            Authorization: `Bearer ${access_token}`,
             "Content-Type": "application/json",
           },
         });
 
-        console.log("API Response:", response.data);
         return response.data;
       } catch (error) {
-        console.error("Address creation error:", {
-          customer_id: sessionStorage.getItem("customer_id"),
-          user_id: sessionStorage.getItem("user_id"),
-          error: error.response?.data || error.message,
-        });
+        console.error("Address creation error:", error);
+        if (error.response?.status === 401) {
+          toast.error("Session expired. Please login again");
+          navigate("/login", { state: { from: "/checkout" } });
+        }
         throw new Error(
           error.response?.data?.error || "Failed to save address"
         );
@@ -147,13 +157,13 @@ export default function ShippingForm({ onNext, initialData, onSave }) {
           </p>
         </div>
         <div className="flex justify-center">
-        <button
-          onClick={handleContinueToPayment}
-          className="w-78 bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] text-white px-6 py-4 text-lg rounded-lg hover:shadow-lg transition-all duration-300"
-        >
-          Save & Continue to Payment
-        </button>
-      </div>
+          <button
+            onClick={handleContinueToPayment}
+            className="w-78 bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] text-white px-6 py-4 text-lg rounded-lg hover:shadow-lg transition-all duration-300"
+          >
+            Save & Continue to Payment
+          </button>
+        </div>
       </div>
     );
   }

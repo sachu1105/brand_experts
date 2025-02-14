@@ -19,4 +19,5 @@ export default defineConfig({
   server: {
     cors: true,
   },
+  envPrefix: "VITE_",
 });

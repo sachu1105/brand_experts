@@ -39,8 +39,8 @@ const App = () => {
           <ModalProvider>
             <ErrorBoundary>
               <Router>
-                <div className="overflow-hidden">
-                  <Elements stripe={stripePromise}>
+                <Elements stripe={stripePromise}>
+                  <div className="overflow-hidden">
                     <Routes>
                       <Route element={<Layout />}>
                         <Route path="/" element={<Home />} />
@@ -121,8 +121,8 @@ const App = () => {
                       </Route>
                     </Routes>
                     <AuthModal />
-                  </Elements>
-                </div>
+                  </div>
+                </Elements>
               </Router>
             </ErrorBoundary>
           </ModalProvider>
