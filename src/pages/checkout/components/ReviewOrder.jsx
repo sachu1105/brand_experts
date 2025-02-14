@@ -61,21 +61,21 @@ export default function ReviewOrder({ onNext, onBack, formData }) {
                   <p>{item.name}</p>
                   <p className="text-gray-500">Quantity: {item.quantity}</p>
                 </div>
-                <p>${item.total}</p>
+                <p>{item.total} AED</p>
               </div>
             ))}
             <div className="border-t pt-4">
               <div className="flex justify-between">
                 <p>Subtotal</p>
-                <p>${subtotal.toFixed(2)}</p>
+                <p>{subtotal.toFixed(2)} AED</p>
               </div>
               <div className="flex justify-between">
                 <p>Shipping</p>
-                <p>${shipping.toFixed(2)}</p>
+                <p>{shipping.toFixed(2)} AED</p>
               </div>
               <div className="flex justify-between font-medium">
                 <p>Total</p>
-                <p>${total.toFixed(2)}</p>
+                <p>{total.toFixed(2)} AED</p>
               </div>
             </div>
           </div>

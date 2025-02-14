@@ -69,16 +69,16 @@ const Cart = () => {
           <div className="space-y-3">
             <div className="flex justify-between">
               <span>Subtotal</span>
-              <span>${calculateSubtotal()}</span>
+              <span>{calculateSubtotal()} AED</span>
             </div>
             <div className="flex justify-between">
               <span>VAT (5%)</span>
-              <span>${calculateTax()}</span>
+              <span>{calculateTax()} AED</span>
             </div>
             <div className="border-t pt-3 mt-3">
               <div className="flex justify-between font-bold">
                 <span>Total</span>
-                <span>${calculateTotal()}</span>
+                <span>{calculateTotal()} AED</span>
               </div>
             </div>
           </div>

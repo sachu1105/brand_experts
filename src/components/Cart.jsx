@@ -123,8 +123,8 @@ export default function Cart() {
                       </p>
                       <p>Design ID: {item.timestamp.toString().slice(-8)}</p>
                       <p>
-                        Unit Price: $
-                        {(parseFloat(item.total) / item.quantity).toFixed(2)}
+                        Unit Price: 
+                        {(parseFloat(item.total) / item.quantity).toFixed(2)} AED
                       </p>
                     </div>
                   </div>
@@ -169,7 +169,7 @@ export default function Cart() {
               {/* Price */}
               <div className="flex flex-col items-center justify-center">
                 <span className="text-sm text-gray-600 mb-1">Total</span>
-                <span className="text-xl font-bold">${item.total}</span>
+                <span className="text-xl font-bold">{item.total} AED</span>
               </div>
 
               {/* Actions */}
@@ -217,10 +217,10 @@ export default function Cart() {
             <div className="flex justify-between">
               <span>Subtotal ({cart.cart_items.length} items)</span>
               <span>
-                $
+                
                 {cart.cart_items
                   .reduce((sum, item) => sum + parseFloat(item.total), 0)
-                  .toFixed(2)}
+                  .toFixed(2)} AED
               </span>
             </div>
             <div className="flex justify-between">
@@ -231,10 +231,10 @@ export default function Cart() {
               <div className="flex justify-between font-bold text-gray-900">
                 <span>Total</span>
                 <span>
-                  $
+                  
                   {cart.cart_items
                     .reduce((sum, item) => sum + parseFloat(item.total), 0)
-                    .toFixed(2)}
+                    .toFixed(2)} AED
                 </span>
               </div>
             </div>

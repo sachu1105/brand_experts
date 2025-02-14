@@ -41,7 +41,10 @@ export const confirmPayment = async (paymentIntentId) => {
       throw new Error("Cart ID not found");
     }
 
-    console.log("Confirming payment with:", { paymentIntentId, cartId });
+    console.log("Starting payment confirmation with:", {
+      paymentIntentId,
+      cartId,
+    });
 
     const response = await Api.post(
       "https://dash.brandexperts.ae/confirm-payment/",
@@ -57,17 +60,26 @@ export const confirmPayment = async (paymentIntentId) => {
       }
     );
 
-    console.log("Confirmation API response:", response.data);
+    // Log the raw response
+    console.log("Raw API response:", response);
+    console.log("Response data:", response.data);
 
-    // Explicit success check
-    if (response.data && response.data.success === true) {
+    // If the response includes data with a success property that's true
+    // OR if the response includes a success message
+    if (
+      (response.data && response.data.success === true) ||
+      (response.data &&
+        response.data.message &&
+        response.data.message.toLowerCase().includes("successful"))
+    ) {
+      console.log("Payment confirmed successfully");
       return {
         success: true,
         message: response.data.message || "Payment successful!",
       };
     }
 
-    // If we get here, something went wrong
+    console.log("Payment confirmation failed");
     return {
       success: false,
       message: response.data?.message || "Payment confirmation failed",

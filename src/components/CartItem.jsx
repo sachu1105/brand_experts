@@ -32,14 +32,14 @@ const CartItem = ({ item }) => {
             />
           </div>
           <span className="text-gray-600">
-            ${(item.total_price / item.quantity).toFixed(2)} each
+            {(item.total_price / item.quantity).toFixed(2)} AED each
           </span>
         </div>
       </div>
 
       <div className="text-right">
         <p className="font-medium text-gray-900">
-          ${item.total_price.toFixed(2)}
+          {item.total_price.toFixed(2)} AED
         </p>
         <button
           onClick={() => removeFromCart(item.timestamp)}
