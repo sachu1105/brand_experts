@@ -3,13 +3,23 @@ import bannerPostWebp from "../../assets/images/banner-post(1).webp";
 import grassPng from "../../assets/images/grass.png";
 import grassWebp from "../../assets/images/grass.webp";
 import arrowPng from "../../assets/images/arrow.png";
-import React from "react";
+import React, { useState } from "react";
 import {
-  CircleArrowRight,Images, MoveRight,Newspaper,ShoppingCart,} from "lucide-react";
+  CircleArrowRight,
+  Images,
+  MoveRight,
+  Newspaper,
+  ShoppingCart,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import GradientButton from "../../components/GradientButton";
+import { useNavigate } from "react-router-dom";
+import ComingSoonModal from "../../components/ComingSoonModal";
 
 const HeroSection = () => {
+  const navigate = useNavigate();
+  const [isComingSoonModalOpen, setIsComingSoonModalOpen] = useState(false);
+
   return (
     <motion.div
       className="min-h-screen flex items-center justify-center bg-[#fdf5f5] px-4 sm:px-8"
@@ -23,7 +33,7 @@ const HeroSection = () => {
         <div className="lg:w-1/2 w-full flex flex-col items-center lg:items-start space-y-6">
           <h1 className="text-5xl sm:text-4xl lg:text-6xl font-bold text-center lg:text-left">
             Create, Enhance, and <br className="hidden sm:block" />
-            Showcase Your {" "}
+            Showcase Your{" "}
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-[#BF1A1C] to-[#590C0D]">
               Brand!
             </span>
@@ -32,7 +42,11 @@ const HeroSection = () => {
             Your Vision, Crafted to Perfection
           </p>
           <div className="w-full flex justify-center lg:justify-start">
-            <GradientButton text="Get Started" Icon={MoveRight} />
+            <GradientButton
+              text="Get Started"
+              Icon={MoveRight}
+              onClick={() => navigate("/products")}
+            />
           </div>
           <p className="text-md text-gray-500 text-center lg:text-left max-w-md">
             Emphasizes customization and quality in delivering user-designed
@@ -65,7 +79,10 @@ const HeroSection = () => {
               </React.Fragment>
             ))}
           </div>{" "}
-          <button className="font-bold py-2 rounded-lg text-lg flex items-center justify-center cursor-pointer w-full sm:w-auto hover:bg-gray-200 sm:hover:bg-transparent">
+          <button
+            onClick={() => setIsComingSoonModalOpen(true)}
+            className="font-bold py-2 rounded-lg text-lg flex items-center justify-center cursor-pointer w-full sm:w-auto hover:bg-gray-200 sm:hover:bg-transparent"
+          >
             Start New Design
             <motion.div
               className="ml-2"
@@ -82,7 +99,7 @@ const HeroSection = () => {
           </button>
         </div>
 
-  {/* Right Billboard with Fixed Sliding Images */}
+        {/* Right Billboard with Fixed Sliding Images */}
         <div className="lg:w-1/2 relative hidden lg:block">
           <picture>
             <source srcSet={bannerPostWebp} type="image/webp" />
@@ -98,19 +115,25 @@ const HeroSection = () => {
             <source srcSet={grassPng} type="image/png" />
             <img src={grassPng} alt="hero section banner Logo" />
           </picture>
-          
+
           {/* Improved Sliding Content Container */}
           <div className="absolute top-[9%] left-[-1%] w-[87%] h-[48%] ">
             {/* Adding a perspective container */}
-            <div className="relative w-full h-full" style={{
-              perspective: '500px',
-              transformStyle: 'preserve-3d'
-            }}>
+            <div
+              className="relative w-full h-full"
+              style={{
+                perspective: "500px",
+                transformStyle: "preserve-3d",
+              }}
+            >
               {/* Image container with adjusted transform */}
-              <div className="w-full h-full" style={{
-                transform: 'rotateX(3deg) rotateY(-8deg) skewY(-8deg)',
-                transformOrigin: 'center center'
-              }}>
+              <div
+                className="w-full h-full"
+                style={{
+                  transform: "rotateX(3deg) rotateY(-8deg) skewY(-8deg)",
+                  transformOrigin: "center center",
+                }}
+              >
                 <motion.img
                   src="https://www.picmaker.com/assets/images/postermaker/poster_maker_ogimage.png"
                   alt="Slide 1"
@@ -126,7 +149,7 @@ const HeroSection = () => {
                     ease: "easeInOut",
                   }}
                   style={{
-                    backfaceVisibility: 'hidden'
+                    backfaceVisibility: "hidden",
                   }}
                 />
                 <motion.img
@@ -144,7 +167,7 @@ const HeroSection = () => {
                     ease: "easeInOut",
                   }}
                   style={{
-                    backfaceVisibility: 'hidden'
+                    backfaceVisibility: "hidden",
                   }}
                 />
                 <motion.img
@@ -162,7 +185,7 @@ const HeroSection = () => {
                     ease: "easeInOut",
                   }}
                   style={{
-                    backfaceVisibility: 'hidden'
+                    backfaceVisibility: "hidden",
                   }}
                 />
               </div>
@@ -170,8 +193,12 @@ const HeroSection = () => {
           </div>
         </div>
       </section>
+      <ComingSoonModal
+        isOpen={isComingSoonModalOpen}
+        onClose={() => setIsComingSoonModalOpen(false)}
+      />
     </motion.div>
-      );
+  );
 };
 
 export default HeroSection;

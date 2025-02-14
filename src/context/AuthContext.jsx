@@ -24,11 +24,11 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
-    setIsAuthenticated(false);
-    setUser(null);
     localStorage.removeItem("access_token");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("user_data");
+    setUser(null);
+    setIsAuthenticated(false);
   };
 
   return (

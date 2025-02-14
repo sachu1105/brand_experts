@@ -91,6 +91,11 @@ const WarrantyClaim = () => {
     }
   };
 
+  const getFileType = (url) => {
+    const extension = url.split(".").pop().toLowerCase();
+    return ["pdf"].includes(extension) ? "pdf" : "image";
+  };
+
   if (loading) {
     return <div className="p-8 text-center">Loading...</div>;
   }
@@ -165,14 +170,33 @@ const WarrantyClaim = () => {
           </div>
 
           {claimDetails.warranty_details.invoice_file && (
-            <div className="flex justify-center pt-4">
-              <button
-                onClick={downloadInvoice}
-                className="flex items-center gap-2 bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] text-white px-4 py-2 rounded-md hover:shadow-lg transition-all"
-              >
-                <Download className="w-4 h-4" />
-                Download Invoice
-              </button>
+            <div className="mt-6 space-y-4">
+              <h3 className="font-semibold">Invoice Preview</h3>
+              <div className="border rounded-lg overflow-hidden">
+                {getFileType(claimDetails.warranty_details.invoice_file) ===
+                "pdf" ? (
+                  <iframe
+                    src={claimDetails.warranty_details.invoice_file}
+                    className="w-full h-[500px]"
+                    title="Invoice Preview"
+                  />
+                ) : (
+                  <img
+                    src={claimDetails.warranty_details.invoice_file}
+                    alt="Invoice"
+                    className="w-full h-auto"
+                  />
+                )}
+              </div>
+              <div className="flex justify-center">
+                <button
+                  onClick={downloadInvoice}
+                  className="flex items-center gap-2 bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] text-white px-4 py-2 rounded-md hover:shadow-lg transition-all"
+                >
+                  <Download className="w-4 h-4" />
+                  Download Invoice
+                </button>
+              </div>
             </div>
           )}
         </div>

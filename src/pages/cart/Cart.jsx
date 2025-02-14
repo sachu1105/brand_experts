@@ -6,7 +6,7 @@ import Csection1 from "./Csection1";
 
 function Cart() {
   const {
-    state: { items },
+    state: { items, customerId },
   } = useCart();
   const { user } = useAuth();
 
@@ -36,10 +36,7 @@ function Cart() {
 
   const calculateSubtotal = () => {
     return items
-      .reduce(
-        (total, item) => total + parseFloat(item.total) * item.quantity,
-        0
-      )
+      .reduce((total, item) => total + parseFloat(item.totalprice), 0)
       .toFixed(2);
   };
 
@@ -61,7 +58,7 @@ function Cart() {
         {/* Cart Items */}
         <div className="lg:col-span-2 space-y-4">
           {items.map((item) => (
-            <CartItem key={item.timestamp} item={item} />
+            <CartItem key={item.productid} item={item} />
           ))}
         </div>
 

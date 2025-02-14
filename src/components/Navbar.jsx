@@ -33,8 +33,8 @@ const Navbar = () => {
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   let dropdownTimeout = useRef(null);
   const [isScrolled, setIsScrolled] = useState(false);
-  const { state, dispatch: cartDispatch } = useCart();
-  const cartItemsCount = state?.cart_items?.length || 0;
+  const { cartState, cartDispatch } = useCart();
+  const cartItemsCount = cartState?.cartItems?.length || 0;
   const [searchTerm, setSearchTerm] = useState("");
   const {
     searchResults,
@@ -148,14 +148,22 @@ const Navbar = () => {
     }, 200); // 200ms delay before closing
   };
 
-  const handleLogout = () => {
-    // Clear cart first
-    cartDispatch({ type: "CLEAR_ON_LOGOUT" });
-    // Then logout
-    logout();
-    setIsUserDropdownOpen(false);
-    toast.success("Successfully logged out!");
-    navigate("/");
+  const handleLogout = async () => {
+    try {
+      // First clear cart using the correct dispatch
+      cartDispatch && cartDispatch({ type: "CLEAR_CART" });
+      // Then logout
+      await logout();
+      // Close the dropdown
+      setIsUserDropdownOpen(false);
+      // Show success message
+      toast.success("Successfully logged out!");
+      // Navigate to home page
+      navigate("/", { replace: true });
+    } catch (error) {
+      toast.error("Error during logout. Please try again.");
+      console.error("Logout error:", error);
+    }
   };
 
   // Replace the static categories array with API data

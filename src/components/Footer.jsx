@@ -2,21 +2,18 @@ import React from "react";
 import { motion } from "framer-motion";
 import footerLogoPng from "../assets/images/be_footer_logo (1).png";
 import footerLogoWebp from "../assets/images/be_footer_logo (1).webp";
-import paypalSecure from "../assets/images/paypalsecure.png"
-import norTon from "../assets/images/northon.png"
-import Secure from "../assets/images/secure.png"
-import Paypal from "../assets/images/paypal.jpg"
-import visa from "../assets/images/visa.jpg"
-import master from "../assets/images/mastercard.jpg"
-import discovery from "../assets/images/discover.jpg"
-import whatsApp from "../assets/images/whats.png"
-import FaceBook from "../assets/images/fb.png"
-import twitter from "../assets/images/twit.png"
-import linkdin from "../assets/images/linkdn.png"
-import insta from "../assets/images/instag.png"
-
-
-
+import paypalSecure from "../assets/images/paypalsecure.png";
+import norTon from "../assets/images/northon.png";
+import Secure from "../assets/images/secure.png";
+import Paypal from "../assets/images/paypal.jpg";
+import visa from "../assets/images/visa.jpg";
+import master from "../assets/images/mastercard.jpg";
+import discovery from "../assets/images/discover.jpg";
+import whatsApp from "../assets/images/whats.png";
+import FaceBook from "../assets/images/fb.png";
+import twitter from "../assets/images/twit.png";
+import linkdin from "../assets/images/linkdn.png";
+import insta from "../assets/images/instag.png";
 
 const Footer = () => {
   return (
@@ -49,7 +46,12 @@ const Footer = () => {
               <div className="md:col-span-1">
                 <h2 className="text-sm font-semibold mb-4">About us</h2>
                 <p className="text-xs text-gray-300 leading-relaxed">
-                  Brand Experts is an online sign printing company featuring an intuitive design tool and high-grade signs that can help you accomplish all your visual communication needs. Our platform enables you to personalize your sign design online. Get a sign made on trendy mediums such as canvas prints, car decals, vinyl lettering and acrylic displays.
+                  Brand Experts is an online sign printing company featuring an
+                  intuitive design tool and high-grade signs that can help you
+                  accomplish all your visual communication needs. Our platform
+                  enables you to personalize your sign design online. Get a sign
+                  made on trendy mediums such as canvas prints, car decals,
+                  vinyl lettering and acrylic displays.
                 </p>
               </div>
 
@@ -57,12 +59,48 @@ const Footer = () => {
               <div className="md:col-span-1">
                 <h2 className="text-sm font-semibold mb-4">Quick links</h2>
                 <ul className="text-xs space-y-2">
-                  <li><a href="/" className="text-gray-300 hover:text-white">Home</a></li>
-                  <li><a href="/products" className="text-gray-300 hover:text-white">All products</a></li>
-                  <li><a href="/templates" className="text-gray-300 hover:text-white">Templates</a></li>
-                  <li><a href="/offers" className="text-gray-300 hover:text-white">Corporate Offers</a></li>
-                  <li><a href="/design" className="text-gray-300 hover:text-white">Design tool</a></li>
-                  <li><a href="/faq" className="text-gray-300 hover:text-white">FAQ</a></li>
+                  <li>
+                    <a href="/" className="text-gray-300 hover:text-white">
+                      Home
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="/products"
+                      className="text-gray-300 hover:text-white"
+                    >
+                      All products
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="/templates"
+                      className="text-gray-300 hover:text-white"
+                    >
+                      Templates
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="/offers"
+                      className="text-gray-300 hover:text-white"
+                    >
+                      Corporate Offers
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="/design"
+                      className="text-gray-300 hover:text-white"
+                    >
+                      Design tool
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/faq" className="text-gray-300 hover:text-white">
+                      FAQ
+                    </a>
+                  </li>
                 </ul>
               </div>
 
@@ -80,8 +118,16 @@ const Footer = () => {
                 <div>
                   <h2 className="text-sm font-semibold mb-4">Trust matters</h2>
                   <div className="grid grid-cols-3 gap-2">
-                    <img src={Secure} alt="Secure Badge" className="h-10 w-24" />
-                    <img src={paypalSecure} alt="PayPal" className="h-10 w-24" />
+                    <img
+                      src={Secure}
+                      alt="Secure Badge"
+                      className="h-10 w-24"
+                    />
+                    <img
+                      src={paypalSecure}
+                      alt="PayPal"
+                      className="h-10 w-24"
+                    />
                     <img src={norTon} alt="Norton" className="h-10 w-24" />
                   </div>
                 </div>
@@ -91,13 +137,17 @@ const Footer = () => {
               <div className="md:col-span-1">
                 <h2 className="text-sm font-semibold mb-4">Contact</h2>
                 <div className="text-xs space-y-2">
+                  <p className="text-gray-300">Brand Experts Advertising LLC</p>
+                  <p className="text-gray-300">Sharjah Industrial Area 17,</p>
+                  <p className="text-gray-300">S102 Ring Road, Sharjah</p>
+                  <p className="text-gray-300">United Arab Emirates</p>
                   <p className="flex items-center">
                     <span className="mr-2">📞</span>
-                    123456789
+                    +971-06-531-4088
                   </p>
                   <p className="flex items-center">
                     <span className="mr-2">✉️</span>
-                    demo@gmail.com
+                    hello@brandexperts.ae
                   </p>
                 </div>
               </div>

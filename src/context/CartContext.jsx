@@ -1,69 +1,74 @@
-import React, { createContext, useContext, useReducer, useEffect } from "react";
-import { getCart } from "../services/cartService";
+import React, { createContext, useContext, useState, useEffect } from "react";
 
 const CartContext = createContext();
 
-const cartReducer = (state, action) => {
-  switch (action.type) {
-    case "SET_CART":
-      return action.payload;
-    case "UPDATE_ITEM":
-      return {
-        ...state,
-        cart_items: state.cart_items.map((item) =>
-          item.timestamp === action.payload.timestamp
-            ? { ...item, ...action.payload.updates }
-            : item
-        ),
-      };
-    case "REMOVE_ITEM":
-      return {
-        ...state,
-        cart_items: state.cart_items.filter(
-          (item) => item.timestamp !== action.payload
-        ),
-      };
-    default:
-      return state;
-  }
+export const useCart = () => {
+  return useContext(CartContext);
 };
 
-export function CartProvider({ children }) {
-  const [state, dispatch] = useReducer(cartReducer, {
-    customer_id: 2,
-    cart_items: [] // Ensure this default value is always present
-  });
+export const CartProvider = ({ children }) => {
+  const [cart, setCart] = useState([]);
+  const [total, setTotal] = useState(0);
 
-  const value = {
-    state,
-    dispatch,
-    removeFromCart: (timestamp) => {
-      dispatch({ type: 'REMOVE_ITEM', payload: timestamp });
-    },
-    updateQuantity: (timestamp, quantity) => {
-      dispatch({
-        type: 'UPDATE_ITEM',
-        payload: { timestamp, updates: { quantity: Number(quantity) } }
+  useEffect(() => {
+    const fetchCart = () => {
+      try {
+        const cartData = JSON.parse(sessionStorage.getItem("cart")) || [];
+        setCart(cartData);
+        const cartTotal = cartData.reduce(
+          (sum, item) => sum + (parseFloat(item.total) || 0),
+          0
+        );
+        setTotal(cartTotal);
+      } catch (error) {
+        console.error("Error loading cart data:", error);
+        setCart([]);
+        setTotal(0);
+      }
+    };
+
+    fetchCart();
+  }, []);
+
+  const addToCart = (item) => {
+    try {
+      setCart((prevCart) => {
+        const updatedCart = [...prevCart, item];
+        sessionStorage.setItem("cart", JSON.stringify(updatedCart));
+        return updatedCart;
       });
+      setTotal((prevTotal) => prevTotal + (parseFloat(item.total) || 0));
+    } catch (error) {
+      console.error("Error adding item to cart:", error);
     }
   };
 
-  useEffect(() => {
-    const savedCart = getCart();
-    dispatch({ type: 'SET_CART', payload: savedCart });
-  }, []);
+  const removeFromCart = (itemId) => {
+    try {
+      setCart((prevCart) => {
+        const itemToRemove = prevCart.find((item) => item.id === itemId);
+        if (!itemToRemove) return prevCart;
 
-  return (
-    <CartContext.Provider value={value}>
-      {children}
-    </CartContext.Provider>
-  );
-}
+        const updatedCart = prevCart.filter((item) => item.id !== itemId);
+        sessionStorage.setItem("cart", JSON.stringify(updatedCart));
+        setTotal(
+          (prevTotal) => prevTotal - (parseFloat(itemToRemove.total) || 0)
+        );
+        return updatedCart;
+      });
+    } catch (error) {
+      console.error("Error removing item from cart:", error);
+    }
+  };
 
-export const useCart = () => {
-  const context = useContext(CartContext);
-  if (!context) {
-    throw new Error("useCart must be used within a CartProvider");
-  }
-  return context;
+  const value = {
+    cart,
+    total,
+    addToCart,
+    removeFromCart,
+  };
+
+  return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
 };
+
+export default CartProvider;

@@ -1,9 +1,12 @@
 // GradientButton.jsx
-const GradientButton = ({ text, Icon }) => {
+const GradientButton = ({ text, Icon, onClick }) => {
   return (
-    <button className="bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] text-white py-2 px-6 rounded-lg text-lg mb-4 flex items-center justify-center cursor-pointer hover:shadow-[#ffc5c8] transition-shadow duration-300 shadow-xl">
+    <button
+      onClick={onClick}
+      className="bg-gradient-to-r from-[#BF1A1C] to-[#590C0D] text-white px-6 py-3 rounded-lg flex items-center gap-2 hover:shadow-lg transition-shadow"
+    >
       {text}
-      {Icon && <Icon className="ml-2" />}
+      {Icon && <Icon className="w-5 h-5" />}
     </button>
   );
 };

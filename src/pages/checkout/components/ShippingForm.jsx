@@ -4,6 +4,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-hot-toast";
 import Api from "../../../pages/loginSignin/Api";
+import { useState } from "react";
+import { submitCartToBackend } from "../../../services/cartApi";
 
 const schema = z.object({
   company_name: z.string().min(1, "Company name is required"),
@@ -17,6 +19,7 @@ const schema = z.object({
 });
 
 export default function ShippingForm({ onNext, initialData, onSave }) {
+  const [isSuccess, setIsSuccess] = useState(false);
   const {
     register,
     handleSubmit,
@@ -86,13 +89,74 @@ export default function ShippingForm({ onNext, initialData, onSave }) {
       if (result.message && result.address_details) {
         toast.success(result.message);
         onSave(result.address_details);
-        onNext();
+        setIsSuccess(true);
       }
     } catch (error) {
       console.error("Submit error:", error);
       toast.error(error.message || "Failed to save address");
     }
   };
+
+  const handleContinueToPayment = async () => {
+    try {
+      const customerId = sessionStorage.getItem("customer_id");
+      if (!customerId) {
+        toast.error("Please login to continue");
+        return;
+      }
+
+      toast.loading("Processing cart...");
+      const cartResponse = await submitCartToBackend();
+      toast.dismiss();
+
+      if (cartResponse.success || cartResponse.message) {
+        toast.success("Cart processed successfully");
+        onNext(); // Proceed to payment step
+      } else {
+        throw new Error("Invalid response from server");
+      }
+    } catch (error) {
+      toast.dismiss();
+      console.error("Failed to create cart:", error);
+      toast.error(error.message || "Failed to process cart. Please try again.");
+    }
+  };
+
+  if (isSuccess) {
+    return (
+      <div className="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow text-center">
+        <div className="mb-6">
+          <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
+            <svg
+              className="h-6 w-6 text-green-600"
+              fill="none"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path d="M5 13l4 4L19 7" />
+            </svg>
+          </div>
+          <h2 className="mt-4 text-2xl font-semibold text-gray-900">
+            Address Added Successfully!
+          </h2>
+          <p className="mt-2 text-gray-600">
+            Your shipping address has been saved.
+          </p>
+        </div>
+        <div className="flex justify-center">
+        <button
+          onClick={handleContinueToPayment}
+          className="w-78 bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] text-white px-6 py-4 text-lg rounded-lg hover:shadow-lg transition-all duration-300"
+        >
+          Save & Continue to Payment
+        </button>
+      </div>
+      </div>
+    );
+  }
 
   return (
     <form
@@ -178,7 +242,6 @@ export default function ShippingForm({ onNext, initialData, onSave }) {
             <option value="Qatar">Qatar</option>
             <option value="Kuwait">Kuwait</option>
             <option value="Saudi Arabia">Saudi Arabia</option>
-
           </select>
         </div>
 
@@ -237,7 +300,6 @@ export default function ShippingForm({ onNext, initialData, onSave }) {
           <button
             type="submit"
             disabled={isSubmitting || createAddressMutation.isLoading}
-            onClick={handleSubmit(onSubmit)} // Added explicit click handler
             className="w-full bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] text-white px-6 py-4 text-lg rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50"
           >
             {isSubmitting || createAddressMutation.isLoading ? (

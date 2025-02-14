@@ -85,7 +85,7 @@ const WarrantyForm = ({
               </div>
               <div>
                 <label className="block text-sm mb-1">
-                  Product Name <span className="text-red-500">*</span>
+                  Invoice Number <span className="text-red-500">*</span>
                 </label>
                 <input
                   type="text"

@@ -6,9 +6,17 @@ export default function CartItem({ item }) {
 
   const handleQuantityChange = (newQuantity) => {
     if (newQuantity > 0) {
+      const unitPrice = item.price; // Individual item price
+      const newTotalPrice = unitPrice * newQuantity;
+
       dispatch({
         type: "UPDATE_QUANTITY",
-        payload: { timestamp: item.timestamp, quantity: newQuantity },
+        payload: {
+          productid: item.productid,
+          quantity: newQuantity,
+          price: unitPrice, // Individual price
+          totalprice: newTotalPrice,
+        },
       });
     }
   };
@@ -16,7 +24,7 @@ export default function CartItem({ item }) {
   const handleRemove = () => {
     dispatch({
       type: "REMOVE_ITEM",
-      payload: item.timestamp,
+      payload: item.productid,
     });
   };
 
@@ -24,8 +32,8 @@ export default function CartItem({ item }) {
     <div className="flex gap-4 p-4 bg-white rounded-lg shadow-sm">
       <div className="w-24 h-24 flex-shrink-0">
         <img
-          src={item.preview}
-          alt={item.name}
+          src={item.designimage}
+          alt="Product"
           className="w-full h-full object-cover rounded-md"
         />
       </div>
@@ -42,12 +50,10 @@ export default function CartItem({ item }) {
         </div>
 
         <div className="mt-2 text-sm text-gray-600">
-          <p>Size: {item.size}</p>
-          {item.customSize && (
-            <p>
-              Custom Size: {item.customSize.width}" x {item.customSize.height}"
-            </p>
-          )}
+          <p>
+            Size: {item.customwidth}" x {item.customheight}"
+          </p>
+          <p>Unit: {item.sizeunit}</p>
         </div>
 
         <div className="mt-4 flex justify-between items-center">
@@ -67,9 +73,7 @@ export default function CartItem({ item }) {
             </button>
           </div>
 
-          <span className="font-medium">
-            ${(item.total * item.quantity).toFixed(2)}
-          </span>
+          <span className="font-medium">${item.totalprice.toFixed(2)}</span>
         </div>
       </div>
     </div>
