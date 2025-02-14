@@ -28,6 +28,7 @@ import Orders from "./pages/orders/Orders";
 import PaymentSuccess from "./pages/checkout/PaymentSuccess";
 import { Elements } from "@stripe/react-stripe-js";
 import stripePromise from "./utils/stripe";
+import Payment from "./pages/payment/Payment";
 
 const queryClient = new QueryClient();
 
@@ -118,6 +119,7 @@ const App = () => {
                             </ProtectedRoute>
                           }
                         />
+                        <Route path="/payment" element={<Payment />} />
                       </Route>
                     </Routes>
                     <AuthModal />

@@ -121,7 +121,7 @@ export default function ShippingForm({ onNext, initialData, onSave }) {
 
       if (cartResponse.success || cartResponse.message) {
         toast.success("Cart processed successfully");
-        onNext(); // Proceed to payment step
+        navigate("/payment"); // Redirect to payment page instead of using onNext
       } else {
         throw new Error("Invalid response from server");
       }
