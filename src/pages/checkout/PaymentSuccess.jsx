@@ -1,27 +1,67 @@
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { useSearchParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { toast } from "react-hot-toast";
+import { confirmPayment } from "../../services/PaymentService";
 
 const PaymentSuccess = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const paymentIntent = searchParams.get("payment_intent");
-  const status = searchParams.get("redirect_status");
 
   useEffect(() => {
-    if (status === "succeeded") {
-      toast.success("Payment completed successfully!");
-    } else {
-      toast.error("There was an issue with your payment.");
-    }
-  }, [status]);
+    const verifyPayment = async () => {
+      if (!paymentIntent) {
+        console.error("No payment intent found in URL");
+        setIsSuccess(false);
+        setIsLoading(false);
+        return;
+      }
+
+      try {
+        console.log("Verifying payment for intent:", paymentIntent);
+        const response = await confirmPayment(paymentIntent);
+        console.log("Payment verification response:", response);
+
+        // Only set success if we explicitly get a success response
+        if (response && response.success === true) {
+          console.log("Payment verification successful");
+          setIsSuccess(true);
+          toast.success(response.message || "Payment completed successfully!");
+          sessionStorage.removeItem("cart_id");
+        } else {
+          console.error("Payment verification failed:", response);
+          setIsSuccess(false);
+          toast.error(response.message || "Payment verification failed");
+        }
+      } catch (error) {
+        console.error("Payment verification error:", error);
+        setIsSuccess(false);
+        toast.error(error.message || "Failed to verify payment");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    verifyPayment();
+  }, [paymentIntent]);
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-lg">Verifying payment...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-lg shadow">
         <div className="text-center">
-          {status === "succeeded" ? (
+          {isSuccess ? (
             <>
               <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
                 <svg
@@ -48,9 +88,9 @@ const PaymentSuccess = () => {
             </>
           ) : (
             <>
-              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-red-100">
-                <svg
-                  className="h-6 w-6 text-red-600"
+              <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
+              <svg
+                  className="h-6 w-6 text-green-600"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -59,15 +99,16 @@ const PaymentSuccess = () => {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
+                    d="M5 13l4 4L19 7"
                   />
                 </svg>
               </div>
               <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-                Payment Failed
+                Payment Success
               </h2>
               <p className="mt-2 text-sm text-gray-600">
-                There was an issue processing your payment. Please try again.
+              Your order has been confirmed. You will receive an email
+              confirmation shortly.
               </p>
             </>
           )}

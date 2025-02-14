@@ -37,8 +37,11 @@ export const confirmPayment = async (paymentIntentId) => {
   try {
     const cartId = sessionStorage.getItem("cart_id");
     if (!cartId) {
+      console.error("Cart ID not found in session storage");
       throw new Error("Cart ID not found");
     }
+
+    console.log("Confirming payment with:", { paymentIntentId, cartId });
 
     const response = await Api.post(
       "https://dash.brandexperts.ae/confirm-payment/",
@@ -54,15 +57,27 @@ export const confirmPayment = async (paymentIntentId) => {
       }
     );
 
-    if (!response.data?.success) {
-      throw new Error(response.data?.message || "Payment confirmation failed");
+    console.log("Confirmation API response:", response.data);
+
+    // Explicit success check
+    if (response.data && response.data.success === true) {
+      return {
+        success: true,
+        message: response.data.message || "Payment successful!",
+      };
     }
 
-    return response.data;
+    // If we get here, something went wrong
+    return {
+      success: false,
+      message: response.data?.message || "Payment confirmation failed",
+    };
   } catch (error) {
     console.error("Payment confirmation error:", error);
     throw new Error(
-      error.response?.data?.message || "Failed to confirm payment"
+      error.response?.data?.message ||
+        error.message ||
+        "Failed to confirm payment"
     );
   }
 };
