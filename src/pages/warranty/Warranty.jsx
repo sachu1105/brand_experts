@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react"; // Add useEffect import
+import { useState, useEffect } from "react";
 import { UploadCloud } from "lucide-react";
 import toast from "react-hot-toast";
 import register from "../../assets/images/Illustration-min.png";
 import API from "../loginSignin/Api";
-import { useNavigate } from "react-router-dom"; // Add this import
+import { useNavigate } from "react-router-dom";
 import WarrantyClaimModal from "../../components/WarrantyClaimModal";
+import { uploadInvoice } from "../../services/warrantyStorageService"; // Add this import
 
 // Extracted WarrantyForm component outside of Warranty
 const WarrantyForm = ({
@@ -28,7 +29,6 @@ const WarrantyForm = ({
   warrantyPlans, // Add this prop
 }) => {
   // Predefined invoice value ranges
- 
 
   if (activeTab === "register") {
     return (
@@ -405,12 +405,27 @@ const Warranty = () => {
   const handleFileChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const mockFileUrl = `https://storage.brandexperts.ae/invoices/${file.name}`;
-      document.getElementById("fileName").textContent = file.name;
-      setFormData((prev) => ({
-        ...prev,
-        invoice_file: mockFileUrl,
-      }));
+      try {
+        setLoading(true);
+        document.getElementById("fileName").textContent = file.name;
+
+        // Upload to Bunny.net storage
+        const uploadResult = await uploadInvoice(file);
+
+        // Update form data with the CDN URL
+        setFormData((prev) => ({
+          ...prev,
+          invoice_file: uploadResult.cdnUrl,
+        }));
+
+        toast.success("Invoice uploaded successfully");
+      } catch (error) {
+        console.error("Upload error:", error);
+        toast.error("Failed to upload invoice");
+        document.getElementById("fileName").textContent = "No file chosen";
+      } finally {
+        setLoading(false);
+      }
     }
   };
 

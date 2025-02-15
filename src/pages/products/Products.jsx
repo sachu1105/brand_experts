@@ -7,6 +7,7 @@ import {
   getProductsByCategory,
 } from "../../services/categoryApi";
 import errorImg from "../../assets/images/error.svg"; // Add this import
+import { motion } from "framer-motion";
 
 export default function Products() {
   const [searchParams] = useSearchParams();
@@ -43,6 +44,24 @@ export default function Products() {
 
   console.log("Query error:", error); // For debugging
 
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { y: 20, opacity: 0 },
+    visible: {
+      y: 0,
+      opacity: 1,
+    },
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -74,9 +93,18 @@ export default function Products() {
   }
 
   return (
-    <div className="bg-white min-h-screen">
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="bg-white min-h-screen"
+    >
       <div className="max-w-[90rem] mx-auto px-4 py-16 sm:px-6 lg:px-8">
-        <div className="text-left mb-8">
+        <motion.div
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8 }}
+          className="text-left mb-8"
+        >
           <h1 className="text-4xl font-bold text-gray-900">
             Custom Sign Printing
           </h1>
@@ -85,42 +113,53 @@ export default function Products() {
               ? `Showing filtered results`
               : `Select from our versatile range of signs and customize them to suit your needs.`}
           </p>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+        >
           {productsData?.products.map((product) => (
-            <Link
+            <motion.div
               key={product.id}
-              to={`/product/${product.id}`}
-              className="group bg-white border border-gray-100 rounded-lg shadow-sm hover:shadow-lg   transition-shadow duration-200 overflow-hidden flex flex-col h-96"
+              variants={itemVariants}
+              whileHover={{ scale: 1.02 }}
+              className="h-full"
             >
-              <div className="w-full h-48 overflow-hidden bg-gray-100 flex-shrink-0 ">
-                {product.image1 ? (
-                  <img
-                    src={product.image1}
-                    alt={product.name}
-                    className="w-full  object-cover object-center transform group-hover:scale-105 transition-transform duration-200"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-gray-200">
-                    <span className="text-gray-400 text-sm">
-                      No image available
-                    </span>
-                  </div>
-                )}
-              </div>
-              <div className="p-6 flex flex-col flex-grow ">
-                <h3 className="text-lg font-medium text-gray-900 mb-3 ">
-                  {product.name}
-                </h3>
-                <p className="text-sm text-gray-600 line-clamp-3 ">
-                  {product.description}
-                </p>
-              </div>
-            </Link>
+              <Link
+                to={`/product/${product.id}`}
+                className="group bg-white border border-gray-100 rounded-lg shadow-sm hover:shadow-lg transition-shadow duration-200 overflow-hidden flex flex-col h-96"
+              >
+                <div className="w-full h-48 overflow-hidden bg-gray-100 flex-shrink-0 ">
+                  {product.image1 ? (
+                    <img
+                      src={product.image1}
+                      alt={product.name}
+                      className="w-full  object-cover object-center transform group-hover:scale-105 transition-transform duration-200"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                      <span className="text-gray-400 text-sm">
+                        No image available
+                      </span>
+                    </div>
+                  )}
+                </div>
+                <div className="p-6 flex flex-col flex-grow ">
+                  <h3 className="text-lg font-medium text-gray-900 mb-3 ">
+                    {product.name}
+                  </h3>
+                  <p className="text-sm text-gray-600 line-clamp-3 ">
+                    {product.description}
+                  </p>
+                </div>
+              </Link>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
-    </div>
+    </motion.div>
   );
 }
