@@ -1,8 +1,8 @@
 import React from "react";
 import { X } from "lucide-react";
 import { useModal } from "../context/ModalContext";
-import Login from "../pages/loginSignin/Login";
-import Register from "../pages/loginSignin/Register";
+import ModalLogin from "./ModalLogin";
+import ModalRegister from "./ModalRegister";
 
 export default function AuthModal() {
   const { activeModal, closeModal } = useModal();
@@ -10,27 +10,18 @@ export default function AuthModal() {
   if (!activeModal) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50">
       <div className="flex min-h-screen items-center justify-center p-4">
-        {/* Backdrop */}
-        <div
-          className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
-          onClick={closeModal}
-        />
-
-        {/* Modal */}
-        <div className="relative bg-white rounded-lg max-w-md w-full mx-auto">
+        <div className="relative w-full max-w-md transform overflow-hidden rounded-lg bg-white p-6 shadow-xl transition-all">
           <button
             onClick={closeModal}
             className="absolute right-4 top-4 text-gray-400 hover:text-gray-500"
           >
-            <X className="w-6 h-6" />
+            <X className="h-6 w-6" />
           </button>
 
-          <div className="p-6">
-            {activeModal === "login" && <Login isModal={true} />}
-            {activeModal === "register" && <Register isModal={true} />}
-          </div>
+          {activeModal === "login" && <ModalLogin />}
+          {activeModal === "register" && <ModalRegister />}
         </div>
       </div>
     </div>

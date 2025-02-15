@@ -1,19 +1,30 @@
 import axios from "axios";
 
 const Api = axios.create({
-  baseURL: "https://dash.brandexperts.ae/", // Updated base URL
-  timeout: 10000,
+  baseURL: "https://dash.brandexperts.ae", // Remove trailing slash
+  headers: {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+  },
+  timeout: 15000, // Increased timeout
 });
 
-// Add request interceptor to log requests
+// Add request interceptor
 Api.interceptors.request.use(
   (config) => {
+    // Log request details
     console.log("API Request:", {
       url: config.url,
       method: config.method,
       headers: config.headers,
       data: config.data,
     });
+
+    // Ensure trailing slash for endpoints
+    if (!config.url.endsWith("/")) {
+      config.url += "/";
+    }
+
     return config;
   },
   (error) => {
@@ -22,22 +33,35 @@ Api.interceptors.request.use(
   }
 );
 
-// Add response interceptor to log responses
+// Update response interceptor
 Api.interceptors.response.use(
   (response) => {
     console.log("API Response:", {
       status: response.status,
       data: response.data,
+      url: response.config.url,
     });
     return response;
   },
   (error) => {
-    console.error("API Response Error:", {
+    console.error("API Error:", {
       message: error.message,
       response: error.response?.data,
       status: error.response?.status,
+      url: error.config?.url,
     });
-    return Promise.reject(error);
+
+    // Format error message
+    const errorMessage =
+      error.response?.data?.message ||
+      error.response?.data?.error ||
+      error.message ||
+      "An error occurred";
+
+    return Promise.reject({
+      ...error,
+      message: errorMessage,
+    });
   }
 );
 

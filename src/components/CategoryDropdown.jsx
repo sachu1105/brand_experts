@@ -60,7 +60,7 @@ const CategoryDropdown = ({ category, position = "right" }) => {
           {categoryDetails.categories.map((category, index) => (
             <div key={category.id} className={`${index > 2 ? "mt-8" : ""}`}>
               <Link
-                to={`/category/${category.id}`}
+                to={""}
                 className="block text-gray-900 hover:text-red-600 font-medium border-b border-gray-200 pb-2 mb-3"
               >
                 {category.name}

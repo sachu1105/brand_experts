@@ -474,53 +474,59 @@ const Navbar = () => {
               </div>
             </div>
             {/* Category Navigation */}
-            <div className="hidden md:flex items-center space-x-8 py-4">
-              {/* All Products Dropdown */}
-              <div className="relative group">
-                <button className="flex items-center space-x-2 font-semibold text-gray-700 text-sm hover:text-red-600 whitespace-nowrap cursor-pointer">
-                  All products
-                  <ChevronDown className="ml-1 w-4 h-4 transform transition-transform group-hover:rotate-180" />
-                </button>
-
-                {/* All Products Dropdown Menu */}
-                <div className="hidden group-hover:block absolute top-full left-0 pt-2 z-50">
-                  <div className="w-64 bg-white shadow-lg rounded-lg py-2">
-                    {categories.map((category) => (
-                      <div key={category.id} className="relative group/item">
-                        <Link
-                          to=""
-                          className="flex items-center justify-between px-4 py-2 text-gray-600 hover:text-red-600 hover:bg-gray-50 w-full"
-                        >
-                          {category.name}
-                          <ChevronRight className="w-4 h-4" />
-                        </Link>
-                        <div className="invisible group-hover/item:visible absolute left-full top-0">
-                          <CategoryDropdown category={category} />
-                        </div>
+            <div className="hidden md:block relative">
+          {/* overflow-x-auto - if this add it will scroolable but  aminor issue is there*/}
+              <div className=" hide-scrollbar"> 
+                <div className="flex items-center space-x-8 py-4 min-w-max">
+                  {/* All Products Dropdown */}
+                  <div className="relative group shrink-0">
+                    <button className="flex items-center space-x-2 font-semibold text-gray-700 text-sm hover:text-red-600 whitespace-nowrap">
+                      All products
+                      <ChevronDown className="ml-1 w-4 h-4 transform transition-transform group-hover:rotate-180" />
+                    </button>
+                    {/* All Products Dropdown Menu */}
+                    <div className="hidden group-hover:block absolute top-full left-0 pt-2 z-50">
+                      <div className="w-64 bg-white shadow-lg rounded-lg py-2">
+                        {categories.map((category) => (
+                          <div
+                            key={category.id}
+                            className="relative group/item"
+                          >
+                            <Link
+                              to=""
+                              className="flex items-center justify-between px-4 py-2 text-gray-600 hover:text-red-600 hover:bg-gray-50 w-full"
+                            >
+                              {category.name}
+                              <ChevronRight className="w-4 h-4" />
+                            </Link>
+                            <div className="invisible group-hover/item:visible absolute left-full top-0">
+                              <CategoryDropdown category={category} />
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    </div>
                   </div>
+
+                  {/* Individual Category Dropdowns */}
+                  {categories.map((category) => (
+                    <div key={category.id} className="relative group shrink-0">
+                      <Link
+                        to=""
+                        className="text-gray-600 hover:text-red-600 text-sm font-medium flex items-center gap-1 py-2 whitespace-nowrap"
+                      >
+                        {category.name}
+                      </Link>
+                      {/* Add padding bridge to prevent gap */}
+                      <div className="absolute h-4 -bottom-4 left-0 right-0"></div>
+
+                      <div className="hidden group-hover:block absolute top-full left-0 z-50">
+                        <CategoryDropdown category={category} position="top" />
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-
-              {/* Individual Category Dropdowns */}
-              {categories.map((category) => (
-                <div key={category.id} className="relative group">
-                  <Link
-                    to=""
-                    className="text-gray-600 hover:text-red-600 text-sm font-medium flex items-center gap-1 py-2"
-                  >
-                    {category.name}
-                  </Link>
-
-                  {/* Add padding bridge to prevent gap */}
-                  <div className="absolute h-4 -bottom-4 left-0 right-0"></div>
-
-                  <div className="hidden group-hover:block absolute top-full left-0 z-50">
-                    <CategoryDropdown category={category} position="top" />
-                  </div>
-                </div>
-              ))}
             </div>
           </div>
         </div>
