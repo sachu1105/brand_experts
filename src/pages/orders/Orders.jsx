@@ -121,7 +121,7 @@ export default function Orders() {
                         Quantity: {item.quantity}
                       </p>
                       <p className="text-sm font-medium text-gray-900">
-                        {item.price.toFixed(2)} AED
+                        ${item.price.toFixed(2)}
                       </p>
                     </div>
                   </div>
@@ -132,7 +132,7 @@ export default function Orders() {
               <div className="px-4 py-4 sm:px-6 bg-gray-50 flex justify-between items-center">
                 <div className="text-sm text-gray-900">
                   Total:{" "}
-                  <span className="font-medium">{order.total.toFixed(2)} AED</span>
+                  <span className="font-medium">${order.total.toFixed(2)}</span>
                 </div>
                 <div className="space-x-3">
                   {order.tracking && (

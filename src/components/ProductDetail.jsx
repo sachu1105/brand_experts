@@ -366,7 +366,7 @@ export default function ProductDetail() {
                 <span className="text-lg font-medium text-gray-500 ">
                   Price Total:
                 </span>
-                <span className="text-2xl font-bold">{calculatePrice()} AED</span>
+                <span className="text-2xl font-bold">${calculatePrice()}</span>
               </div>
 
               <button

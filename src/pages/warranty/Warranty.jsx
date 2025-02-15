@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react"; // Add useEffect import
 import { UploadCloud } from "lucide-react";
 import toast from "react-hot-toast";

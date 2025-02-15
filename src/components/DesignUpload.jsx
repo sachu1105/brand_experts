@@ -74,7 +74,7 @@ export default function DesignUpload() {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <div className="bg-white rounded-lg shadow-lg p-6 border border-gray-100" >
+      <div className="bg-white rounded-lg shadow-lg p-6">
         {readyToAddCart ? (
           <div className="space-y-6">
             <h2 className="text-2xl font-bold">Review Your Design</h2>
@@ -87,7 +87,7 @@ export default function DesignUpload() {
                 />
               </div>
               <div className="space-y-4">
-                <div className="bg-gray-50 p-4 rounded-lg ">
+                <div className="bg-gray-50 p-4 rounded-lg">
                   <h3 className="font-semibold mb-4">{productDetails.name}</h3>
                   <p>
                     Size:{" "}
@@ -96,19 +96,19 @@ export default function DesignUpload() {
                   </p>
                   <p>Quantity: {productDetails.quantity}</p>
                   <p className="text-xl font-bold mt-4">
-                    Total: {productDetails.total} AED
+                    Total: ${productDetails.total}
                   </p>
                 </div>
                 <div className="flex gap-4">
                   <button
                     onClick={() => setReadyToAddCart(false)}
-                    className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 cursor-pointer"
+                    className="px-6 py-2 border border-gray-300 rounded-lg hover:bg-gray-50"
                   >
                     Upload Different Design
                   </button>
                   <button
                     onClick={handleAddToCart}
-                    className="flex-1 bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] text-white py-2 rounded-lg hover:shadow-lg cursor-pointer"
+                    className="flex-1 bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] text-white py-2 rounded-lg hover:shadow-lg"
                   >
                     Add to Cart
                   </button>
@@ -128,7 +128,7 @@ export default function DesignUpload() {
                   Size: {productDetails.size || "Custom Size"}
                 </p>
                 <p className="mb-2">Quantity: {productDetails.quantity}</p>
-                <p>Total: {productDetails.total} AED</p>
+                <p>Total: ${productDetails.total}</p>
               </div>
             </div>
 

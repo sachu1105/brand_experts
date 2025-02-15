@@ -73,7 +73,7 @@ export default function CartItem({ item }) {
             </button>
           </div>
 
-          <span className="font-medium">{item.totalprice.toFixed(2)} AED</span>
+          <span className="font-medium">${item.totalprice.toFixed(2)}</span>
         </div>
       </div>
     </div>

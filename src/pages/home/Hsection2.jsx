@@ -148,7 +148,7 @@ const Hsection2 = () => {
               {/* Price moved here */}
               <div className="mt-4">
                 <label className="text-gray-600">Price total:</label>
-                <div className="text-2xl font-bold">{price.toFixed(2)} AED</div>
+                <div className="text-2xl font-bold">${price.toFixed(2)}</div>
               </div>
             </div>
 
