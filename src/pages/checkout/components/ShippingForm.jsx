@@ -14,14 +14,16 @@ const schema = z.object({
   address_line1: z.string().min(1, "Address is required"),
   address_line2: z.string().optional().nullable(),
   country: z.string().min(1, "Country is required"),
-  city: z.string().min(1, "City is required"),
-  state: z.string().min(1, "State is required"),
-  zip_code: z.string().min(1, "ZIP code is required"),
+  city: z.string().min(3, "City must be at least 3 characters"),
+  state: z.string().min(2, "State/Emirate must be at least 2 characters"),
+  zip_code: z
+    .string()
+    .min(1, "ZIP code is required")
+    .regex(/^[0-9]{5,6}$/, "ZIP code must be 5-6 digits"),
 });
 
 export default function ShippingForm({ onNext, initialData, onSave }) {
   const navigate = useNavigate();
-  const [isSuccess, setIsSuccess] = useState(false);
 
   useEffect(() => {
     const customer_id = sessionStorage.getItem("customer_id");
@@ -90,87 +92,63 @@ export default function ShippingForm({ onNext, initialData, onSave }) {
     },
   });
 
-  const onSubmit = async (data) => {
-    try {
-      console.log("Form submitted with data:", data);
-      const result = await createAddressMutation.mutateAsync(data);
-      console.log("Mutation result:", result);
-
-      if (result.message && result.address_details) {
-        toast.success(result.message);
-        onSave(result.address_details);
-        setIsSuccess(true);
-      }
-    } catch (error) {
-      console.error("Submit error:", error);
-      toast.error(error.message || "Failed to save address");
-    }
-  };
-
-  const handleContinueToPayment = async () => {
+  const handleFormSubmit = async (data) => {
     try {
       const customerId = sessionStorage.getItem("customer_id");
-      if (!customerId) {
+      const accessToken = localStorage.getItem("access_token");
+
+      if (!customerId || !accessToken) {
         toast.error("Please login to continue");
+        navigate("/login", { state: { from: "/checkout" } });
         return;
       }
 
-      toast.loading("Processing cart...");
-      const cartResponse = await submitCartToBackend();
-      toast.dismiss();
+      // Form validation
+      try {
+        schema.parse(data);
+      } catch (validationError) {
+        console.error("Validation error:", validationError);
+        toast.error("Please check all required fields");
+        return;
+      }
 
-      if (cartResponse.success || cartResponse.message) {
-        toast.success("Cart processed successfully");
-        navigate("/payment"); // Redirect to payment page instead of using onNext
-      } else {
-        throw new Error("Invalid response from server");
+      // Step 1: Save the address
+      const toastId = toast.loading("Saving address...");
+
+      try {
+        const addressResult = await createAddressMutation.mutateAsync(data);
+
+        if (!addressResult?.address_details) {
+          throw new Error("Invalid address response");
+        }
+
+        // Step 2: Process the cart
+        toast.loading("Processing cart...", { id: toastId });
+        const cartResponse = await submitCartToBackend();
+
+        if (!cartResponse?.success && !cartResponse?.message) {
+          throw new Error("Cart processing failed");
+        }
+
+        toast.success("Address saved and cart processed successfully", {
+          id: toastId,
+        });
+        onSave(addressResult.address_details);
+        navigate("/payment");
+      } catch (error) {
+        toast.error(error.message || "Operation failed", { id: toastId });
+        console.error("Operation error:", error);
       }
     } catch (error) {
-      toast.dismiss();
-      console.error("Failed to create cart:", error);
-      toast.error(error.message || "Failed to process cart. Please try again.");
+      console.error("Form submission error:", error);
+      toast.error("An unexpected error occurred. Please try again.");
     }
   };
 
-  if (isSuccess) {
-    return (
-      <div className="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow text-center">
-        <div className="mb-6">
-          <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100">
-            <svg
-              className="h-6 w-6 text-green-600"
-              fill="none"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path d="M5 13l4 4L19 7" />
-            </svg>
-          </div>
-          <h2 className="mt-4 text-2xl font-semibold text-gray-900">
-            Address Added Successfully!
-          </h2>
-          <p className="mt-2 text-gray-600">
-            Your shipping address has been saved.
-          </p>
-        </div>
-        <div className="flex justify-center">
-          <button
-            onClick={handleContinueToPayment}
-            className="w-78 bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] text-white px-6 py-4 text-lg rounded-lg hover:shadow-lg transition-all duration-300"
-          >
-            Save & Continue to Payment
-          </button>
-        </div>
-      </div>
-    );
-  }
-
   return (
+    <div className="mt-8 mb-48">
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={handleSubmit(handleFormSubmit)}
       className="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow"
     >
       <h2 className="text-2xl font-semibold mb-6">Shipping Address</h2>
@@ -309,8 +287,17 @@ export default function ShippingForm({ onNext, initialData, onSave }) {
         <div className="sm:col-span-2 mt-6">
           <button
             type="submit"
-            disabled={isSubmitting || createAddressMutation.isLoading}
-            className="w-full bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] text-white px-6 py-4 text-lg rounded-lg hover:shadow-lg transition-all duration-300 disabled:opacity-50"
+            disabled={
+              isSubmitting ||
+              createAddressMutation.isLoading ||
+              Object.keys(errors).length > 0
+            }
+            className={`w-full px-6 py-4 text-lg rounded-lg transition-all duration-300 
+              ${
+                Object.keys(errors).length > 0
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] text-white hover:shadow-lg"
+              }`}
           >
             {isSubmitting || createAddressMutation.isLoading ? (
               <span className="flex items-center justify-center">
@@ -334,24 +321,31 @@ export default function ShippingForm({ onNext, initialData, onSave }) {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   />
                 </svg>
-                Saving Address...
+                Processing...
               </span>
+            ) : Object.keys(errors).length > 0 ? (
+              "Please fill all required fields"
             ) : (
-              "Continue to Payment"
+              "Save & Continue to Payment"
             )}
           </button>
 
-          {/* Debug information */}
+          {/* Enhanced Error Display */}
           {Object.keys(errors).length > 0 && (
-            <div className="mt-4 p-4 bg-red-50 rounded-lg">
-              <p className="text-red-600 font-medium">Form Errors:</p>
-              <pre className="text-sm text-red-500">
-                {JSON.stringify(errors, null, 2)}
-              </pre>
+            <div className="mt-4 p-4 bg-red-50 rounded-lg border border-red-100">
+              <p className="text-red-600 font-medium mb-2">
+                Please correct the following errors:
+              </p>
+              <ul className="list-disc list-inside text-sm text-red-500">
+                {Object.entries(errors).map(([field, error]) => (
+                  <li key={field}>{error.message}</li>
+                ))}
+              </ul>
             </div>
           )}
         </div>
       </div>
     </form>
+  </div>
   );
 }

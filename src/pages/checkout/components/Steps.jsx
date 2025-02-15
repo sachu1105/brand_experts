@@ -1,21 +1,23 @@
-export function Steps({ steps, currentStep }) {
+import { CHECKOUT_STEPS } from "../../../constants/checkoutSteps";
+
+export function Steps({ currentStep }) {
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <nav aria-label="Progress">
         <ol className="flex items-center">
-          {steps.map((step, stepIdx) => (
+          {CHECKOUT_STEPS.map((step, stepIdx) => (
             <li
               key={step.name}
               className={`relative ${
-                stepIdx !== steps.length - 1 ? "flex-1" : ""
+                stepIdx !== CHECKOUT_STEPS.length - 1 ? "flex-1" : ""
               }`}
             >
-              {/* Connecting Line */}
-              {stepIdx !== steps.length - 1 && (
+              {stepIdx !== CHECKOUT_STEPS.length - 1 && (
                 <div className="absolute top-4 left-0 -right-2 h-0.5">
                   <div
                     className={`h-full ${
-                      stepIdx < steps.findIndex((s) => s.id === currentStep)
+                      stepIdx <
+                      CHECKOUT_STEPS.findIndex((s) => s.id === currentStep)
                         ? "bg-red-600"
                         : "bg-gray-200"
                     }`}
@@ -23,18 +25,19 @@ export function Steps({ steps, currentStep }) {
                 </div>
               )}
 
-              {/* Step Circle and Label */}
               <div className="relative flex flex-col items-center group">
                 <span
                   className={`w-8 h-8 rounded-full flex items-center justify-center ${
                     step.id === currentStep
                       ? "bg-red-600 text-white ring-2 ring-red-600"
-                      : stepIdx < steps.findIndex((s) => s.id === currentStep)
+                      : stepIdx <
+                        CHECKOUT_STEPS.findIndex((s) => s.id === currentStep)
                       ? "bg-red-600 text-white"
                       : "bg-white border-2 border-gray-300 text-gray-500"
                   }`}
                 >
-                  {stepIdx < steps.findIndex((s) => s.id === currentStep) ? (
+                  {stepIdx <
+                  CHECKOUT_STEPS.findIndex((s) => s.id === currentStep) ? (
                     <svg
                       className="w-4 h-4"
                       fill="currentColor"
@@ -54,7 +57,8 @@ export function Steps({ steps, currentStep }) {
                   className={`mt-2 text-sm font-medium ${
                     step.id === currentStep
                       ? "text-red-600"
-                      : stepIdx < steps.findIndex((s) => s.id === currentStep)
+                      : stepIdx <
+                        CHECKOUT_STEPS.findIndex((s) => s.id === currentStep)
                       ? "text-red-600"
                       : "text-gray-500"
                   }`}
