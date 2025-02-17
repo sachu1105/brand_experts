@@ -254,17 +254,17 @@ const Navbar = () => {
               </Link>
 
               <Link
-                to="/templates"
+                to=""
                 className="text-gray-600 hover:text-gray-900"
               >
                 Templates
               </Link>
-              <Link
+              {/* <Link
                 to="/corporate-offers"
                 className="text-gray-600 hover:text-gray-900"
               >
                 Corporate Offers
-              </Link>
+              </Link> */}
             </div>
           </div>
         </div>
