@@ -8,7 +8,7 @@ export const createPaymentIntent = async () => {
     }
 
     const response = await Api.post(
-      "https://dash.brandexperts.ae/create-payment-intent/",
+      "/create-payment-intent/",
       {
         cart_id: parseInt(cartId),
       },
@@ -20,11 +20,18 @@ export const createPaymentIntent = async () => {
       }
     );
 
-    if (!response.data?.clientSecret) {
-      throw new Error("Invalid response from payment service");
+    // Store billing details in session storage for use during payment
+    if (response.data?.billing_details) {
+      sessionStorage.setItem(
+        "billing_details",
+        JSON.stringify(response.data.billing_details)
+      );
     }
 
-    return response.data.clientSecret;
+    return {
+      clientSecret: response.data.clientSecret,
+      billingDetails: response.data.billing_details,
+    };
   } catch (error) {
     console.error("Payment intent creation error:", error);
     throw new Error(

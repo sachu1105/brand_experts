@@ -1,9 +1,11 @@
 import { CheckCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export default function OrderConfirmation({ orderData }) {
+export default function OrderConfirmation() {
+  const orderNumber = Math.random().toString(36).substr(2, 9).toUpperCase();
+
   return (
-    <div className="max-w-2xl mx-auto text-center">
+    <div className="max-w-2xl mx-auto text-center pt-25 pb-28">
       <div className="bg-white rounded-lg shadow p-8">
         <div className="flex justify-center">
           <CheckCircle className="h-16 w-16 text-green-500" />
@@ -21,10 +23,7 @@ export default function OrderConfirmation({ orderData }) {
           <p className="text-sm text-gray-600">
             Order confirmation has been sent to your email.
           </p>
-          <p className="text-sm text-gray-600">
-            Order number: #
-            {Math.random().toString(36).substr(2, 9).toUpperCase()}
-          </p>
+          <p className="text-sm text-gray-600">Order number: #{orderNumber}</p>
         </div>
 
         <div className="mt-8 space-x-4">
@@ -35,7 +34,7 @@ export default function OrderConfirmation({ orderData }) {
             View Orders
           </Link>
           <Link
-            to="/"
+            to="/products"
             className="inline-block px-6 py-3 border border-gray-300 rounded-lg"
           >
             Continue Shopping

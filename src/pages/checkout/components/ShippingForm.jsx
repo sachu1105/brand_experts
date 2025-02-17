@@ -22,6 +22,15 @@ const schema = z.object({
     .regex(/^[0-9]{5,6}$/, "ZIP code must be 5-6 digits"),
 });
 
+const COUNTRIES = [
+  { code: "AE", name: "United Arab Emirates" },
+  { code: "OM", name: "Oman" },
+  { code: "BH", name: "Bahrain" },
+  { code: "QA", name: "Qatar" },
+  { code: "KW", name: "Kuwait" },
+  { code: "SA", name: "Saudi Arabia" },
+];
+
 export default function ShippingForm({ onNext, initialData, onSave }) {
   const navigate = useNavigate();
 
@@ -42,7 +51,7 @@ export default function ShippingForm({ onNext, initialData, onSave }) {
   } = useForm({
     resolver: zodResolver(schema),
     defaultValues: {
-      country: "UAE",
+      country: "AE",
       ...initialData,
     },
   });
@@ -112,6 +121,26 @@ export default function ShippingForm({ onNext, initialData, onSave }) {
         return;
       }
 
+      // Store billing details with correct Stripe field names
+      const billingDetails = {
+        name: data.company_name,
+        email: sessionStorage.getItem("user_email") || "", // Ensure email is never null
+        phone: data.ext || "",
+        address: {
+          line1: data.address_line1,
+          line2: data.address_line2 || "",
+          city: data.city,
+          state: data.state,
+          postal_code: data.zip_code, // Changed from zip_code to postal_code
+          country: data.country,
+        },
+      };
+
+      // Debug log to verify structure
+      console.log("Saving billing details:", billingDetails);
+
+      sessionStorage.setItem("billing_details", JSON.stringify(billingDetails));
+
       // Step 1: Save the address
       const toastId = toast.loading("Saving address...");
 
@@ -147,205 +176,206 @@ export default function ShippingForm({ onNext, initialData, onSave }) {
 
   return (
     <div className="mt-8 mb-48">
-    <form
-      onSubmit={handleSubmit(handleFormSubmit)}
-      className="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow"
-    >
-      <h2 className="text-2xl font-semibold mb-6">Shipping Address</h2>
+      <form
+        onSubmit={handleSubmit(handleFormSubmit)}
+        className="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow"
+      >
+        <h2 className="text-2xl font-semibold mb-6">Shipping Address</h2>
 
-      <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
-        {/* Company Name */}
-        <div className="sm:col-span-2">
-          <label className="block text-sm font-medium text-gray-700">
-            Company Name *
-          </label>
-          <input
-            type="text"
-            {...register("company_name")}
-            className="mt-1 block w-full px-4 py-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
-            placeholder="Enter company name"
-          />
-          {errors.company_name && (
-            <p className="mt-1 text-sm text-red-600">
-              {errors.company_name.message}
-            </p>
-          )}
-        </div>
+        <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-4">
+          {/* Company Name */}
+          <div className="sm:col-span-2">
+            <label className="block text-sm font-medium text-gray-700">
+              Company Name *
+            </label>
+            <input
+              type="text"
+              {...register("company_name")}
+              className="mt-1 block w-full px-4 py-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
+              placeholder="Enter company name"
+            />
+            {errors.company_name && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.company_name.message}
+              </p>
+            )}
+          </div>
 
-        {/* Address Lines */}
-        <div className="sm:col-span-2">
-          <label className="block text-sm font-medium text-gray-700">
-            Address Line 1 *
-          </label>
-          <input
-            type="text"
-            {...register("address_line1")}
-            className="mt-1 block w-full px-4 py-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
-            placeholder="Street address"
-          />
-          {errors.address_line1 && (
-            <p className="mt-1 text-sm text-red-600">
-              {errors.address_line1.message}
-            </p>
-          )}
-        </div>
+          {/* Address Lines */}
+          <div className="sm:col-span-2">
+            <label className="block text-sm font-medium text-gray-700">
+              Address Line 1 *
+            </label>
+            <input
+              type="text"
+              {...register("address_line1")}
+              className="mt-1 block w-full px-4 py-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
+              placeholder="Street address"
+            />
+            {errors.address_line1 && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.address_line1.message}
+              </p>
+            )}
+          </div>
 
-        <div className="sm:col-span-2">
-          <label className="block text-sm font-medium text-gray-700">
-            Address Line 2
-          </label>
-          <input
-            type="text"
-            {...register("address_line2")}
-            className="mt-1 block w-full px-4 py-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
-            placeholder="Apartment, suite, unit, building, floor, etc."
-          />
-        </div>
+          <div className="sm:col-span-2">
+            <label className="block text-sm font-medium text-gray-700">
+              Address Line 2
+            </label>
+            <input
+              type="text"
+              {...register("address_line2")}
+              className="mt-1 block w-full px-4 py-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
+              placeholder="Apartment, suite, unit, building, floor, etc."
+            />
+          </div>
 
-        {/* Extension */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Extension/Suite
-          </label>
-          <input
-            type="text"
-            {...register("ext")}
-            className="mt-1 block w-full px-4 py-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
-            placeholder="Suite number"
-          />
-        </div>
+          {/* Extension */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Extension/Suite
+            </label>
+            <input
+              type="text"
+              {...register("ext")}
+              className="mt-1 block w-full px-4 py-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
+              placeholder="Suite number"
+            />
+          </div>
 
-        {/* Country */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Country *
-          </label>
-          <select
-            {...register("country")}
-            className="mt-1 block w-full px-4 py-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
-          >
-            <option value="UAE">United Arab Emirates</option>
-            <option value="Oman">Oman</option>
-            <option value="Bahrain">Bahrain</option>
-            <option value="Qatar">Qatar</option>
-            <option value="Kuwait">Kuwait</option>
-            <option value="Saudi Arabia">Saudi Arabia</option>
-          </select>
-        </div>
+          {/* Country */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Country *
+            </label>
+            <select
+              {...register("country")}
+              className="mt-1 block w-full px-4 py-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
+            >
+              {COUNTRIES.map(({ code, name }) => (
+                <option key={code} value={code}>
+                  {name}
+                </option>
+              ))}
+            </select>
+          </div>
 
-        {/* State/Emirate - Changed from select to input */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            State/Emirate *
-          </label>
-          <input
-            type="text"
-            {...register("state")}
-            className="mt-1 block w-full px-4 py-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
-            placeholder="Enter state or emirate"
-          />
-          {errors.state && (
-            <p className="mt-1 text-sm text-red-600">{errors.state.message}</p>
-          )}
-        </div>
+          {/* State/Emirate - Changed from select to input */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              State/Emirate *
+            </label>
+            <input
+              type="text"
+              {...register("state")}
+              className="mt-1 block w-full px-4 py-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
+              placeholder="Enter state or emirate"
+            />
+            {errors.state && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.state.message}
+              </p>
+            )}
+          </div>
 
-        {/* City - Changed from select to input */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            City *
-          </label>
-          <input
-            type="text"
-            {...register("city")}
-            className="mt-1 block w-full px-4 py-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
-            placeholder="Enter city name"
-          />
-          {errors.city && (
-            <p className="mt-1 text-sm text-red-600">{errors.city.message}</p>
-          )}
-        </div>
+          {/* City - Changed from select to input */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              City *
+            </label>
+            <input
+              type="text"
+              {...register("city")}
+              className="mt-1 block w-full px-4 py-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
+              placeholder="Enter city name"
+            />
+            {errors.city && (
+              <p className="mt-1 text-sm text-red-600">{errors.city.message}</p>
+            )}
+          </div>
 
-        {/* ZIP Code */}
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            ZIP Code *
-          </label>
-          <input
-            type="text"
-            {...register("zip_code")}
-            className="mt-1 block w-full px-4 py-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
-            placeholder="Enter ZIP code"
-          />
-          {errors.zip_code && (
-            <p className="mt-1 text-sm text-red-600">
-              {errors.zip_code.message}
-            </p>
-          )}
-        </div>
+          {/* ZIP Code */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              ZIP Code *
+            </label>
+            <input
+              type="text"
+              {...register("zip_code")}
+              className="mt-1 block w-full px-4 py-3 border-gray-300 rounded-md shadow-sm focus:ring-red-500 focus:border-red-500"
+              placeholder="Enter ZIP code"
+            />
+            {errors.zip_code && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.zip_code.message}
+              </p>
+            )}
+          </div>
 
-        {/* Submit Button */}
-        <div className="sm:col-span-2 mt-6">
-          <button
-            type="submit"
-            disabled={
-              isSubmitting ||
-              createAddressMutation.isLoading ||
-              Object.keys(errors).length > 0
-            }
-            className={`w-full px-6 py-4 text-lg rounded-lg transition-all duration-300 
+          {/* Submit Button */}
+          <div className="sm:col-span-2 mt-6">
+            <button
+              type="submit"
+              disabled={
+                isSubmitting ||
+                createAddressMutation.isLoading ||
+                Object.keys(errors).length > 0
+              }
+              className={`w-full px-6 py-4 text-lg rounded-lg transition-all duration-300 
               ${
                 Object.keys(errors).length > 0
                   ? "bg-gray-400 cursor-not-allowed"
                   : "bg-gradient-to-b from-[#BF1A1C] to-[#590C0D] text-white hover:shadow-lg"
               }`}
-          >
-            {isSubmitting || createAddressMutation.isLoading ? (
-              <span className="flex items-center justify-center">
-                <svg
-                  className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                  />
-                </svg>
-                Processing...
-              </span>
-            ) : Object.keys(errors).length > 0 ? (
-              "Please fill all required fields"
-            ) : (
-              "Save & Continue to Payment"
-            )}
-          </button>
+            >
+              {isSubmitting || createAddressMutation.isLoading ? (
+                <span className="flex items-center justify-center">
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                  Processing...
+                </span>
+              ) : Object.keys(errors).length > 0 ? (
+                "Please fill all required fields"
+              ) : (
+                "Save & Continue to Payment"
+              )}
+            </button>
 
-          {/* Enhanced Error Display */}
-          {Object.keys(errors).length > 0 && (
-            <div className="mt-4 p-4 bg-red-50 rounded-lg border border-red-100">
-              <p className="text-red-600 font-medium mb-2">
-                Please correct the following errors:
-              </p>
-              <ul className="list-disc list-inside text-sm text-red-500">
-                {Object.entries(errors).map(([field, error]) => (
-                  <li key={field}>{error.message}</li>
-                ))}
-              </ul>
-            </div>
-          )}
+            {/* Enhanced Error Display */}
+            {Object.keys(errors).length > 0 && (
+              <div className="mt-4 p-4 bg-red-50 rounded-lg border border-red-100">
+                <p className="text-red-600 font-medium mb-2">
+                  Please correct the following errors:
+                </p>
+                <ul className="list-disc list-inside text-sm text-red-500">
+                  {Object.entries(errors).map(([field, error]) => (
+                    <li key={field}>{error.message}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
         </div>
-      </div>
-    </form>
-  </div>
+      </form>
+    </div>
   );
 }

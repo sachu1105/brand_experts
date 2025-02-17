@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const Api = axios.create({
-  baseURL: "https://dash.brandexperts.ae", // Remove trailing slash
+  baseURL: "https://dash.brandexperts.ae", 
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",

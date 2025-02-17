@@ -29,6 +29,8 @@ import PaymentSuccess from "./pages/checkout/PaymentSuccess";
 import { Elements } from "@stripe/react-stripe-js";
 import stripePromise from "./utils/stripe";
 import Payment from "./pages/payment/Payment";
+import PaymentPage from "./pages/payment/PaymentPage";
+import OrderConfirmation from "./pages/checkout/components/OrderConfirmation";
 
 const queryClient = new QueryClient();
 
@@ -114,8 +116,16 @@ const App = () => {
                         <Route
                           path="/payment"
                           element={
+                            <ErrorBoundary>
+                              <PaymentPage />
+                            </ErrorBoundary>
+                          }
+                        />
+                        <Route
+                          path="/order-confirmation"
+                          element={
                             <ProtectedRoute>
-                              <Payment />
+                              <OrderConfirmation />
                             </ProtectedRoute>
                           }
                         />

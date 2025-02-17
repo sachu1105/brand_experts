@@ -6,12 +6,36 @@ import {
 } from "@stripe/react-stripe-js";
 import { confirmPayment } from "../services/PaymentService";
 
-export default function StripePaymentForm({ onSuccess, orderTotal = "0.00" }) {
+// Map of full country names to ISO codes
+const COUNTRY_CODES = {
+  "United Arab Emirates": "AE",
+  Oman: "OM",
+  Bahrain: "BH",
+  Qatar: "QA",
+  Kuwait: "KW",
+  "Saudi Arabia": "SA",
+};
+
+export default function StripePaymentForm({
+  onSuccess,
+  orderTotal = "0.00",
+  subtotal = "0.00",
+  tax = "0.00",
+}) {
   const stripe = useStripe();
   const elements = useElements();
   const [isProcessing, setIsProcessing] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [paymentStatus, setPaymentStatus] = useState("initial");
+  const [billingDetails, setBillingDetails] = useState(null);
+
+  useEffect(() => {
+    // Load billing details from session storage
+    const storedBillingDetails = sessionStorage.getItem("billing_details");
+    if (storedBillingDetails) {
+      setBillingDetails(JSON.parse(storedBillingDetails));
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,16 +44,45 @@ export default function StripePaymentForm({ onSuccess, orderTotal = "0.00" }) {
     setIsProcessing(true);
 
     try {
-      if (!stripe || !elements) {
-        throw new Error("Payment system is not ready");
+      if (!stripe || !elements || !billingDetails) {
+        throw new Error(
+          "Payment system is not ready or billing details missing"
+        );
       }
+
+      // Ensure all required fields are present and correctly named
+      const formattedBillingDetails = {
+        name: billingDetails.name,
+        email:
+          billingDetails.email || sessionStorage.getItem("user_email") || "",
+        phone: billingDetails.phone || "",
+        address: {
+          line1: billingDetails.address.line1,
+          line2: billingDetails.address.line2 || "",
+          city: billingDetails.address.city,
+          state: billingDetails.address.state,
+          postal_code:
+            billingDetails.address.postal_code ||
+            billingDetails.address.zip_code, // Handle both field names
+          country: billingDetails.address.country,
+        },
+      };
+
+      console.log("Formatted billing details:", formattedBillingDetails);
 
       const { error, paymentIntent } = await stripe.confirmPayment({
         elements,
+        confirmParams: {
+          payment_method_data: {
+            billing_details: formattedBillingDetails,
+          },
+          return_url: window.location.origin + "/payment-complete",
+        },
         redirect: "if_required",
       });
 
       if (error) {
+        console.error("Payment error:", error);
         setErrorMessage(error.message);
         setPaymentStatus("error");
         return;
@@ -39,16 +92,29 @@ export default function StripePaymentForm({ onSuccess, orderTotal = "0.00" }) {
         setPaymentStatus("success");
         const confirmationResponse = await confirmPayment(paymentIntent.id);
         if (confirmationResponse.success) {
+          // Clear billing details from session storage
+          sessionStorage.removeItem("billing_details");
           onSuccess();
         }
       }
     } catch (error) {
+      console.error("Payment submission error:", error);
       setErrorMessage(error.message);
       setPaymentStatus("error");
     } finally {
       setIsProcessing(false);
     }
   };
+
+  if (!billingDetails) {
+    return (
+      <div className="text-center p-4">
+        <p className="text-red-600">
+          Please complete the shipping form before proceeding to payment.
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full max-w-3xl mx-auto">
@@ -74,11 +140,11 @@ export default function StripePaymentForm({ onSuccess, orderTotal = "0.00" }) {
         </h3>
         <div className="flex justify-between mb-2">
           <span className="text-gray-600">Subtotal</span>
-          <span className="font-medium">AED {orderTotal}</span>
+          <span className="font-medium">AED {subtotal}</span>
         </div>
         <div className="flex justify-between mb-2">
           <span className="text-gray-600">Tax</span>
-          <span className="font-medium">Included</span>
+          <span className="font-medium">AED {tax}</span>
         </div>
         <div className="border-t border-gray-200 mt-4 pt-4 flex justify-between">
           <span className="text-lg font-medium text-gray-900">Total</span>

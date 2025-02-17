@@ -162,7 +162,7 @@ const Login = ({ isModal = false }) => {
             Log in
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Enter your username and password to sign in to your Square Signs
+            Enter your username and password to sign in to your Brand Experts
             account.
           </p>
         </div>

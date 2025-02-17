@@ -92,7 +92,7 @@ const WarrantyForm = ({
                   name="product_name"
                   value={formData.product_name}
                   onChange={handleInputChange}
-                  placeholder="Enter product name"
+                  placeholder="Enter Invoice Number"
                   className="w-full py-1.5 px-3 text-sm border border-gray-200 rounded-md focus:outline-none focus:border-red-500"
                   required
                 />
