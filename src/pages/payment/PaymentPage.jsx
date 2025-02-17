@@ -45,12 +45,22 @@ export default function PaymentPage() {
 
         // Initialize payment intent
         const response = await createPaymentIntent();
+
+        // Extract amount details from the response
+        const amountDetails = {
+          subtotal: response.data?.base_product_amount?.toFixed(2) || "0.00",
+          tax: response.data?.vat_amount?.toFixed(2) || "0.00",
+          total: response.data?.total_with_vat?.toFixed(2) || "0.00",
+          vatPercentage: response.data?.vat_percentage || 5,
+        };
+
         setPaymentInfo({
-          clientSecret: response.clientSecret,
-          amount: {
-            subtotal: response.amount?.base?.toFixed(2) || "0.00",
-            tax: response.amount?.vat?.toFixed(2) || "0.00",
-            total: response.amount?.total?.toFixed(2) || "0.00",
+          clientSecret: response.data.clientSecret,
+          amount: amountDetails,
+          transactionId: response.data.transaction_id,
+          customerDetails: {
+            username: response.data.username,
+            email: response.data.email,
           },
         });
       } catch (error) {
@@ -119,6 +129,8 @@ export default function PaymentPage() {
           orderTotal={paymentInfo.amount.total}
           subtotal={paymentInfo.amount.subtotal}
           tax={paymentInfo.amount.tax}
+          transactionId={paymentInfo.transactionId}
+          customerDetails={paymentInfo.customerDetails}
         />
       </Elements>
     </div>

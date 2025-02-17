@@ -31,6 +31,13 @@ export const createPaymentIntent = async () => {
     return {
       clientSecret: response.data.clientSecret,
       billingDetails: response.data.billing_details,
+      data: response.data, // Return full response data to access amount and other details
+      amount: {
+        base: response.data.base_product_amount,
+        vat: response.data.vat_amount,
+        total: response.data.total_with_vat,
+        vatPercentage: response.data.vat_percentage,
+      },
     };
   } catch (error) {
     console.error("Payment intent creation error:", error);

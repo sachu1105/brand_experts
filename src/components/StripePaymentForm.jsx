@@ -21,6 +21,9 @@ export default function StripePaymentForm({
   orderTotal = "0.00",
   subtotal = "0.00",
   tax = "0.00",
+  vatPercentage = 5,
+  transactionId,
+  customerDetails,
 }) {
   const stripe = useStripe();
   const elements = useElements();
@@ -119,38 +122,60 @@ export default function StripePaymentForm({
   return (
     <div className="w-full max-w-3xl mx-auto">
       {/* Payment Header */}
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h2 className="text-xl font-semibold text-gray-800">
-            Payment Details
-          </h2>
-          <p className="text-gray-600 mt-1">Complete your purchase securely</p>
+      <div className="mb-8">
+        <div className="flex justify-between items-start">
+          <div>
+            <h2 className="text-xl font-semibold text-gray-800">
+              Payment Details
+            </h2>
+            <p className="text-gray-600 mt-1">
+              Complete your purchase securely
+            </p>
+          </div>
+          <div className="flex space-x-2">
+            <img src="/visa.svg" alt="Visa" className="h-8" />
+            <img src="/mastercard.svg" alt="Mastercard" className="h-8" />
+            <img src="/amex.svg" alt="Amex" className="h-8" />
+          </div>
         </div>
-        <div className="flex space-x-2">
-          <img src="/visa.svg" alt="Visa" className="h-8" />
-          <img src="/mastercard.svg" alt="Mastercard" className="h-8" />
-          <img src="/amex.svg" alt="Amex" className="h-8" />
-        </div>
+        {transactionId && (
+          <p className="text-sm text-gray-500 mt-2">
+            Transaction ID: {transactionId}
+          </p>
+        )}
       </div>
+
+      {/* Customer Details */}
+      {customerDetails && (
+        <div className="bg-gray-50 rounded-lg p-4 mb-6">
+          <h3 className="text-md font-medium text-gray-900 mb-2">
+            Customer Information
+          </h3>
+          <p className="text-sm text-gray-600">{customerDetails.username}</p>
+          <p className="text-sm text-gray-600">{customerDetails.email}</p>
+        </div>
+      )}
 
       {/* Order Summary Card */}
       <div className="bg-gray-50 rounded-lg p-6 mb-8">
         <h3 className="text-lg font-medium text-gray-900 mb-4">
           Order Summary
         </h3>
-        <div className="flex justify-between mb-2">
-          <span className="text-gray-600">Subtotal</span>
-          <span className="font-medium">AED {subtotal}</span>
-        </div>
-        <div className="flex justify-between mb-2">
-          <span className="text-gray-600">Tax</span>
-          <span className="font-medium">AED {tax}</span>
-        </div>
-        <div className="border-t border-gray-200 mt-4 pt-4 flex justify-between">
-          <span className="text-lg font-medium text-gray-900">Total</span>
-          <span className="text-lg font-bold text-red-600">
-            AED {orderTotal}
-          </span>
+        <div className="space-y-2">
+          <div className="flex justify-between">
+            <span className="text-gray-600">Subtotal</span>
+            <span className="font-medium">AED {subtotal}</span>
+          </div>
+          <div className="flex justify-between">
+            <span className="text-gray-600">VAT ({vatPercentage}%)</span>
+            <span className="font-medium">AED {tax}</span>
+          </div>
+          <div className="border-t border-gray-200 mt-4 pt-4">
+            <div className="flex justify-between text-lg font-bold">
+              <span className="text-gray-900">Total Amount</span>
+              <span className="text-red-600">AED {orderTotal}</span>
+            </div>
+          </div>
         </div>
       </div>
 
