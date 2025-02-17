@@ -75,7 +75,7 @@ export default function ProductSelectionModal({ isOpen, onClose, onSelect }) {
                   />
                 </div>
                 <h3 className="font-medium text-sm">{product.name}</h3>
-                <p className="text-sm text-gray-500">${product.price}</p>
+                <p className="text-sm text-gray-500">{product.price} AED</p>
               </div>
             ))}
           </div>

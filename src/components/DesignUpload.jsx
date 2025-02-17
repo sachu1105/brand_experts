@@ -69,8 +69,8 @@ export default function DesignUpload() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
-      <div className="bg-white rounded-lg shadow-lg p-6">
+    <div className="max-w-4xl mx-auto px-4 py-8 pt-26 pb-28">
+      <div className="bg-white border border-red-100 rounded-lg shadow-lg p-6">
         <h1 className="text-2xl font-bold mb-6">Upload Your Design</h1>
 
         <div className="grid md:grid-cols-2 gap-8">

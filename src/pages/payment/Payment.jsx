@@ -6,7 +6,6 @@ import stripePromise from "../../utils/stripe";
 import StripePaymentForm from "../../components/StripePaymentForm";
 import { createPaymentIntent } from "../../services/PaymentService";
 import { Steps } from "../checkout/components/Steps";
-import { CHECKOUT_STEPS } from "../../constants/checkoutSteps";
 
 export default function Payment() {
   const navigate = useNavigate();
