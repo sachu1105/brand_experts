@@ -38,21 +38,38 @@ export default function ModalLogin() {
       return response.data;
     },
     onSuccess: (data) => {
-      // Handle successful login
+      // Store tokens
       localStorage.setItem("access_token", data.access_token);
       localStorage.setItem("refresh_token", data.refresh_token);
+      
+      // Store IDs in sessionStorage for consistency with main login
+      sessionStorage.setItem("user_id", data.user_id);
+      sessionStorage.setItem("customer_id", data.customer_id);
+      
+      // Store detailed user information
       localStorage.setItem("user_details", JSON.stringify(data.user_details));
-
-      login({
+      
+      // Create consistent user object for context
+      const userData = {
         id: data.user_id,
         customer_id: data.customer_id,
-        name: data.user_details.first_name,
+        name: data.user_details.first_name || data.user_details.username || data.user_details.email.split('@')[0],
         email: data.user_details.email,
-      });
-
+        mobile: data.user_details.mobile,
+      };
+      
+      // Use consistent user data for auth context
+      localStorage.setItem("user_data", JSON.stringify(userData));
+      
+      login(userData);
+      
       toast.success("Successfully logged in!");
       closeModal();
-      navigate("/checkout");
+      
+      // Add a small delay before navigation for state to update
+      setTimeout(() => {
+        navigate("/checkout");
+      }, 100);
     },
     onError: (error) => {
       toast.error(error.message || "Login failed");

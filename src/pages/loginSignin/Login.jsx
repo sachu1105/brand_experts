@@ -131,7 +131,7 @@ const Login = ({ isModal = false }) => {
       {loginMutation.isLoading && <LoadingSpinner />}
 
       {showSuccess && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 ">
           <div className="bg-white p-6 rounded-lg shadow-xl transform transition-all animate-fade-in">
             <div className="text-green-600 text-center">
               <svg
@@ -156,7 +156,7 @@ const Login = ({ isModal = false }) => {
         </div>
       )}
 
-      <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 sm:px-6 lg:px-8 pb-36">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
             Log in

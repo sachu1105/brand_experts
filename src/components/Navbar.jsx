@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import {
   Search,
-  ShoppingCart,
   User,
   ChevronDown,
   Menu,
