@@ -10,7 +10,7 @@ export default function AuthModal() {
   if (!activeModal) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto bg-black bg-opacity-50">
+    <div className="fixed inset-0 z-50 overflow-y-auto bg-black" style={{ backgroundColor: "rgba(0, 0, 0, 0.60)" }} >
       <div className="flex min-h-screen items-center justify-center p-4">
         <div className="relative w-full max-w-md transform overflow-hidden rounded-lg bg-white p-6 shadow-xl transition-all">
           <button

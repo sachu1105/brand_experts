@@ -35,21 +35,20 @@ export default function ModalRegister() {
   });
 
   const registerMutation = useMutation({
-    mutationFn: async (formData) => {
+    mutationFn: async (data) => {
       setIsLoading(true);
       try {
         // Match the API's expected payload structure
         const payload = {
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          email: formData.email,
-          mobile: formData.mobile, // Changed back to mobile
-          password: formData.password,
-          username: formData.email, // Add username field if required by API
+          first_name: data.firstName,
+          last_name: data.lastName,
+          email: data.email,
+          mobile: data.mobile,
+          password: data.password,
         };
 
         // Use the correct endpoint and ensure trailing slash
-        const response = await Api.post("/register/", payload, {
+        const response = await Api.post("register/", payload, {
           headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
