@@ -305,8 +305,8 @@ const Warranty = () => {
     product_name: "",
     invoice_date: "",
     invoice_value: "",
-    invoice_file: null,
-    warranty_plan: "799_1yr",
+    invoice_file: "",
+    warranty_plan: "",
   });
   const [loading, setLoading] = useState(false);
   const [claimData, setClaimData] = useState({
@@ -429,45 +429,105 @@ const Warranty = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
 
-    try {
-      const submitData = {
-        ...formData,
-        price_range: selectedPriceRange,
-      };
 
-      const response = await API.post(
-        "https://dash.brandexperts.ae/register-warranty/",
-        submitData
-      );
+const handleSubmit = async (e) => {
+  e.preventDefault();
+  setLoading(true);
 
-      toast.success(
-        `${response.data.message}\nWarranty Number: ${response.data.warranty_number}`
-      );
-      // Reset form
-      setFormData({
-        full_name: "",
-        email: "",
-        phone: "",
-        product_name: "",
-        invoice_date: "",
-        price_range: "",
-        invoice_file: null,
-        warranty_plan_amount: "",
+  // Validate required fields
+  if (
+    !formData.full_name ||
+    !formData.email ||
+    !formData.phone ||
+    !formData.product_name ||
+    !formData.invoice_date ||
+    !selectedPriceRange ||
+    !formData.invoice_file ||
+    !formData.warranty_plan_amount
+  ) {
+    toast.error("Please fill out all required fields.");
+    setLoading(false);
+    return;
+  }
+
+  // Validate email format
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+    toast.error("Please enter a valid email address.");
+    setLoading(false);
+    return;
+  }
+
+  // Validate phone number
+  if (!/^\d+$/.test(formData.phone)) {
+    toast.error("Please enter a valid phone number (only digits allowed).");
+    setLoading(false);
+    return;
+  }
+
+  // Validate warranty plan amount (ensure it's a valid number)
+  const warrantyPlanAmount = formData.warranty_plan_amount;
+  if (isNaN(Number(warrantyPlanAmount))) {
+    toast.error("Invalid warranty plan amount.");
+    setLoading(false);
+    return;
+  }
+
+  try {
+    const submitData = {
+      full_name: formData.full_name,
+      email: formData.email,
+      phone: formData.phone,
+      invoice_number: formData.product_name, // Assuming product_name is invoice_number
+      invoice_date: formData.invoice_date,
+      price_range: selectedPriceRange,
+      invoice_file: formData.invoice_file,
+      warranty_plan_amount: String(warrantyPlanAmount), // Keep as string
+    };
+
+    console.log("Submitting data:", submitData);
+
+    const response = await API.post(
+      "https://dash.brandexperts.ae/register-warranty/",
+      submitData
+    );
+
+    if (response.data.message === "Proceed to payment") {
+      toast.success("Proceeding to payment...");
+      navigate("/warranty-payment", {
+        state: {
+          client_secret: response.data.client_secret,
+          customer_id: response.data.customer_id,
+          warranty_id: response.data.warranty_id,
+          metadata: {
+            name: formData.full_name,
+            email: formData.email,
+            warranty_plan_amount: response.data.metadata.warranty_plan_amount, // ✅ Access from metadata
+          },
+        },
       });
-      setSelectedPriceRange("");
-    } catch (error) {
-      toast.error(
-        error.response?.data?.message || "Failed to register warranty"
-      );
-    } finally {
-      setLoading(false);
+    } else {
+      toast.error("Unexpected response from server");
     }
-  };
-
+  } catch (error) {
+    if (error.response) {
+      console.error("API Error Response:", error.response.data);
+      alert(JSON.stringify(error.response.data, null, 2)); // Show full error
+      toast.error("Server error. Please try again.");
+    } else if (error.request) {
+      console.error("API No Response:", error.request);
+      alert("No response from server.");
+      toast.error("No response from server.");
+    } else {
+      console.error("API Request Error:", error.message);
+      alert("Request error: " + error.message);
+      toast.error("An unexpected error occurred.");
+    }
+  } finally {
+    setLoading(false);
+  }
+};
+    
   const handleClaimChange = (e) => {
     const { name, value } = e.target;
     setClaimData((prev) => ({

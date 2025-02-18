@@ -31,6 +31,7 @@ import stripePromise from "./utils/stripe";
 import Payment from "./pages/payment/Payment";
 import PaymentPage from "./pages/payment/PaymentPage";
 import OrderConfirmation from "./pages/checkout/components/OrderConfirmation";
+import WarrantyPayamentPage from "./pages/warranty/WarrantyPaymentPage"
 
 const queryClient = new QueryClient();
 
@@ -137,6 +138,16 @@ const App = () => {
                             </ProtectedRoute>
                           }
                         />
+
+                        {/* warranty-payment page connection */}
+                         <Route
+                          path="/warranty-payment"
+                          element={
+                              <WarrantyPayamentPage />
+                            
+                          }
+                        />
+
                       </Route>
                     </Routes>
                     <AuthModal />
