@@ -1,7 +1,6 @@
 import React from "react";
 import { X } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { uploadDesign } from "../services/bunnyStorageService";
 
 const DesignModal = ({ isOpen, onClose, productDetails }) => {
   const navigate = useNavigate();

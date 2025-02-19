@@ -252,10 +252,7 @@ const Navbar = () => {
                 Products
               </Link>
 
-              <Link
-                to=""
-                className="text-gray-600 hover:text-gray-900"
-              >
+              <Link to="" className="text-gray-600 hover:text-gray-900">
                 Templates
               </Link>
               {/* <Link
@@ -474,8 +471,8 @@ const Navbar = () => {
             </div>
             {/* Category Navigation */}
             <div className="hidden md:block relative">
-          {/* overflow-x-auto - if this add it will scroolable but  aminor issue is there*/}
-              <div className=" hide-scrollbar"> 
+              {/* overflow-x-auto - if this add it will scroolable but  aminor issue is there*/}
+              <div className=" hide-scrollbar">
                 <div className="flex items-center space-x-8 py-4 min-w-max">
                   {/* All Products Dropdown */}
                   <div className="relative group shrink-0">
@@ -506,9 +503,8 @@ const Navbar = () => {
                       </div>
                     </div>
                   </div>
-
                   {/* Individual Category Dropdowns */}
-                  {categories.map((category) => (
+                  {categories.map((category, index) => (
                     <div key={category.id} className="relative group shrink-0">
                       <Link
                         to=""
@@ -519,11 +515,23 @@ const Navbar = () => {
                       {/* Add padding bridge to prevent gap */}
                       <div className="absolute h-4 -bottom-4 left-0 right-0"></div>
 
-                      <div className="hidden group-hover:block absolute top-full left-0 z-50">
-                        <CategoryDropdown category={category} position="top" />
+                      {/* Dropdown wrapper with position detection */}
+                      <div className="hidden group-hover:block">
+                        {/* Check if this is one of the last items in the navbar */}
+                        {index >= categories.length - 3 ? (
+                          <CategoryDropdown
+                            category={category}
+                            position="left"
+                          />
+                        ) : (
+                          <CategoryDropdown
+                            category={category}
+                            position="top"
+                          />
+                        )}
                       </div>
                     </div>
-                  ))}
+                  ))}{" "}
                 </div>
               </div>
             </div>

@@ -1,7 +1,5 @@
 import bannerPostPng from "../../assets/images/banner-post.png";
 import bannerPostWebp from "../../assets/images/banner-post(1).webp";
-import grassPng from "../../assets/images/grass.png";
-import grassWebp from "../../assets/images/grass.webp";
 import arrowPng from "../../assets/images/arrow.png";
 import React, { useState } from "react";
 import {
@@ -100,7 +98,7 @@ const HeroSection = () => {
         </div>
 
         {/* Right Billboard with Fixed Sliding Images */}
-        <div className="lg:w-1/2 relative hidden lg:block">
+        <div className="lg:w-1/2 relative hidden lg:block ">
           <picture>
             <source srcSet={bannerPostWebp} type="image/webp" />
             <source srcSet={bannerPostPng} type="image/png" />
@@ -110,14 +108,10 @@ const HeroSection = () => {
               alt="hero section banner Logo"
             />
           </picture>
-          <picture className="absolute bottom-0 right-0 h-12">
-            <source srcSet={grassWebp} type="image/webp" />
-            <source srcSet={grassPng} type="image/png" />
-            <img src={grassPng} alt="hero section banner Logo" />
-          </picture>
+       
 
           {/* Improved Sliding Content Container */}
-          <div className="absolute top-[9%] left-[-1%] w-[87%] h-[48%] ">
+          <div className="absolute top-[9.1%] left-[-0.7%] w-[87%] h-[48%] ">
             {/* Adding a perspective container */}
             <div
               className="relative w-full h-full"
