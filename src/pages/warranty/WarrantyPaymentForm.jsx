@@ -7,7 +7,6 @@ import { CreditCard, CheckCircle, AlertCircle, Lock } from "lucide-react"
 
 import Mastercard from "../../assets/svg/Mastercard.svg"
 import visa from "../../assets/svg/Visa.svg"
-import Amex from "../../assets/svg/Amex.svg"
 
 const stripePromise = loadStripe(
   "pk_live_51K9t4GClllkfU7woX1ffJ66Gs1F1FRZqdrgUKPgZ6zzsjroIezfXgQUQDB385ZEmAQcTz283mC8GiTo1LwTGORYQ0042haEpax",
@@ -154,7 +153,6 @@ const PaymentForm = ({ clientSecret, warrantyId, name, email, warrantyPlanAmount
               <div className="flex space-x-1 items-center">
                 <img src={visa} alt="Visa" className="h-5" />
                 <img src={Mastercard} alt="Mastercard" className="h-8" />
-                <img src={Amex} alt="American Express" className="h-10" />
               </div>
             </div>
             <div className="bg-gray-50 rounded-xl p-4 border border-gray-200 transition-all focus-within:border-indigo-300 focus-within:ring-1 focus-within:ring-indigo-300">
